@@ -1,0 +1,11 @@
+[database]
+url = "sqlite:///machines-test.sqldb"
+name = "fablab-test"
+
+[MQTT]
+broker = "192.168.1.123"
+port = 1883
+client_id = "backend"
+topic = "machine/#"
+connect_message = "connect"
+alive_message = "alive"
