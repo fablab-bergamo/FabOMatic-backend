@@ -1,6 +1,6 @@
 # rfid-backend
 
-Build & Test status [![Python package](https://github.com/PBrunot/rfid-backend/actions/workflows/python-package.yml/badge.svg)](https://github.com/PBrunot/rfid-backend/actions/workflows/python-package.yml)
+Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/python-package.yml/badge.svg)](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/python-package.yml)
 
 ## Python dependencies
 
