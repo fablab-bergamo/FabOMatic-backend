@@ -1,7 +1,7 @@
 """This is the class handling the Database. More to come."""
 from os import path
 from os.path import dirname, abspath
-
+import logging
 import toml
 from sqlalchemy import create_engine
 
@@ -36,6 +36,7 @@ class DatabaseBackend:
         from sqlalchemy.orm import sessionmaker
         self._engine = create_engine(self._url, echo=True)
         self._session = sessionmaker(bind=self._engine)
+        logging.info("Connected to database %s", self._url)
 
     def getOne(self, Model, **kwargs):
         """Return one instance of Model matching kwargs."""
@@ -111,9 +112,11 @@ class DatabaseBackend:
         return InterventionRepository(session)
 
     def createDatabase(self) -> None:
+        logging.debug("Creating database %s", self._url)
         Base.metadata.create_all(self._engine, checkfirst=True)
 
     def dropContents(self) -> None:
+        logging.warning("Dropping all contents of database: %s", self._url)
         meta = Base.metadata
         with self._session() as session:
             trans = session.begin()

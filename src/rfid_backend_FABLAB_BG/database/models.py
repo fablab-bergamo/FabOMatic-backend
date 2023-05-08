@@ -184,6 +184,7 @@ class Machine(Base):
     machine_name = Column(String, unique=True, nullable=False)
     machine_type_id = Column(Integer, ForeignKey('machine_types.type_id'))
     machine_hours = Column(Float, nullable=False, default=0.0)
+    blocked = Column(Boolean, nullable=False, default=False)
     maintenances = relationship("Maintenance", back_populates="machine")
     interventions = relationship("Intervention", back_populates="machine")
     authorizations = relationship('Authorization', back_populates="machine")
@@ -198,6 +199,7 @@ class Machine(Base):
                 'machine_name': self.machine_name,
                 'machine_type_id': self.machine_type_id,
                 'machine_hours': self.machine_hours,
+                'blocked': self.blocked,
                 'maintenances': [maintenance.maintenance_id for maintenance in self.maintenances],
                 'interventions': [intervention.intervention_id for intervention in self.interventions]}
 

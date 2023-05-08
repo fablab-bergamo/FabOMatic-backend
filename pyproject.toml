@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 name = "rfid_backend_FABLAB_BG"
 version = "0.0.2"
 authors = [
+    { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
-    #{ name="Valerio Nappi", email="valerionappi995@gmail.com" },
-    #{ name="Valerio Nappi", email="valerionappi995@gmail.com" },*/
+    { name="Valerio Nappi", email="valerionappi995@gmail.com" }
 ]
 description = "RFID backend for FabLab BG"
 readme = "README.md"
@@ -20,8 +20,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/fablab-bergamo/rfid-database-interface"
-"Bug Tracker" = "https://github.com/fablab-bergamo/rfid-database-interface/issues"
+"Homepage" = "https://github.com/fablab-bergamo/rfid-backend"
+"Bug Tracker" = "https://github.com/fablab-bergamo/rfid-backend"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

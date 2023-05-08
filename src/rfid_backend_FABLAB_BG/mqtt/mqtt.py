@@ -2,17 +2,18 @@ import os
 
 import paho.mqtt.client as mqtt
 import toml
+import logging
+
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import AliveQuery, EndUseQuery, MachineQuery, Parser, StartUseQuery, UserQuery
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_FILE = os.path.join(MODULE_DIR, "conf\\settings.toml")
 
+
 class MQTTInterface:
     def __init__(self, path=CONFIG_FILE):
         self._settings_path = path
-
         self._messageCallback = None
-        self._isMachineAuthorizedCallback = None
-        self._machineAliveCallback = None
         self._connected = False
 
         self._awaiting_authorization = set()
@@ -26,8 +27,8 @@ class MQTTInterface:
         self._port = settings["port"]
         self._client_id = settings["client_id"]
         self._topic = settings["topic"]
-        self._connect_message = settings["connect_message"]
-        self._alive_message = settings["alive_message"]
+        self._reply_subtopic = settings["reply_subtopic"]
+        logging.info("Loaded MQTT settings from file %s", self._settings_path)
 
     def _extractMachineFromTopic(self, topic: str) -> str:
         if not topic.startswith(self._topic[:-1]):
@@ -46,18 +47,32 @@ class MQTTInterface:
         if not machine:
             return
 
-        match message:
-            case self._connect_message:
-                self._awaiting_authorization.add(machine)
-                if self._isMachineAuthorizedCallback is not None:
-                    self._isMachineAuthorizedCallback(machine)
+        try:
+            query = Parser.parse(message)
+            if type(query) not in self._handlers:
+                logging.warning(
+                    f"No handler for query {query} on topic {topic}")
+                return
 
-            case self._alive_message:
-                if self._machineAliveCallback is not None:
-                    self._machineAliveCallback(machine)
+            logging.debug(
+                f"Handling query {query} with handler {self._handlers[type(query)]} on topic {topic}")
+
+            response = self._handlers[type(query)](machine, query)
+
+            if response is not None:
+                logging.debug("Sending response %s on topic %s", response,
+                              f"{self._topic}{machine}/{self._reply_subtopic}")
+                self._client.publish(
+                    f"{self._topic}{machine}/{self._reply_subtopic}", response)
+
+        except ValueError:
+            logging.warning(
+                f"Invalid message received: {message} on topic {topic}")
+            return
 
     def _onDisconnect(self, *args):
         self._connected = False
+
 
     def connect(self):
         self._client = mqtt.Client(self._client_id)
@@ -68,20 +83,19 @@ class MQTTInterface:
         self._connected = True
         self._client.subscribe(self._topic)
         self._client.loop_start()
+        logging.info("Connected to MQTT broker %s", self._broker)
 
     def setMessageCallback(self, callback: callable):
         self._messageCallback = callback
 
-    def isMachineAuthorizedCallback(self, callback: callable):
-        self._isMachineAuthorizedCallback = callback
-
-    def setMachineAliveCallback(self, callback: callable):
-        self._machineAliveCallback = callback
+    def setHandler(self, query: type, handler: callable):
+        self._handlers[query] = handler
 
     def disconnect(self):
         self._client.unsubscribe(self._topic)
         self._client.loop_stop()
         self._client.disconnect()
+        logging.info("Disconnected from MQTT broker %s", self._broker)
 
     @property
     def connected(self):

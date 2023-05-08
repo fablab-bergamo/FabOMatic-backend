@@ -150,3 +150,5 @@ cython_debug/
 rfid-backend.code-workspace
 machines-test.sqldb
 machines.sqldb
+src/rfid_backend_FABLAB_BG/log.txt
+*log.txt*
