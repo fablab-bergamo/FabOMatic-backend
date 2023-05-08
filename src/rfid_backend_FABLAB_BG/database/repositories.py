@@ -91,9 +91,11 @@ class UserRepository(BaseRepository):
 
     def IsUserAuthorizedForMachine(self, machine: Machine, user: User) -> bool:
         """Return True if the User is authorized to use the Machine, False otherwise."""
-
         if user.role.authorize_all:
             return True
+
+        if machine.blocked:
+            return False
 
         authorizations = self.db_session.query(
             Authorization).filter_by(user_id=user.user_id).all()
@@ -149,6 +151,17 @@ class MachineRepository(BaseRepository):
             Use.machine_id == machine_id,
             Use.end_timestamp == None
         ).first() is not None
+
+    def isMachineNeedingMaintenance(self, mac: Machine) -> bool:
+        """Return True if the Machine is needing maintenance, False otherwise.
+
+        Args:
+            mac (Machine): Machine to check
+
+        Returns:
+            bool
+        """
+        return False
 
     def getCurrentlyUsedMachines(self) -> List[Machine]:
         """Get a list of the Machine that are being used in this moment.
@@ -219,7 +232,7 @@ class UseRepository(BaseRepository):
             end = time()
             # Create missing record on the fly since we have all required information
             record = Use(machine_id=machine_id, user_id=user.user_id,
-                         start_timestamp=(end - duration_s), 
+                         start_timestamp=(end - duration_s),
                          end_timestamp=end)
             self.create(record)
         else:

@@ -7,6 +7,7 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 * toml (for configuration file)
 * paho.mqtt (for MQTT client)
 * SQLAlchemy (for database interface)
+* colorlog (for nicer logs in the console)
 
 ## Backend runtime requirements
 
@@ -15,5 +16,10 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## Configuration
 
-* See file conf\settings.toml
+* See file conf\settings.toml to setup MQTT server, database connections.
+
+## Dev environments
+
+* Developped with VSCode with Python extension. Create a python venv with Python >=3.11. To run tests, install pytest from Terminal window.
+* Test settings are into tests\test_settings.toml file
 
