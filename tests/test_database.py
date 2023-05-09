@@ -66,6 +66,7 @@ class TestDB(unittest.TestCase):
                              machine_id=m2.machine_id)
         d.getMaintenanceRepository().create(maint2)
 
+        timestamp = time() - 1000
         inter = Intervention(maintenance_id=maint1.maintenance_id,
                              user_id=u1.user_id,
                              machine_id=m1.machine_id,
@@ -434,16 +435,15 @@ class TestDB(unittest.TestCase):
         self.assertEqual(0, len(machineRepo.get_all()),
                          "All machines should have been deleted")
 
-
-
     def test_maintenances(self):
         d = self.initDatabase()
         maint_repo = d.getMaintenanceRepository()
-        
+
         m_type = MachineType(type_name="test type")
         d.getMachineTypeRepository().create(m_type)
-        
-        machine = Machine(machine_name="test machine", machine_type_id=m_type.type_id)
+
+        machine = Machine(machine_name="test machine",
+                          machine_type_id=m_type.type_id)
         d.getMachineRepository().create(machine)
 
         MAINTENANCES = 100
@@ -451,27 +451,31 @@ class TestDB(unittest.TestCase):
         for x in range(1, MAINTENANCES):
             hours_between = random_between(5, 10)
             description = random_string(50)
-            maint = Maintenance(hours_between=hours_between, description=description, machine_id=machine.machine_id)
+            maint = Maintenance(hours_between=hours_between,
+                                description=description, machine_id=machine.machine_id)
             maint_repo.create(maint)
-            
+
             # check getters and setters
-            maint2 = maint_repo.get_model_by_id(Maintenance, maint.maintenance_id)
-            self.assertIsNotNone(maint2 , "Maintenance not found")
-            
-            self.assertEqual(maint2.hours_between, hours_between, "Hours between not set correctly")
-            self.assertEqual(maint2.description, description, "Description not set correctly")
-            
+            maint2 = maint_repo.get_model_by_id(
+                Maintenance, maint.maintenance_id)
+            self.assertIsNotNone(maint2, "Maintenance not found")
+
+            self.assertEqual(maint2.hours_between, hours_between,
+                             "Hours between not set correctly")
+            self.assertEqual(maint2.description, description,
+                             "Description not set correctly")
+
             maint2.hours_between = random_between(5, 10)
             maint2.description = random_string(50)
             maint_repo.update(maint2)
-
 
         # check removal
         for x in range(1, MAINTENANCES):
             maint = maint_repo.get_model_by_id(Maintenance, x)
             maint_repo.delete(maint)
 
-        self.assertEqual(len(maint_repo.get_all()), 0, "All maintenances should have been deleted")
+        self.assertEqual(len(maint_repo.get_all()), 0,
+                         "All maintenances should have been deleted")
 
     def test_machine_maintenance_interaction(self):
         d = self.initDatabase()
@@ -487,31 +491,37 @@ class TestDB(unittest.TestCase):
 
             mt = MachineType(type_name=MACHINE_TYPE_NAME)
             mtr.create(mt)
-            self.assertEqual(len(mtr.get_all()), 1, "Machine type not added correctly")
-            
+            self.assertEqual(len(mtr.get_all()), 1,
+                             "Machine type not added correctly")
+
             # create simple machine
             for x in range(MACHINES):
-                m = Machine(machine_name=f"TEST{x}", machine_type_id=mt.type_id)
+                m = Machine(machine_name=f"TEST{x}",
+                            machine_type_id=mt.type_id)
                 machine_repo.create(m)
 
             # create simple maintenances
             MAINTENANCES_DESC = ["change oil", "clean mirror", "empty bin"]
             for mac in machine_repo.get_all():
                 for _, md in enumerate(MAINTENANCES_DESC):
-                    maint = Maintenance(description=md, hours_between=10, machine_id=mac.machine_id)
+                    maint = Maintenance(
+                        description=md, hours_between=10, machine_id=mac.machine_id)
                     maint_repo.create(maint)
-                
-            self.assertEqual(len(maint_repo.get_all()), MACHINES * len(MAINTENANCES_DESC), "Maintenance not added correctly")
-            
+
+            self.assertEqual(len(maint_repo.get_all()), MACHINES *
+                             len(MAINTENANCES_DESC), "Maintenance not added correctly")
+
             for m in machine_repo.get_all():
-                self.assertEqual(len(m.maintenances), len(MAINTENANCES_DESC), "Machine maintenances not added correctly")
+                self.assertEqual(len(m.maintenances), len(
+                    MAINTENANCES_DESC), "Machine maintenances not added correctly")
                 for maint in m.maintenances:
                     maint_repo.delete(maint)
                 m = machine_repo.get_by_id(m.machine_id)
-                self.assertEqual(len(m.maintenances), 0, "Machine maintenances not removed correctly")
+                self.assertEqual(len(m.maintenances), 0,
+                                 "Machine maintenances not removed correctly")
 
-            self.assertEqual(0, len(maint_repo.get_all()), "All maintenances should have been deleted")
-
+            self.assertEqual(0, len(maint_repo.get_all()),
+                             "All maintenances should have been deleted")
 
     def test_interventions(self):
         d = self.populateSimpleDatabase(ids=0, timestamp=time())
@@ -530,23 +540,31 @@ class TestDB(unittest.TestCase):
                 int_repo.delete(inter)
 
             # create simple intervention
-            inter = Intervention(maintenance_id=maint.maintenance_id, user_id=user.user_id, machine_id=machine.machine_id, timestamp=time())
+            inter = Intervention(maintenance_id=maint.maintenance_id,
+                                 user_id=user.user_id, machine_id=machine.machine_id, timestamp=time())
             int_repo.create(inter)
-            
+
             self.assertAlmostEqual(inter.timestamp, time(), delta=1000)
 
-            self.assertEqual(len(int_repo.get_all()), 1, "Intervention not added correctly")
-            self.assertEqual(len(maint.interventions), 1, "Maintenance intervention not added correctly")
-            self.assertEqual(len(machine.interventions), 1, "Machine intervention not added correctly")
-            self.assertEqual(len(user.interventions), 1, "User intervention not added correctly")
+            self.assertEqual(len(int_repo.get_all()), 1,
+                             "Intervention not added correctly")
+            self.assertEqual(len(maint.interventions), 1,
+                             "Maintenance intervention not added correctly")
+            self.assertEqual(len(machine.interventions), 1,
+                             "Machine intervention not added correctly")
+            self.assertEqual(len(user.interventions), 1,
+                             "User intervention not added correctly")
 
             int_repo.delete(inter)
 
-            self.assertEqual(len(int_repo.get_all()), 0, "Intervention not deleted correctly")
-            self.assertEqual(len(maint.interventions), 0, "Maintenance intervention not deleted correctly")
-            self.assertEqual(len(machine.interventions), 0, "Machine intervention not deleted correctly")
-            self.assertEqual(len(user.interventions), 0, "User intervention not deleted correctly")
-
+            self.assertEqual(len(int_repo.get_all()), 0,
+                             "Intervention not deleted correctly")
+            self.assertEqual(len(maint.interventions), 0,
+                             "Maintenance intervention not deleted correctly")
+            self.assertEqual(len(machine.interventions), 0,
+                             "Machine intervention not deleted correctly")
+            self.assertEqual(len(user.interventions), 0,
+                             "User intervention not deleted correctly")
 
     def test_user_use_interaction(self):
         d = self.populateSimpleDatabase()
@@ -559,30 +577,88 @@ class TestDB(unittest.TestCase):
             machine = machine_repo.get_by_id(1)
 
             # create simple use
-            use_repo.startUse(machine.machine_id, user=userID1, timestamp=time())
-            use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
+            use_repo.startUse(machine.machine_id,
+                              user=userID1, timestamp=time())
+            use_repo.endUse(machine_id=machine.machine_id,
+                            user=userID1, duration_s=1)
 
-            self.assertEqual(len(userID1.uses), 1, "User use not added correctly")
-            self.assertEqual(len(machine.uses), 1, "Machine use not added correctly")
+            self.assertEqual(len(userID1.uses), 1,
+                             "User use not added correctly")
+            self.assertEqual(len(machine.uses), 1,
+                             "Machine use not added correctly")
 
             use_repo.delete(userID1.uses[0])
 
-            self.assertEqual(len(userID1.uses), 0, "User use not deleted correctly")
-            self.assertEqual(len(machine.uses), 0, "Machine use not deleted correctly")
+            self.assertEqual(len(userID1.uses), 0,
+                             "User use not deleted correctly")
+            self.assertEqual(len(machine.uses), 0,
+                             "Machine use not deleted correctly")
 
             # invalid cases
             for _ in range(100):
-                use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time())
+                use_repo.startUse(machine_id=machine.machine_id,
+                                  user=userID1, timestamp=time())
 
-            self.assertEqual(1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist")
-            self.assertEqual(99, len(session.query(Use).filter(Use.end_timestamp != None).all()), "Auto-closing orphan uses should have closed 99 uses")
+            self.assertEqual(1, len(session.query(Use).filter(
+                Use.end_timestamp == None).all()), "Only one open use should exist")
+            self.assertEqual(99, len(session.query(Use).filter(Use.end_timestamp != None).all(
+            )), "Auto-closing orphan uses should have closed 99 uses")
 
             for _ in range(100):
-                use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
+                use_repo.endUse(machine_id=machine.machine_id,
+                                user=userID1, duration_s=1)
 
-            self.assertEqual(199, len(session.query(Use).filter(Use.end_timestamp != None).all()), "Auto-closing orphan uses should have closed 99 uses")
-            self.assertEqual(0, len(session.query(Use).filter(Use.end_timestamp == None).all()), "No open uses should exist")
+            self.assertEqual(199, len(session.query(Use).filter(Use.end_timestamp != None).all(
+            )), "Auto-closing orphan uses should have closed 99 uses")
+            self.assertEqual(0, len(session.query(Use).filter(
+                Use.end_timestamp == None).all()), "No open uses should exist")
 
+    def test_use_helpers(self):
+        d = self.populateSimpleDatabase()
+        with d.getSession() as session:
+            use_repo = d.getSessionUseRepository(session)
+            user_repo = d.getSessionUserRepository(session)
+            machine_repo = d.getSessionMachineRepository(session)
+
+            userID1 = user_repo.get_by_id(1)
+            machine = machine_repo.get_by_id(1)
+
+            # create simple use
+            use_repo.startUse(machine.machine_id,
+                              user=userID1, timestamp=time())
+            use_repo.endUse(machine_id=machine.machine_id,
+                            user=userID1, duration_s=1)
+
+            self.assertEqual(len(userID1.uses), 1,
+                             "User use not added correctly")
+            self.assertEqual(len(machine.uses), 1,
+                             "Machine use not added correctly")
+
+            use_repo.delete(userID1.uses[0])
+
+            self.assertEqual(len(userID1.uses), 0,
+                             "User use not deleted correctly")
+            self.assertEqual(len(machine.uses), 0,
+                             "Machine use not deleted correctly")
+
+            # invalid cases
+            for _ in range(100):
+                use_repo.startUse(machine_id=machine.machine_id,
+                                  user=userID1, timestamp=time())
+
+            self.assertEqual(1, len(session.query(Use).filter(
+                Use.end_timestamp == None).all()), "Only one open use should exist")
+            self.assertEqual(99, len(session.query(Use).filter(Use.end_timestamp != None).all(
+            )), "Auto-closing orphan uses should have closed 99 uses")
+
+            for _ in range(100):
+                use_repo.endUse(machine_id=machine.machine_id,
+                                user=userID1, duration_s=1)
+
+            self.assertEqual(199, len(session.query(Use).filter(Use.end_timestamp != None).all(
+            )), "Auto-closing orphan uses should have closed 99 uses")
+            self.assertEqual(0, len(session.query(Use).filter(
+                Use.end_timestamp == None).all()), "No open uses should exist")
 
     def test_use_helpers(self):
         d = self.populateSimpleDatabase()
@@ -591,19 +667,88 @@ class TestDB(unittest.TestCase):
             use_repo = d.getSessionUseRepository(session)
             user_repo = d.getSessionUserRepository(session)
 
-            self.assertEqual(0, len(mac_repo.getCurrentlyUsedMachines()), "No machines should be in use")
-            
-            self.assertTrue(user_repo.IsUserAuthorizedForMachine(machine=mac_repo.get_by_id(1), user=user_repo.get_by_id(1)), "User should be authorized")
-            self.assertEqual(0, user_repo.getUserTotalTime(user_id=1), "User should have no total time")
+            self.assertEqual(
+                0, len(mac_repo.getCurrentlyUsedMachines()), "No machines should be in use")
 
-            use_repo.startUse(machine_id = 1, user= user_repo.get_by_id(1), timestamp=time())
+            self.assertTrue(user_repo.IsUserAuthorizedForMachine(machine=mac_repo.get_by_id(
+                1), user=user_repo.get_by_id(1)), "User should be authorized")
+            self.assertEqual(0, user_repo.getUserTotalTime(
+                user_id=1), "User should have no total time")
+            self.assertEqual(0, mac_repo.getRelativeUseTime(
+                machine_id=1), "Machine should have no relative time")
+            self.assertEqual(0, mac_repo.getTotalUseTime(
+                machine_id=1), "Machine should have no total time")
 
-            self.assertTrue(mac_repo.isMachineCurrentlyUsed(1), "Machine should be in use")
-            self.assertEqual(1, len(mac_repo.getCurrentlyUsedMachines()), "One machine should be in use")
+            self.assertFalse(mac_repo.getMachineMaintenanceNeeded(
+                machine_id=1)[0], "Machine should not need maintenance")
 
-            use_repo.endUse(machine_id = 1, user= user_repo.get_by_id(1), duration_s=60)
-            self.assertFalse(mac_repo.isMachineCurrentlyUsed(1), "Machine should not be in use")
-            self.assertEqual(0, len(mac_repo.getCurrentlyUsedMachines()), "No machine should be in use")
+            use_repo.startUse(machine_id=1, user=user_repo.get_by_id(
+                1), timestamp=time() - 240)
+
+            self.assertTrue(mac_repo.isMachineCurrentlyUsed(1),
+                            "Machine should be in use")
+            self.assertEqual(
+                1, len(mac_repo.getCurrentlyUsedMachines()), "One machine should be in use")
+
+            use_repo.endUse(
+                machine_id=1, user=user_repo.get_by_id(1), duration_s=60)
+            self.assertFalse(mac_repo.isMachineCurrentlyUsed(
+                1), "Machine should not be in use")
+            self.assertEqual(
+                0, len(mac_repo.getCurrentlyUsedMachines()), "No machine should be in use")
+
+            self.assertLess(59.0, user_repo.getUserTotalTime(
+                user_id=1), "User should have >59s total time")
+            self.assertLess(59.0, mac_repo.getRelativeUseTime(
+                machine_id=1), "Machine should have >59s relative time")
+            self.assertLess(59.0, mac_repo.getTotalUseTime(
+                machine_id=1), "Machine should have >59s total time")
+
+            # Register another use
+            use_repo.startUse(machine_id=1, user=user_repo.get_by_id(
+                1), timestamp=time() - 120)
+            use_repo.endUse(
+                machine_id=1, user=user_repo.get_by_id(1), duration_s=60)
+
+            self.assertFalse(mac_repo.isMachineCurrentlyUsed(
+                1), "Machine should not be in use")
+            self.assertEqual(
+                0, len(mac_repo.getCurrentlyUsedMachines()), "No machine should be in use")
+
+            self.assertLess(119.0, user_repo.getUserTotalTime(
+                user_id=1), "User should have >119s total time")
+            self.assertLess(119.0, mac_repo.getRelativeUseTime(
+                machine_id=1), "Machine should have >119s relative time")
+            self.assertLess(119.0, mac_repo.getTotalUseTime(
+                machine_id=1), "Machine should have >119s total time")
+
+            # register an intervention between both uses
+            int_repo = d.getSessionInterventionRepository(session)
+            int_repo.create(Intervention(user_id=1, machine_id=1,
+                            timestamp=time() - 180, maintenance_id=1))
+
+            # relative use shall be only the last use duration
+            self.assertLess(59.0, mac_repo.getRelativeUseTime(
+                machine_id=1), "Machine should have >59s relative time")
+            # total use shall not be changed
+            self.assertLess(119.0, mac_repo.getTotalUseTime(
+                machine_id=1), "Machine should have >119s total time")
+
+            # Check maintenance status
+            self.assertFalse(mac_repo.getMachineMaintenanceNeeded(
+                machine_id=1)[0], "Machine should not need maintenance")
+
+            maint_repo = d.getSessionMaintenanceRepository(session)
+            maint = maint_repo.get_model_by_id(Maintenance, 1)
+            maint.hours_between = 1/3600  # every second
+            maint_repo.update(maint)
+
+            # Check tuple values of getMachineMaintenanceNeeded
+            self.assertTrue(mac_repo.getMachineMaintenanceNeeded(
+                machine_id=1)[0], "Machine shall need maintenance")
+            self.assertEqual(mac_repo.getMachineMaintenanceNeeded(machine_id=1)[
+                             1], maint.description, "Correct maintenance description shall be returned")
+
 
 if __name__ == "__main__":
     unittest.main()

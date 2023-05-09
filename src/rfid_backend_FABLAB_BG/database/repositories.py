@@ -1,5 +1,5 @@
 from time import time
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.exc import NoResultFound
@@ -176,6 +176,82 @@ class MachineRepository(BaseRepository):
 
     def get_all(self) -> List[Machine]:
         return self.db_session.query(Machine).order_by(Machine.machine_id).all()
+
+    def getRelativeUseTime(self, machine_id: int) -> int:
+        """Return total time the Machine has been used since last intervention.
+
+        Args:
+            machine_id (int): id of the Machine
+
+        Returns:
+            int: Machine time in seconds
+        """
+        record = self.db_session.query(Intervention).filter(
+            Intervention.machine_id == machine_id).order_by(Intervention.timestamp.desc()).first()
+
+        if record is None:
+            last_intervention = 0
+        else:
+            last_intervention = record.timestamp
+
+        uses = self.db_session.query(Use).filter(
+            Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention).all()
+
+        return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+
+    def getRelativeUseTimeByMaintenance(self, machine_id: int, maintenance_id: int) -> int:
+        """Return total time the Machine has been used since last intervention.
+
+        Args:
+            machine_id (int): id of the Machine
+            maintenance_id (int): id of the Maintenance
+
+        Returns:
+            int: Machine time in seconds
+        """
+        record = self.db_session.query(Intervention).filter(Intervention.machine_id == machine_id,
+                                                            Intervention.maintenance_id == maintenance_id).order_by(Intervention.timestamp.desc()).first()
+
+        if record is None:
+            last_intervention = 0
+        else:
+            last_intervention = record.timestamp
+
+        uses = self.db_session.query(Use).filter(
+            Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention).all()
+
+        return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+
+    def getTotalUseTime(self, machine_id: int) -> int:
+        """Return total time the Machine has been used.
+
+        Args:
+            machine_id (int): id of the Machine
+
+        Returns:
+            int: Machine time in seconds
+        """
+        uses = self.db_session.query(Use).filter(
+            Use.end_timestamp != None, Use.machine_id == machine_id).all()
+
+        return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+
+    def getMachineMaintenanceNeeded(self, machine_id: int) -> Tuple[bool, str]:
+        """Return True if the Machine needs any maintenance, False otherwise.
+
+        Args:
+            machine_id (int): id of the Machine
+
+        Returns:
+            bool
+        """
+        machine = self.db_session.query(Machine).filter(
+            Machine.machine_id == machine_id).first()
+        for maintenance in machine.maintenances:
+            if self.getRelativeUseTimeByMaintenance(machine_id, maintenance.maintenance_id) > maintenance.hours_between * 3600.0:
+                return (True, maintenance.description)
+
+        return (False, "")
 
 
 class UseRepository(BaseRepository):

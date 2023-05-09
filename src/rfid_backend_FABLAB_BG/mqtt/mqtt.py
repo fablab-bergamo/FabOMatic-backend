@@ -4,7 +4,7 @@ import paho.mqtt.client as mqtt
 import toml
 import logging
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import AliveQuery, EndUseQuery, MachineQuery, Parser, StartUseQuery, UserQuery
+from .mqtt_types import AliveQuery, EndUseQuery, MachineQuery, Parser, StartUseQuery, UserQuery
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_FILE = os.path.join(MODULE_DIR, "conf\\settings.toml")
@@ -72,7 +72,6 @@ class MQTTInterface:
 
     def _onDisconnect(self, *args):
         self._connected = False
-
 
     def connect(self):
         self._client = mqtt.Client(self._client_id)
