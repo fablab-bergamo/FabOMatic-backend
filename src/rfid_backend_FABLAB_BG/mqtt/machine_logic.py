@@ -21,15 +21,20 @@ class MachineLogic:
         logging.info(f"Machine logic instance for ID:{machine_id} initialized")
 
     def machineStatus(self):
-        machine_repo = MachineLogic.database.getMachineRepository()
-        machine = machine_repo.get_by_id(self._machine_id)
-        if machine is None:
-            return MachineResponse(True, False, False, False)
+        try:
 
-        return MachineResponse(True, True,
-                               machine_repo.isMachineNeedingMaintenance(
-                                   machine),
-                               not machine.blocked)
+            machine_repo = MachineLogic.database.getMachineRepository()
+            machine = machine_repo.get_by_id(self._machine_id)
+            if machine is None:
+                return MachineResponse(True, False, False, False)
+
+            return MachineResponse(True, True,
+                                   machine_repo.getMachineMaintenanceNeeded(
+                                       machine.machine_id),
+                                   not machine.blocked)
+        except Exception as e:
+            logging.error("machineStatus exception %s", str(e), exc_info=True)
+            return MachineResponse(False, False, False, False)
 
     def machineAlive(self):
         """Called when a machine sends an alive message"""
@@ -37,37 +42,65 @@ class MachineLogic:
         self._last_alive = time()
 
     def isAuthorized(self, card_uuid: str) -> SimpleResponse:
-        machine_repo = MachineLogic.database.getMachineRepository()
-        user_repo = MachineLogic.database.getUserRepository()
-        user = user_repo.getUserByCardUUID(card_uuid)
-        machine = machine_repo.get_by_id(self._machine_id)
-        if machine is None or user is None:
-            return SimpleResponse(False, "Invalid card or machine")
+        try:
+            machine_repo = MachineLogic.database.getMachineRepository()
+            user_repo = MachineLogic.database.getUserRepository()
+            user = user_repo.getUserByCardUUID(card_uuid)
+            machine = machine_repo.get_by_id(self._machine_id)
+            if machine is None or user is None:
+                return SimpleResponse(False, "Invalid card or machine")
 
-        if user_repo.IsUserAuthorizedForMachine(machine, user):
-            return SimpleResponse(True)
-        else:
-            return SimpleResponse(False, "User not authorized")
+            if user_repo.IsUserAuthorizedForMachine(machine, user):
+                return SimpleResponse(True)
+            else:
+                return SimpleResponse(False, "User not authorized")
+        except Exception as e:
+            logging.error("isAuthorized exception %s", str(e), exc_info=True)
+            return SimpleResponse(False, "BACKEND EXCEPTION")
 
     def startUse(self, card_uuid: str) -> SimpleResponse:
-        user_repo = MachineLogic.database.getUserRepository()
-        user = user_repo.getUserByCardUUID(card_uuid)
-        if user is None:
-            return SimpleResponse(False, "Invalid card")
-        return SimpleResponse(False, "Not implemented")
+        try:
+            user_repo = MachineLogic.database.getUserRepository()
+            user = user_repo.getUserByCardUUID(card_uuid)
+            if user is None:
+                return SimpleResponse(False, "Invalid card")
+
+            use_repo = MachineLogic.database.getUseRepository()
+            use_repo.startUse(self._machine_id, user, time())
+
+            return SimpleResponse(True, "")
+        except Exception as e:
+            logging.error("startUse exception %s", str(e), exc_info=True)
+            return SimpleResponse(False, "BACKEND EXCEPTION")
 
     def endUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
-        user_repo = MachineLogic.database.getUserRepository()
-        user = user_repo.getUserByCardUUID(card_uuid)
-        if user is None:
-            return SimpleResponse(False, "Invalid card")
+        try:
+            user_repo = MachineLogic.database.getUserRepository()
+            user = user_repo.getUserByCardUUID(card_uuid)
+            if user is None:
+                return SimpleResponse(False, "Invalid card")
 
-        return SimpleResponse(False, "Not implemented")
+            use_repo = MachineLogic.database.getUseRepository()
+            use_repo.endUse(self._machine_id, user, duration_s)
+
+            return SimpleResponse(True, "")
+        except Exception as e:
+            logging.error("enduse exception %s", str(e), exc_info=True)
+            return SimpleResponse(False, "BACKEND EXCEPTION")
 
     def registerMaintenance(self, card_uuid: str) -> SimpleResponse:
-        user_repo = MachineLogic.database.getUserRepository()
-        user = user_repo.getUserByCardUUID(card_uuid)
-        if user is None:
-            return SimpleResponse(False, "Invalid card")
+        try:
+            user_repo = MachineLogic.database.getUserRepository()
+            user = user_repo.getUserByCardUUID(card_uuid)
+            if user is None:
+                return SimpleResponse(False, "Wrong user card")
 
-        return SimpleResponse(False, "Not implemented")
+            intervention_repo = MachineLogic.database.getInterventionRepository()
+            intervention_repo.registerInterventionsDone(
+                self._machine_id, user.user_id)
+
+            return SimpleResponse(True, "")
+        except Exception as e:
+            logging.error("registerMaintenance exception %s",
+                          str(e), exc_info=True)
+            return SimpleResponse(False, "BACKEND EXCEPTION")
