@@ -1,7 +1,7 @@
 import os
 import unittest
 import json
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from src.rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
 from src.rfid_backend_FABLAB_BG.mqtt import MQTTInterface
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
