@@ -133,6 +133,29 @@ class InterventionRepository(BaseRepository):
     def get_all(self) -> List[Intervention]:
         return self.db_session.query(Intervention).order_by(Intervention.intervention_id).all()
 
+    def registerInterventionsDone(self, machine_id: int, user_id: int):
+        """Register interventions done by the user on the machine."""
+
+        machine = self.db_session.query(Machine).filter_by(
+            machine_id=machine_id).first()
+        user = self.db_session.query(User).filter_by(user_id=user_id).first()
+
+        if machine is None or user is None:
+            raise Exception("Wrong machine_id or user_id")
+
+        machine_repo = MachineRepository(self.db_session)
+        timestamp = time()
+        for maintenance in machine.maintenances:
+            if machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance.maintenance_id) > maintenance.between_hours * 3600:
+                intervention = Intervention(
+                    machine_id=machine.machine_id,
+                    maintenance_id=maintenance.maintenance_id,
+                    timestamp=timestamp,
+                    user_id=user.user_id
+                )
+                self.db_session.add(intervention)
+        self.db_session.commit()
+
 
 class MachineRepository(BaseRepository):
     def __init__(self, db_session: Session):
@@ -151,17 +174,6 @@ class MachineRepository(BaseRepository):
             Use.machine_id == machine_id,
             Use.end_timestamp == None
         ).first() is not None
-
-    def isMachineNeedingMaintenance(self, mac: Machine) -> bool:
-        """Return True if the Machine is needing maintenance, False otherwise.
-
-        Args:
-            mac (Machine): Machine to check
-
-        Returns:
-            bool
-        """
-        return False
 
     def getCurrentlyUsedMachines(self) -> List[Machine]:
         """Get a list of the Machine that are being used in this moment.
