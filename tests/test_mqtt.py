@@ -1,15 +1,12 @@
 import os
 import unittest
-import json
-from src.rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
-from src.rfid_backend_FABLAB_BG.mqtt import MQTTInterface
 
-FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
-TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
+from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
 
 
 class TestMQTT(unittest.TestCase):
-    SETTINGS_PATH = os.path.join(FIXTURE_DIR, TEST_SETTINGS_PATH)
 
     def test_json_deserialize(self):
         json_user_query = '{"action": "check_user", "uid": "1234567890"}'
@@ -64,8 +61,22 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(json_response, '{"request_ok": true, "message": ""}')
 
     def test_init(self):
-        d = MQTTInterface(self.SETTINGS_PATH)
+        d = MQTTInterface(TEST_SETTINGS_PATH)
         self.assertIsNotNone(d)
+        d.connect()
+        self.assertTrue(d.connected)
+
+    def test_alive(self):
+        db = get_simple_db()
+        session = db.getSession()
+        d = MQTTInterface(TEST_SETTINGS_PATH)
+        d.connect()
+        self.assertTrue(d.connected)
+        for mac in db.getMachineRepository(session).get_all():
+            self.assertTrue(
+                d.publishQuery(mac.machine_id, "{\"action\"=\"alive\"}"))
+            self.assertTrue(
+                d.publishQuery(mac.machine_id, "{\"action\"=\"check_machine\"}"))
 
 
 if __name__ == "__main__":

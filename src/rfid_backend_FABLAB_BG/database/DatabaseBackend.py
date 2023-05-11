@@ -34,7 +34,7 @@ class DatabaseBackend:
 
     def _connect(self) -> None:
         from sqlalchemy.orm import sessionmaker
-        self._engine = create_engine(self._url, echo=True)
+        self._engine = create_engine(self._url, echo=False)
         self._session = sessionmaker(bind=self._engine)
         logging.info("Connected to database %s", self._url)
 
@@ -52,63 +52,31 @@ class DatabaseBackend:
         with self._session() as session:
             return session.query(Model).filter_by(**kwargs).all()
 
-    def getUserRepository(self):
-        with self._session() as session:
-            return UserRepository(session)
-
     def getSession(self) -> Session:
         return self._session()
 
-    def getSessionUserRepository(self, session: Session):
+    def getUserRepository(self, session: Session) -> UserRepository:
         return UserRepository(session)
 
-    def getRoleRepository(self):
-        with self._session() as session:
-            return RoleRepository(session)
-
-    def getSessionRoleRepository(self, session: Session):
+    def getRoleRepository(self, session: Session) -> RoleRepository:
         return RoleRepository(session)
 
-    def getMachineRepository(self):
-        with self._session() as session:
-            return MachineRepository(session)
-
-    def getSessionMachineRepository(self, session: Session):
+    def getMachineRepository(self, session: Session) -> MachineRepository:
         return MachineRepository(session)
 
-    def getMachineTypeRepository(self):
-        with self._session() as session:
-            return MachineTypeRepository(session)
-
-    def getSessionMachineTypeRepository(self, session: Session):
+    def getMachineTypeRepository(self, session: Session) -> MachineTypeRepository:
         return MachineTypeRepository(session)
 
-    def getUseRepository(self):
-        with self._session() as session:
-            return UseRepository(session)
-
-    def getSessionUseRepository(self, session: Session):
+    def getUseRepository(self, session: Session) -> UseRepository:
         return UseRepository(session)
 
-    def getAuthorizationRepository(self):
-        with self._session() as session:
-            return AuthorizationRepository(session)
-
-    def getSessionAuthorizationRepository(self, session: Session):
+    def getAuthorizationRepository(self, session: Session) -> AuthorizationRepository:
         return AuthorizationRepository(session)
 
-    def getMaintenanceRepository(self):
-        with self._session() as session:
-            return MaintenanceRepository(session)
-
-    def getSessionMaintenanceRepository(self, session: Session):
+    def getMaintenanceRepository(self, session: Session) -> MaintenanceRepository:
         return MaintenanceRepository(session)
 
-    def getInterventionRepository(self):
-        with self._session() as session:
-            return InterventionRepository(session)
-
-    def getSessionInterventionRepository(self, session: Session):
+    def getInterventionRepository(self, session: Session) -> InterventionRepository:
         return InterventionRepository(session)
 
     def createDatabase(self) -> None:

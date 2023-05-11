@@ -5,21 +5,24 @@ class Parser:
     @staticmethod
     def parse(json_data: str):
         data = json.loads(json_data)
-        match data["action"]:
-            case "check_user":
-                return UserQuery.deserialize(json_data)
-            case "check_machine":
-                return MachineQuery.deserialize(json_data)
-            case "startuse":
-                return StartUseQuery.deserialize(json_data)
-            case "stopuse":
-                return EndUseQuery.deserialize(json_data)
-            case "maintenance":
-                return RegisterMaintenanceQuery.deserialize(json_data)
-            case "alive":
-                return AliveQuery.deserialize(json_data)
-            case _:
-                raise ValueError("Invalid action")
+        if "action" in data:
+            match data["action"]:
+                case "check_user":
+                    return UserQuery.deserialize(json_data)
+                case "check_machine":
+                    return MachineQuery.deserialize(json_data)
+                case "startuse":
+                    return StartUseQuery.deserialize(json_data)
+                case "stopuse":
+                    return EndUseQuery.deserialize(json_data)
+                case "maintenance":
+                    return RegisterMaintenanceQuery.deserialize(json_data)
+                case "alive":
+                    return AliveQuery.deserialize(json_data)
+                case _:
+                    raise ValueError("Invalid action")
+        else:
+            raise ValueError("Missing action field")
 
 
 class UserQuery:
@@ -39,7 +42,6 @@ class MachineQuery:
 
     @staticmethod
     def deserialize(json_data: str):
-        data = json.loads(json_data)
         return MachineQuery()
 
 

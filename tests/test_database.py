@@ -1,14 +1,13 @@
-import os
 import random
 import unittest
 from string import ascii_uppercase
+from time import time
 
 from sqlalchemy.exc import IntegrityError
 
-from src.rfid_backend_FABLAB_BG.database import *
-
-FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
-TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
+from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
+from rfid_backend_FABLAB_BG.database.models import *
+from tests.common import TEST_SETTINGS_PATH, get_empty_db, get_simple_db, configure_logger
 
 
 def random_string(length=16):
@@ -21,257 +20,210 @@ def random_between(a, b):
 
 
 class TestDB(unittest.TestCase):
-    def initDatabase(self):
-        d = DatabaseBackend(TEST_SETTINGS_PATH)
-        d.createDatabase()
-        d.dropContents()
-        return d
-
-    def populateSimpleDatabase(self, ids=0, timestamp=2000000000.0000):
-        d = self.initDatabase()
-
-        mt1 = MachineType(type_id=ids, type_name="type 0")
-        d.getMachineTypeRepository().create(mt1)
-
-        mt2 = MachineType(type_id=ids + 1, type_name="type 1")
-        d.getMachineTypeRepository().create(mt2)
-
-        r1 = Role(role_name="admin", authorize_all=True)
-        d.getRoleRepository().create(r1)
-
-        r2 = Role(role_name="user")
-        d.getRoleRepository().create(r2)
-
-        u1 = User(name="Mario", surname="Rossi", role_id=r1.role_id)
-        d.getUserRepository().create(u1)
-
-        u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id)
-        d.getUserRepository().create(u2)
-
-        m1 = Machine(machine_name="DRILL0", machine_type_id=mt1.type_id)
-        d.getMachineRepository().create(m1)
-
-        m2 = Machine(machine_name="DRILL1",
-                     machine_type_id=mt2.type_id)
-        d.getMachineRepository().create(m2)
-
-        maint1 = Maintenance(hours_between=10,
-                             description="replace engine",
-                             machine_id=m1.machine_id)
-
-        d.getMaintenanceRepository().create(maint1)
-
-        maint2 = Maintenance(hours_between=10,
-                             description="replace brushes",
-                             machine_id=m2.machine_id)
-        d.getMaintenanceRepository().create(maint2)
-
-        timestamp = time() - 1000
-        inter = Intervention(maintenance_id=maint1.maintenance_id,
-                             user_id=u1.user_id,
-                             machine_id=m1.machine_id,
-                             timestamp=timestamp)
-        d.getInterventionRepository().create(inter)
-
-        inter2 = Intervention(maintenance_id=maint2.maintenance_id,
-                              user_id=u2.user_id,
-                              machine_id=m2.machine_id,
-                              timestamp=timestamp)
-        d.getInterventionRepository().create(inter2)
-
-        return d
 
     def test_connection(self):
         _ = DatabaseBackend(TEST_SETTINGS_PATH)
 
     def test_drop(self):
-        d = self.initDatabase()
-        self.assertEqual(len(d.getMachineRepository().get_all()), 0)
-        self.assertEqual(len(d.getMachineTypeRepository().get_all()), 0)
-        self.assertEqual(len(d.getMachineRepository().get_all()), 0)
-        self.assertEqual(len(d.getUserRepository().get_all()), 0)
-        self.assertEqual(len(d.getRoleRepository().get_all()), 0)
-        self.assertEqual(len(d.getMaintenanceRepository().get_all()), 0)
-        self.assertEqual(len(d.getInterventionRepository().get_all()), 0)
+        empty_db = get_empty_db()
+        with empty_db.getSession() as session:
+            self.assertEqual(
+                len(empty_db.getMachineRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getMachineTypeRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getMachineRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getUserRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getRoleRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getMaintenanceRepository(session).get_all()), 0)
+            self.assertEqual(
+                len(empty_db.getInterventionRepository(session).get_all()), 0)
 
     def test_simple_add_roles(self):
-        d = self.initDatabase()
-
+        empty_db = get_empty_db()
         role_names = ["user", "power user",
                       "moderator", "crew", "admin", "super admin"]
 
-        role_repo = d.getRoleRepository()
-        for i, r in enumerate(role_names):
-            role_repo.create(Role(role_id=i, role_name=r))
+        with empty_db.getSession() as session:
+            role_repo = empty_db.getRoleRepository(session)
+            for i, r in enumerate(role_names):
+                role_repo.create(Role(role_id=i, role_name=r))
 
-        # check if roles were added
-        self.assertEqual(len(role_names), len(role_repo.get_all()))
+            # check if roles were added
+            self.assertEqual(len(role_names), len(role_repo.get_all()))
 
-        # check if role parameters are real
-        for i, r in enumerate(role_repo.get_all()):
-            self.assertEqual(r.role_id, i)
-            self.assertEqual(r.role_name, role_names[i])
+            # check if role parameters are real
+            for i, r in enumerate(role_repo.get_all()):
+                self.assertEqual(r.role_id, i)
+                self.assertEqual(r.role_name, role_names[i])
 
-        # edit a role name
-        new_name = "TEST ROLE WOW"
-        role = role_repo.get_by_id(0)
-        role.role_name = new_name
-        role_repo.update(role)
-        self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
-        self.assertEqual(len(role_repo.get_all()), len(role_names))
+            # edit a role name
+            new_name = "TEST ROLE WOW"
+            role = role_repo.get_by_id(0)
+            role.role_name = new_name
+            role_repo.update(role)
+            self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
+            self.assertEqual(len(role_repo.get_all()), len(role_names))
 
-        # create a new role
-        new_role = "ÜBER ADMIN"
-        role_repo.create(Role(role_name=new_role))
-        self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
+            # create a new role
+            new_role = "ÜBER ADMIN"
+            role_repo.create(Role(role_name=new_role))
+            self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
 
-        # Check autoincrement
-        self.assertEqual(role_repo.get_by_id(
-            len(role_names)).role_name, new_role)
+            # Check autoincrement
+            self.assertEqual(role_repo.get_by_id(
+                len(role_names)).role_name, new_role)
 
-        # remove a role
-        role_repo.delete(role_repo.get_by_id(0))
-        self.assertEqual(len(role_repo.get_all()), len(role_names))
+            # remove a role
+            role_repo.delete(role_repo.get_by_id(0))
+            self.assertEqual(len(role_repo.get_all()), len(role_names))
 
-        # add a new role
-        role_repo.create(Role(role_name="ÜBERÜBER ADMIN"))
-        self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
+            # add a new role
+            role_repo.create(Role(role_name="ÜBERÜBER ADMIN"))
+            self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
 
-        # add a duplicate role and catch exception
-        with self.assertRaises(IntegrityError):
-            role_repo.create(Role(role_name="ÜBERÜBER ADMIN", role_id=1))
+            # add a duplicate role and catch exception
+            with self.assertRaises(IntegrityError):
+                role_repo.create(Role(role_name="ÜBERÜBER ADMIN", role_id=1))
 
     def test_types(self):
-        d = self.initDatabase()
+        empty_db = get_empty_db()
         type_names = ["3d printer", "laser cutter", "vertical drill", "saw"]
 
-        type_repo = d.getMachineTypeRepository()
-        for i, t in enumerate(type_names):
-            type_repo.create(MachineType(type_id=i, type_name=t))
+        with empty_db.getSession() as session:
+            type_repo = empty_db.getMachineTypeRepository(session)
+            for i, t in enumerate(type_names):
+                type_repo.create(MachineType(type_id=i, type_name=t))
 
-        # check if types were added
-        self.assertEqual(len(type_repo.get_all()), len(type_names))
+            # check if types were added
+            self.assertEqual(len(type_repo.get_all()), len(type_names))
 
-        # rename a machine type
-        new_name = "TEST TYPE WOW"
-        mt0 = type_repo.get_model_by_id(MachineType, 0)
-        mt0.type_name = new_name
-        type_repo.update(mt0)
+            # rename a machine type
+            new_name = "TEST TYPE WOW"
+            mt0 = type_repo.get_model_by_id(MachineType, 0)
+            mt0.type_name = new_name
+            type_repo.update(mt0)
 
-        self.assertEqual(type_repo.get_model_by_id(
-            MachineType, 0).type_name, new_name)
+            self.assertEqual(type_repo.get_model_by_id(
+                MachineType, 0).type_name, new_name)
 
-        # add a new type
-        new_type = "ÜBER TYPE"
-        mt_x = MachineType(type_name=new_type)
-        type_repo.create(mt_x)
+            # add a new type
+            new_type = "ÜBER TYPE"
+            mt_x = MachineType(type_name=new_type)
+            type_repo.create(mt_x)
 
-        self.assertEqual(len(type_repo.get_all()), len(type_names) + 1)
+            self.assertEqual(len(type_repo.get_all()), len(type_names) + 1)
 
-        # remove a type
-        type_repo.delete(mt_x)
-        self.assertEqual(len(type_repo.get_all()), len(type_names))
+            # remove a type
+            type_repo.delete(mt_x)
+            self.assertEqual(len(type_repo.get_all()), len(type_names))
 
-        # list the types
-        for t in type_repo.get_all():
-            print(t.serialize())
+            # list the types
+            for t in type_repo.get_all():
+                print(t.serialize())
 
-        # add a duplicate type_name and catch exception
-        a = MachineType(type_name="TEST TYPE WOW")
-        with self.assertRaises(IntegrityError):
-            type_repo.create(a)
+            # add a duplicate type_name and catch exception
+            a = MachineType(type_name="TEST TYPE WOW")
+            with self.assertRaises(IntegrityError):
+                type_repo.create(a)
 
-        type_repo.rollback()
+            type_repo.rollback()
 
-        a = MachineType(type_name="Unique name", type_id=1)
-        with self.assertRaises(IntegrityError):
-            type_repo.create(a)
-        type_repo.rollback()
+            a = MachineType(type_name="Unique name", type_id=1)
+            with self.assertRaises(IntegrityError):
+                type_repo.create(a)
+            type_repo.rollback()
 
     def test_users(self):
-        d = self.initDatabase()
+        empty_db = get_empty_db()
+        with empty_db.getSession() as session:
+            empty_db.getRoleRepository(session).create(
+                Role(role_id=1, role_name="admin"))
 
-        d.getRoleRepository().create(Role(role_id=1, role_name="admin"))
+            names = ["Alessandro", "Lorenzo", "Diego", "Tommaso", "Riccardo"]
+            surnames = ["Rossi", "Bianchi", "Verdi", "Colombo", "Fumagalli", ]
 
-        names = ["Alessandro", "Lorenzo", "Diego", "Tommaso", "Riccardo"]
-        surnames = ["Rossi", "Bianchi", "Verdi", "Colombo", "Fumagalli", ]
+            # just to make sure
+            self.assertEqual(len(names), len(surnames))
 
-        # just to make sure
-        self.assertEqual(len(names), len(surnames))
+            ids = []
+            user_repo = empty_db.getUserRepository(session)
+            # add roles
+            for n, s in zip(names, surnames):
+                usr = User(name=n, surname=s, role_id=1)
+                user_repo.create(usr)
+                self.assertEqual(user_repo.get_by_id(usr.user_id).name, n)
+                self.assertEqual(user_repo.get_by_id(usr.user_id).surname, s)
+                self.assertEqual(user_repo.get_by_id(usr.user_id).role_id, 1)
+                ids.append(user_repo.get_by_id(usr.user_id).user_id)
 
-        ids = []
-        user_repo = d.getUserRepository()
-        # add roles
-        for n, s in zip(names, surnames):
-            usr = User(name=n, surname=s, role_id=1)
-            user_repo.create(usr)
-            self.assertEqual(user_repo.get_by_id(usr.user_id).name, n)
-            self.assertEqual(user_repo.get_by_id(usr.user_id).surname, s)
-            self.assertEqual(user_repo.get_by_id(usr.user_id).role_id, 1)
-            ids.append(user_repo.get_by_id(usr.user_id).user_id)
+            # check if user were added
+            self.assertEqual(len(user_repo.get_all()), len(names))
 
-        # check if user were added
-        self.assertEqual(len(user_repo.get_all()), len(names))
+            # check that every user is unique
+            self.assertEqual(len(ids), len(set(ids)))
 
-        # check that every user is unique
-        self.assertEqual(len(ids), len(set(ids)))
+            # set a user card
+            u = user_repo.get_by_id(ids[0])
+            UUID = random_string(8)
+            u.card_UUID = UUID
+            user_repo.update(u)
+            self.assertEqual(user_repo.get_by_id(ids[0]).card_UUID, UUID)
 
-        # set a user card
-        u = user_repo.get_by_id(ids[0])
-        UUID = random_string(8)
-        u.card_UUID = UUID
-        user_repo.update(u)
-        self.assertEqual(user_repo.get_by_id(ids[0]).card_UUID, UUID)
+            # add another user
+            user_repo.create(User(name="Andrea", surname="Bianchi", role_id=1))
 
-        # add another user
-        user_repo.create(User(name="Andrea", surname="Bianchi", role_id=1))
+            # test invalid role
+            with self.assertRaises(IntegrityError):
+                user_repo.create(
+                    User(name="Giorgio", surname="Rossi", role_id=10))
 
-        # test invalid role
-        with self.assertRaises(IntegrityError):
-            user_repo.create(User(name="Giorgio", surname="Rossi", role_id=10))
+            user_repo.rollback()
 
-        user_repo.rollback()
-
-        self.assertIsNone(user_repo.get_by_id(10))
-        self.assertIsNone(user_repo.getUserByCardUUID(random_string(8)))
+            self.assertIsNone(user_repo.get_by_id(10))
+            self.assertIsNone(user_repo.getUserByCardUUID(random_string(8)))
 
     def test_roles(self):
-        d = self.initDatabase()
+        empty_db = get_empty_db()
+        with empty_db.getSession() as session:
+            # add roles
+            role_repo = empty_db.getRoleRepository(session)
+            role_repo.create(Role(role_id=0, role_name="admin role"))
+            role_repo.create(Role(role_id=1, role_name="user role"))
 
-        # add roles
-        role_repo = d.getRoleRepository()
-        role_repo.create(Role(role_id=0, role_name="admin role"))
-        role_repo.create(Role(role_id=1, role_name="user role"))
+            # check if roles were added
+            self.assertEqual(len(role_repo.get_all()), 2)
 
-        # check if roles were added
-        self.assertEqual(len(role_repo.get_all()), 2)
+            # rename a role
+            new_name = "ÜBER ADMIN"
+            r0 = role_repo.get_by_id(0)
+            r0.role_name = new_name
+            role_repo.update(r0)
+            self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
 
-        # rename a role
-        new_name = "ÜBER ADMIN"
-        r0 = role_repo.get_by_id(0)
-        r0.role_name = new_name
-        role_repo.update(r0)
-        self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
+            # check linked properties
+            user_repo = empty_db.getUserRepository(session)
+            new_user = User(name="Mario", surname="Rossi", role_id=1)
+            user_repo.create(new_user)
+            role_1 = role_repo.get_by_id(1)
 
-        # check linked properties
-        user_repo = d.getUserRepository()
-        new_user = User(name="Mario", surname="Rossi", role_id=1)
-        user_repo.create(new_user)
-        role_1 = role_repo.get_by_id(1)
+            # check if the role is linked to the user
 
-        # check if the role is linked to the user
-
-        self.assertIsNone(role_repo.get_by_id(10))
-        self.assertIsNone(role_repo.get_by_role_name("nonexistent role"))
+            self.assertIsNone(role_repo.get_by_id(10))
+            self.assertIsNone(role_repo.get_by_role_name("nonexistent role"))
 
     def test_get_user_authorizations(self):
-        d = self.populateSimpleDatabase()
-        with d.getSession() as session:
-            userRepo = d.getSessionUserRepository(session)
-            authRepo = d.getSessionAuthorizationRepository(session)
-            machineRepo = d.getSessionMachineRepository(session)
-            machineTypeRepo = d.getSessionMachineTypeRepository(session)
-            roleRepo = d.getSessionRoleRepository(session)
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            userRepo = simple_db.getUserRepository(session)
+            authRepo = simple_db.getAuthorizationRepository(session)
+            machineRepo = simple_db.getMachineRepository(session)
+            machineTypeRepo = simple_db.getMachineTypeRepository(
+                session)
+            roleRepo = simple_db.getRoleRepository(session)
 
             # add roles
             role = Role(role_name="normal role", authorize_all=False)
@@ -353,141 +305,144 @@ class TestDB(unittest.TestCase):
                 machine3, user), "T4 User should not be authorized for machine3")
 
     def test_long_add_users(self):
-        d = self.initDatabase()
+        db = get_empty_db()
+        with db.getSession() as session:
+            USERS = 100
+            name = "Mario"
+            surname = "Rossi"
 
-        USERS = 100
-        name = "Mario"
-        surname = "Rossi"
+            role = Role(role_name="normal role", authorize_all=False)
+            db.getRoleRepository(session).create(role)
+            userRepo = db.getUserRepository(session)
 
-        role = Role(role_name="normal role", authorize_all=False)
-        d.getRoleRepository().create(role)
-        userRepo = d.getUserRepository()
+            for _ in range(USERS):
+                user = User(name=name, surname=surname, role_id=role.role_id)
+                userRepo.create(user)
 
-        for _ in range(USERS):
-            user = User(name=name, surname=surname, role_id=role.role_id)
-            userRepo.create(user)
-
-        self.assertEqual(len(d.getUserRepository().get_all()), USERS)
+            self.assertEqual(
+                len(db.getUserRepository(session).get_all()), USERS)
 
     def test_machines(self):
-        d = self.initDatabase()
+        empty_db = get_empty_db()
+        with empty_db.getSession() as session:
+            TYPES = 10
+            MACHINES = 10
+            current_id = 0
 
-        TYPES = 10
-        MACHINES = 10
-        current_id = 0
+            machineRepo = empty_db.getMachineRepository(session)
+            mtypeRepo = empty_db.getMachineTypeRepository(session)
 
-        machineRepo = d.getMachineRepository()
-        mtypeRepo = d.getMachineTypeRepository()
+            # create machines for each type
+            for i in range(1, TYPES + 1):
+                NAME = random_string(10)
+                mtype = MachineType(type_name=NAME)
+                mtypeRepo.create(mtype)
+                self.assertEqual(len(mtypeRepo.get_all()), i,
+                                 "Machine type not added correctly")
+                for _ in range(1, MACHINES + 1):
+                    name = random_string(6)
+                    machine = Machine(machine_name=name,
+                                      machine_type_id=mtype.type_id)
+                    machineRepo.create(machine)
 
-        # create machines for each type
-        for i in range(1, TYPES + 1):
-            NAME = random_string(10)
-            mtype = MachineType(type_name=NAME)
-            mtypeRepo.create(mtype)
-            self.assertEqual(len(mtypeRepo.get_all()), i,
-                             "Machine type not added correctly")
-            for _ in range(1, MACHINES + 1):
-                name = random_string(6)
-                machine = Machine(machine_name=name,
-                                  machine_type_id=mtype.type_id)
-                machineRepo.create(machine)
+            # test that they have been added
+            self.assertEqual(
+                MACHINES * TYPES, len(machineRepo.get_all()), "Machines not added correctly")
 
-        # test that they have been added
-        self.assertEqual(
-            MACHINES * TYPES, len(machineRepo.get_all()), "Machines not added correctly")
+            for current_id in range(1, MACHINES * TYPES + 1):
+                machine = machineRepo.get_by_id(current_id)
+                self.assertIsNotNone(
+                    machine, f"Machine {current_id} not found")
+                hours = random_between(10, 1000)
+                machine.machine_hours = hours
+                machineRepo.update(machine)
+                # reload machine
+                machine = machineRepo.get_by_id(current_id)
+                self.assertEqual(machine.machine_hours, hours,
+                                 "Hours not updated correctly")
 
-        for current_id in range(1, MACHINES * TYPES + 1):
-            machine = machineRepo.get_by_id(current_id)
-            self.assertIsNotNone(machine, f"Machine {current_id} not found")
-            hours = random_between(10, 1000)
-            machine.machine_hours = hours
-            machineRepo.update(machine)
-            # reload machine
-            machine = machineRepo.get_by_id(current_id)
-            self.assertEqual(machine.machine_hours, hours,
-                             "Hours not updated correctly")
+            for current_id in range(1, MACHINES * TYPES + 1):
+                machine = machineRepo.get_by_id(current_id)
+                self.assertIsNotNone(
+                    machine, f"Machine {current_id} not found")
+                # test rename
+                NAME = random_string(10)
+                machine.machine_name = NAME
+                machineRepo.update(machine)
 
-        for current_id in range(1, MACHINES * TYPES + 1):
-            machine = machineRepo.get_by_id(current_id)
-            self.assertIsNotNone(machine, f"Machine {current_id} not found")
-            # test rename
-            NAME = random_string(10)
-            machine.machine_name = NAME
-            machineRepo.update(machine)
+                self.assertEqual(machineRepo.get_by_id(
+                    current_id).machine_name, NAME, "Machine name not updated correctly")
+                # test new type
+                from random import randint
+                NEW_TYPE = randint(1, TYPES)
+                machine.machine_type_id = NEW_TYPE
+                machineRepo.update(machine)
 
-            self.assertEqual(machineRepo.get_by_id(
-                current_id).machine_name, NAME, "Machine name not updated correctly")
-            # test new type
-            from random import randint
-            NEW_TYPE = randint(1, TYPES)
-            machine.machine_type_id = NEW_TYPE
-            machineRepo.update(machine)
+                self.assertEqual(NEW_TYPE, machineRepo.get_by_id(
+                    current_id).machine_type_id, "Machine type not updated correctly")
 
-            self.assertEqual(NEW_TYPE, machineRepo.get_by_id(
-                current_id).machine_type_id, "Machine type not updated correctly")
+                machineRepo.delete(machine)
+                # test delete
+                self.assertEqual(MACHINES * TYPES - current_id,
+                                 len(machineRepo.get_all()), "Machine has been deleted")
 
-            machineRepo.delete(machine)
             # test delete
-            self.assertEqual(MACHINES * TYPES - current_id,
-                             len(machineRepo.get_all()), "Machine has been deleted")
-
-        # test delete
-        self.assertEqual(0, len(machineRepo.get_all()),
-                         "All machines should have been deleted")
+            self.assertEqual(0, len(machineRepo.get_all()),
+                             "All machines should have been deleted")
 
     def test_maintenances(self):
-        d = self.initDatabase()
-        maint_repo = d.getMaintenanceRepository()
+        empty_db = get_empty_db()
+        with empty_db.getSession() as session:
+            maint_repo = empty_db.getMaintenanceRepository(session)
 
-        m_type = MachineType(type_name="test type")
-        d.getMachineTypeRepository().create(m_type)
+            m_type = MachineType(type_name="test type")
+            empty_db.getMachineTypeRepository(session).create(m_type)
 
-        machine = Machine(machine_name="test machine",
-                          machine_type_id=m_type.type_id)
-        d.getMachineRepository().create(machine)
+            machine = Machine(machine_name="test machine",
+                              machine_type_id=m_type.type_id)
+            empty_db.getMachineRepository(session).create(machine)
 
-        MAINTENANCES = 100
+            MAINTENANCES = 100
 
-        for x in range(1, MAINTENANCES):
-            hours_between = random_between(5, 10)
-            description = random_string(50)
-            maint = Maintenance(hours_between=hours_between,
-                                description=description, machine_id=machine.machine_id)
-            maint_repo.create(maint)
+            for x in range(1, MAINTENANCES):
+                hours_between = random_between(5, 10)
+                description = random_string(50)
+                maint = Maintenance(hours_between=hours_between,
+                                    description=description, machine_id=machine.machine_id)
+                maint_repo.create(maint)
 
-            # check getters and setters
-            maint2 = maint_repo.get_model_by_id(
-                Maintenance, maint.maintenance_id)
-            self.assertIsNotNone(maint2, "Maintenance not found")
+                # check getters and setters
+                maint2 = maint_repo.get_model_by_id(
+                    Maintenance, maint.maintenance_id)
+                self.assertIsNotNone(maint2, "Maintenance not found")
 
-            self.assertEqual(maint2.hours_between, hours_between,
-                             "Hours between not set correctly")
-            self.assertEqual(maint2.description, description,
-                             "Description not set correctly")
+                self.assertEqual(maint2.hours_between, hours_between,
+                                 "Hours between not set correctly")
+                self.assertEqual(maint2.description, description,
+                                 "Description not set correctly")
 
-            maint2.hours_between = random_between(5, 10)
-            maint2.description = random_string(50)
-            maint_repo.update(maint2)
+                maint2.hours_between = random_between(5, 10)
+                maint2.description = random_string(50)
+                maint_repo.update(maint2)
 
-        # check removal
-        for x in range(1, MAINTENANCES):
-            maint = maint_repo.get_model_by_id(Maintenance, x)
-            maint_repo.delete(maint)
+            # check removal
+            for x in range(1, MAINTENANCES):
+                maint = maint_repo.get_model_by_id(Maintenance, x)
+                maint_repo.delete(maint)
 
-        self.assertEqual(len(maint_repo.get_all()), 0,
-                         "All maintenances should have been deleted")
+            self.assertEqual(len(maint_repo.get_all()), 0,
+                             "All maintenances should have been deleted")
 
     def test_machine_maintenance_interaction(self):
-        d = self.initDatabase()
-
+        empty_db = get_empty_db()
         MACHINE_TYPE_NAME = "drill"
         MACHINES = 3
 
         # create simple machine types
-        with d.getSession() as session:
-            mtr = d.getSessionMachineTypeRepository(session)
-            machine_repo = d.getSessionMachineRepository(session)
-            maint_repo = d.getSessionMaintenanceRepository(session)
+        with empty_db.getSession() as session:
+            mtr = empty_db.getMachineTypeRepository(session)
+            machine_repo = empty_db.getMachineRepository(session)
+            maint_repo = empty_db.getMaintenanceRepository(session)
 
             mt = MachineType(type_name=MACHINE_TYPE_NAME)
             mtr.create(mt)
@@ -524,13 +479,12 @@ class TestDB(unittest.TestCase):
                              "All maintenances should have been deleted")
 
     def test_interventions(self):
-        d = self.populateSimpleDatabase(ids=0, timestamp=time())
-
-        with d.getSession() as session:
-            int_repo = d.getSessionInterventionRepository(session)
-            maint_repo = d.getSessionMaintenanceRepository(session)
-            machine_repo = d.getSessionMachineRepository(session)
-            user_repo = d.getSessionUserRepository(session)
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            int_repo = simple_db.getInterventionRepository(session)
+            maint_repo = simple_db.getMaintenanceRepository(session)
+            machine_repo = simple_db.getMachineRepository(session)
+            user_repo = simple_db.getUserRepository(session)
 
             user = user_repo.get_by_id(1)
             machine = machine_repo.get_by_id(1)
@@ -567,11 +521,11 @@ class TestDB(unittest.TestCase):
                              "User intervention not deleted correctly")
 
     def test_user_use_interaction(self):
-        d = self.populateSimpleDatabase()
-        with d.getSession() as session:
-            use_repo = d.getSessionUseRepository(session)
-            user_repo = d.getSessionUserRepository(session)
-            machine_repo = d.getSessionMachineRepository(session)
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            use_repo = simple_db.getUseRepository(session)
+            user_repo = simple_db.getUserRepository(session)
+            machine_repo = simple_db.getMachineRepository(session)
 
             userID1 = user_repo.get_by_id(1)
             machine = machine_repo.get_by_id(1)
@@ -614,11 +568,11 @@ class TestDB(unittest.TestCase):
                 Use.end_timestamp == None).all()), "No open uses should exist")
 
     def test_use_helpers(self):
-        d = self.populateSimpleDatabase()
-        with d.getSession() as session:
-            use_repo = d.getSessionUseRepository(session)
-            user_repo = d.getSessionUserRepository(session)
-            machine_repo = d.getSessionMachineRepository(session)
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            use_repo = simple_db.getUseRepository(session)
+            user_repo = simple_db.getUserRepository(session)
+            machine_repo = simple_db.getMachineRepository(session)
 
             userID1 = user_repo.get_by_id(1)
             machine = machine_repo.get_by_id(1)
@@ -661,11 +615,11 @@ class TestDB(unittest.TestCase):
                 Use.end_timestamp == None).all()), "No open uses should exist")
 
     def test_use_helpers(self):
-        d = self.populateSimpleDatabase()
-        with d.getSession() as session:
-            mac_repo = d.getSessionMachineRepository(session)
-            use_repo = d.getSessionUseRepository(session)
-            user_repo = d.getSessionUserRepository(session)
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            mac_repo = simple_db.getMachineRepository(session)
+            use_repo = simple_db.getUseRepository(session)
+            user_repo = simple_db.getUserRepository(session)
 
             self.assertEqual(
                 0, len(mac_repo.getCurrentlyUsedMachines()), "No machines should be in use")
@@ -723,9 +677,9 @@ class TestDB(unittest.TestCase):
                 machine_id=1), "Machine should have >119s total time")
 
             # register an intervention between both uses
-            int_repo = d.getSessionInterventionRepository(session)
+            int_repo = simple_db.getInterventionRepository(session)
             int_repo.create(Intervention(user_id=1, machine_id=1,
-                            timestamp=time() - 180, maintenance_id=1))
+                                         timestamp=time() - 180, maintenance_id=1))
 
             # relative use shall be only the last use duration
             self.assertLess(59.0, mac_repo.getRelativeUseTime(
@@ -738,17 +692,18 @@ class TestDB(unittest.TestCase):
             self.assertFalse(mac_repo.getMachineMaintenanceNeeded(
                 machine_id=1)[0], "Machine should not need maintenance")
 
-            maint_repo = d.getSessionMaintenanceRepository(session)
+            maint_repo = simple_db.getMaintenanceRepository(session)
             maint = maint_repo.get_model_by_id(Maintenance, 1)
-            maint.hours_between = 1/3600  # every second
+            maint.hours_between = 1 / 3600  # every second
             maint_repo.update(maint)
 
             # Check tuple values of getMachineMaintenanceNeeded
             self.assertTrue(mac_repo.getMachineMaintenanceNeeded(
                 machine_id=1)[0], "Machine shall need maintenance")
             self.assertEqual(mac_repo.getMachineMaintenanceNeeded(machine_id=1)[
-                             1], maint.description, "Correct maintenance description shall be returned")
+                1], maint.description, "Correct maintenance description shall be returned")
 
 
 if __name__ == "__main__":
+    configure_logger()
     unittest.main()
