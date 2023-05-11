@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt"]
+requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog"]
 build-backend = "hatchling.build"
 
 [project]
@@ -21,11 +21,16 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/fablab-bergamo/rfid-backend"
-"Bug Tracker" = "https://github.com/fablab-bergamo/rfid-backend"
+"Bug Tracker" = "https://github.com/fablab-bergamo/rfid-backend/issues"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
 testpaths = [
     "tests"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest"
 ]

@@ -1,8 +1,7 @@
 from time import time
 from typing import List, Optional, Tuple
 
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import Session
 
 from .models import *
 
