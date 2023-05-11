@@ -1,5 +1,6 @@
 import json
 
+
 class Parser:
     @staticmethod
     def parse(json_data: str):
@@ -36,65 +37,55 @@ class UserQuery:
 class MachineQuery:
     action = "check_machine"
 
-    def __init__(self, machine_id: str):
-        self.mid = machine_id
-
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return MachineQuery(data["mid"])
+        return MachineQuery()
 
 
 class AliveQuery:
     action = "alive"
 
-    def __init__(self, machine_id: str):
-        self.mid = machine_id
-
     @staticmethod
     def deserialize(json_data: str):
-        data = json.loads(json_data)
-        return AliveQuery(data["mid"])
+        return AliveQuery()
 
 
 class StartUseQuery:
     action = "startuse"
 
-    def __init__(self, card_uid: str, machine_id: str):
+    def __init__(self, card_uid: str):
         self.uid = card_uid
-        self.mid = machine_id
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return StartUseQuery(data["uid"], data["mid"])
+        return StartUseQuery(data["uid"])
 
 
 class EndUseQuery:
     action = "stopuse"
 
-    def __init__(self, card_uid: str, machine_id: str, duration_s: int):
+    def __init__(self, card_uid: str, duration_s: int):
         self.uid = card_uid
-        self.mid = machine_id
         self.duration = duration_s
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return EndUseQuery(data["uid"], data["mid"], data["duration"])
+        return EndUseQuery(data["uid"], data["duration"])
 
 
 class RegisterMaintenanceQuery:
     action = "maintenance"
 
-    def __init__(self, card_uid: str, machine_id: str):
+    def __init__(self, card_uid: str):
         self.uid = card_uid
-        self.mid = machine_id
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return RegisterMaintenanceQuery(data["uid"], data["mid"])
+        return RegisterMaintenanceQuery(data["uid"])
 
 
 class UserResponse:
