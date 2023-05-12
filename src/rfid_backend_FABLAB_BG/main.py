@@ -73,5 +73,11 @@ def test():
             for mac in back._db.getMachineRepository(session).get_all():
                 back._mqtt.publishQuery(mac.machine_id, '{"action": "alive"}')
                 back._mqtt.publishQuery(mac.machine_id, '{"action": "check_machine"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "alive"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "check_machine"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "check_user", "uid": "1234567890"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "startuse", "uid": "1234567890"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "stopuse", "uid": "1234567890", "duration": 10}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "maintenance", "uid": "1234567890"}')
         back.publishStats()
         sleep(1)
