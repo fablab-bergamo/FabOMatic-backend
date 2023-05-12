@@ -82,9 +82,7 @@ class UserRepository(BaseRepository):
             float: User time in seconds
         """
 
-        uses = self.db_session.query(Use).filter(
-            Use.user_id == user_id, Use.end_timestamp != None
-        ).all()
+        uses = self.db_session.query(Use).filter(Use.user_id == user_id, Use.end_timestamp != None).all()
 
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
@@ -96,8 +94,7 @@ class UserRepository(BaseRepository):
         if machine.blocked:
             return False
 
-        authorizations = self.db_session.query(
-            Authorization).filter_by(user_id=user.user_id).all()
+        authorizations = self.db_session.query(Authorization).filter_by(user_id=user.user_id).all()
         machine_ids = [a.machine_id for a in authorizations]
 
         return machine.machine_id in machine_ids
@@ -135,8 +132,7 @@ class InterventionRepository(BaseRepository):
     def registerInterventionsDone(self, machine_id: int, user_id: int):
         """Register interventions done by the user on the machine."""
 
-        machine = self.db_session.query(Machine).filter_by(
-            machine_id=machine_id).first()
+        machine = self.db_session.query(Machine).filter_by(machine_id=machine_id).first()
         user = self.db_session.query(User).filter_by(user_id=user_id).first()
 
         if machine is None or user is None:
@@ -145,12 +141,15 @@ class InterventionRepository(BaseRepository):
         machine_repo = MachineRepository(self.db_session)
         timestamp = time()
         for maintenance in machine.maintenances:
-            if machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance.maintenance_id) > maintenance.between_hours * 3600:
+            if (
+                machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance.maintenance_id)
+                > maintenance.between_hours * 3600
+            ):
                 intervention = Intervention(
                     machine_id=machine.machine_id,
                     maintenance_id=maintenance.maintenance_id,
                     timestamp=timestamp,
-                    user_id=user.user_id
+                    user_id=user.user_id,
                 )
                 self.db_session.add(intervention)
         self.db_session.commit()
@@ -169,10 +168,10 @@ class MachineRepository(BaseRepository):
         Returns:
             bool
         """
-        return self.db_session.query(Use).filter(
-            Use.machine_id == machine_id,
-            Use.end_timestamp == None
-        ).first() is not None
+        return (
+            self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).first()
+            is not None
+        )
 
     def getCurrentlyUsedMachines(self) -> List[Machine]:
         """Get a list of the Machine that are being used in this moment.
@@ -180,7 +179,12 @@ class MachineRepository(BaseRepository):
         Returns:
             List[Machine]
         """
-        return self.db_session.query(Machine).join(Use, Machine.machine_id == Use.machine_id).filter(Use.end_timestamp == None).all()
+        return (
+            self.db_session.query(Machine)
+            .join(Use, Machine.machine_id == Use.machine_id)
+            .filter(Use.end_timestamp == None)
+            .all()
+        )
 
     def get_by_id(self, machine_id: int = None) -> Optional[Machine]:
         return self.db_session.query(Machine).filter_by(machine_id=machine_id).first()
@@ -197,16 +201,23 @@ class MachineRepository(BaseRepository):
         Returns:
             int: Machine time in seconds
         """
-        record = self.db_session.query(Intervention).filter(
-            Intervention.machine_id == machine_id).order_by(Intervention.timestamp.desc()).first()
+        record = (
+            self.db_session.query(Intervention)
+            .filter(Intervention.machine_id == machine_id)
+            .order_by(Intervention.timestamp.desc())
+            .first()
+        )
 
         if record is None:
             last_intervention = 0
         else:
             last_intervention = record.timestamp
 
-        uses = self.db_session.query(Use).filter(
-            Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention).all()
+        uses = (
+            self.db_session.query(Use)
+            .filter(Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention)
+            .all()
+        )
 
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
@@ -220,16 +231,23 @@ class MachineRepository(BaseRepository):
         Returns:
             int: Machine time in seconds
         """
-        record = self.db_session.query(Intervention).filter(Intervention.machine_id == machine_id,
-                                                            Intervention.maintenance_id == maintenance_id).order_by(Intervention.timestamp.desc()).first()
+        record = (
+            self.db_session.query(Intervention)
+            .filter(Intervention.machine_id == machine_id, Intervention.maintenance_id == maintenance_id)
+            .order_by(Intervention.timestamp.desc())
+            .first()
+        )
 
         if record is None:
             last_intervention = 0
         else:
             last_intervention = record.timestamp
 
-        uses = self.db_session.query(Use).filter(
-            Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention).all()
+        uses = (
+            self.db_session.query(Use)
+            .filter(Use.end_timestamp != None, Use.machine_id == machine_id, Use.start_timestamp > last_intervention)
+            .all()
+        )
 
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
@@ -242,8 +260,7 @@ class MachineRepository(BaseRepository):
         Returns:
             int: Machine time in seconds
         """
-        uses = self.db_session.query(Use).filter(
-            Use.end_timestamp != None, Use.machine_id == machine_id).all()
+        uses = self.db_session.query(Use).filter(Use.end_timestamp != None, Use.machine_id == machine_id).all()
 
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
@@ -256,10 +273,12 @@ class MachineRepository(BaseRepository):
         Returns:
             bool
         """
-        machine = self.db_session.query(Machine).filter(
-            Machine.machine_id == machine_id).first()
+        machine = self.db_session.query(Machine).filter(Machine.machine_id == machine_id).first()
         for maintenance in machine.maintenances:
-            if self.getRelativeUseTimeByMaintenance(machine_id, maintenance.maintenance_id) > maintenance.hours_between * 3600.0:
+            if (
+                self.getRelativeUseTimeByMaintenance(machine_id, maintenance.maintenance_id)
+                > maintenance.hours_between * 3600.0
+            ):
                 return (True, maintenance.description)
 
         return (False, "")
@@ -270,10 +289,10 @@ class UseRepository(BaseRepository):
         super().__init__(db_session)
 
     def startUse(
-            self,
-            machine_id: int,
-            user: User,
-            timestamp: float = None,
+        self,
+        machine_id: int,
+        user: User,
+        timestamp: float = None,
     ) -> None:
         """Start a new Use of a Machine by a User.
 
@@ -288,19 +307,14 @@ class UseRepository(BaseRepository):
 
         # Close eventual previous uses which were not closed with 0 duration
         self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).update(
-            {Use.end_timestamp: Use.start_timestamp})
+            {Use.end_timestamp: Use.start_timestamp}
+        )
 
         # Register start of new use
-        self.db_session.add(
-            Use(user_id=user.user_id, machine_id=machine_id, start_timestamp=timestamp))
+        self.db_session.add(Use(user_id=user.user_id, machine_id=machine_id, start_timestamp=timestamp))
         self.db_session.commit()
 
-    def endUse(
-            self,
-            machine_id: int,
-            user: User,
-            duration_s: int
-    ) -> int:
+    def endUse(self, machine_id: int, user: User, duration_s: int) -> int:
         """End a use that was previously started.
 
         Args:
@@ -312,15 +326,14 @@ class UseRepository(BaseRepository):
             int: duration of the Use in seconds
         """
 
-        record = self.db_session.query(Use).filter(
-            Use.machine_id == machine_id, Use.end_timestamp == None).first()
+        record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).first()
 
         if record is None:
             end = time()
             # Create missing record on the fly since we have all required information
-            record = Use(machine_id=machine_id, user_id=user.user_id,
-                         start_timestamp=(end - duration_s),
-                         end_timestamp=end)
+            record = Use(
+                machine_id=machine_id, user_id=user.user_id, start_timestamp=(end - duration_s), end_timestamp=end
+            )
             self.create(record)
         else:
             # Update existing record
@@ -329,7 +342,8 @@ class UseRepository(BaseRepository):
 
             # Close eventual previous uses which were not closed
             self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).update(
-                {Use.end_timestamp: Use.start_timestamp})
+                {Use.end_timestamp: Use.start_timestamp}
+            )
 
         self.db_session.commit()
 

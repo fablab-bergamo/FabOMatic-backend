@@ -7,7 +7,6 @@ from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
 
 
 class TestMQTT(unittest.TestCase):
-
     def test_json_deserialize(self):
         json_user_query = '{"action": "check_user", "uid": "1234567890"}'
         user_query = UserQuery.deserialize(json_user_query)
@@ -33,12 +32,10 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(stop_use_query.action, "stopuse")
 
         json_RegisterMaintenanceQuery = '{"action": "maintenance", "uid": "1234"}'
-        register_maintenance_query = RegisterMaintenanceQuery.deserialize(
-            json_RegisterMaintenanceQuery)
+        register_maintenance_query = RegisterMaintenanceQuery.deserialize(json_RegisterMaintenanceQuery)
         self.assertEqual(register_maintenance_query.uid, "1234")
         self.assertEqual(register_maintenance_query.action, "maintenance")
-        self.assertEqual(register_maintenance_query.__class__,
-                         RegisterMaintenanceQuery)
+        self.assertEqual(register_maintenance_query.__class__, RegisterMaintenanceQuery)
 
         json_alive_query = '{"action": "alive"}'
         alive_query = AliveQuery.deserialize(json_alive_query)
@@ -48,13 +45,13 @@ class TestMQTT(unittest.TestCase):
     def test_json_serialize(self):
         response = UserResponse(True, True, "user name", 2)
         json_response = response.serialize()
-        self.assertEqual(
-            json_response, '{"request_ok": true, "is_valid": true, "name": "user name", "level": 2}')
+        self.assertEqual(json_response, '{"request_ok": true, "is_valid": true, "name": "user name", "level": 2}')
 
         response = MachineResponse(True, True, False, True)
         json_response = response.serialize()
         self.assertEqual(
-            json_response, '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true}')
+            json_response, '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true}'
+        )
 
         response = SimpleResponse(True)
         json_response = response.serialize()
@@ -73,10 +70,8 @@ class TestMQTT(unittest.TestCase):
         d.connect()
         self.assertTrue(d.connected)
         for mac in db.getMachineRepository(session).get_all():
-            self.assertTrue(
-                d.publishQuery(mac.machine_id, "{\"action\"=\"alive\"}"))
-            self.assertTrue(
-                d.publishQuery(mac.machine_id, "{\"action\"=\"check_machine\"}"))
+            self.assertTrue(d.publishQuery(mac.machine_id, '{"action"="alive"}'))
+            self.assertTrue(d.publishQuery(mac.machine_id, '{"action"="check_machine"}'))
 
 
 if __name__ == "__main__":

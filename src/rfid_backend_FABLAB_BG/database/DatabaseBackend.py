@@ -34,6 +34,7 @@ class DatabaseBackend:
 
     def _connect(self) -> None:
         from sqlalchemy.orm import sessionmaker
+
         self._engine = create_engine(self._url, echo=False)
         self._session = sessionmaker(bind=self._engine)
         logging.info("Connected to database %s", self._url)

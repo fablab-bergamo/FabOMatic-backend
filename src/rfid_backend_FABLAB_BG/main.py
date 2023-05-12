@@ -29,7 +29,7 @@ class Backend:
             return False
 
     def disconnect(self):
-        """Disconnect from the MQTT broker """
+        """Disconnect from the MQTT broker"""
         self._mqtt.disconnect()
 
     def publishStats(self):
@@ -71,9 +71,7 @@ def test():
         logging.debug("TEST - I'm alive")
         with back._db.getSession() as session:
             for mac in back._db.getMachineRepository(session).get_all():
-                back._mqtt.publishQuery(
-                    mac.machine_id, "{\"action\": \"alive\"}")
-                back._mqtt.publishQuery(
-                    mac.machine_id, "{\"action\": \"check_machine\"}")
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "alive"}')
+                back._mqtt.publishQuery(mac.machine_id, '{"action": "check_machine"}')
         back.publishStats()
         sleep(1)

@@ -34,3 +34,6 @@ testpaths = [
 dev = [
     "pytest"
 ]
+
+[tool.black]
+line-length = 119
