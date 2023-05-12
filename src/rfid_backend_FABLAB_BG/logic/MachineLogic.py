@@ -69,7 +69,7 @@ class MachineLogic:
                 if user is None:
                     return SimpleResponse(False, "Invalid card")
 
-                use_repo = MachineLogic.database.getUseRepository()
+                use_repo = MachineLogic.database.getUseRepository(session)
                 use_repo.startUse(self._machine_id, user, time())
 
                 return SimpleResponse(True, "")
@@ -85,10 +85,10 @@ class MachineLogic:
                 if user is None:
                     return SimpleResponse(False, "Invalid card")
 
-                use_repo = MachineLogic.database.getUseRepository()
-                use_repo.endUse(self._machine_id, user, duration_s)
+                use_repo = MachineLogic.database.getUseRepository(session)
+                duration_s = use_repo.endUse(self._machine_id, user, duration_s)
 
-                return SimpleResponse(True, "")
+                return SimpleResponse(True, f"Duration {duration_s} seconds")
         except Exception as e:
             logging.error("enduse exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")

@@ -25,11 +25,15 @@ class Parser:
             raise ValueError("Missing action field")
 
 
-class UserQuery:
-    action = "check_user"
+class BaseJson:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: (o.__dict__), sort_keys=True, separators=(",", ":"))
 
+
+class UserQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
+        self.action = "check_user"
 
     @staticmethod
     def deserialize(json_data: str):
@@ -37,27 +41,28 @@ class UserQuery:
         return UserQuery(data["uid"])
 
 
-class MachineQuery:
-    action = "check_machine"
+class MachineQuery(BaseJson):
+    def __init__(self):
+        self.action = "check_machine"
 
     @staticmethod
     def deserialize(json_data: str):
         return MachineQuery()
 
 
-class AliveQuery:
-    action = "alive"
+class AliveQuery(BaseJson):
+    def __init__(self):
+        self.action = "alive"
 
     @staticmethod
     def deserialize(json_data: str):
         return AliveQuery()
 
 
-class StartUseQuery:
-    action = "startuse"
-
+class StartUseQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
+        self.action = "startuse"
 
     @staticmethod
     def deserialize(json_data: str):
@@ -65,12 +70,11 @@ class StartUseQuery:
         return StartUseQuery(data["uid"])
 
 
-class EndUseQuery:
-    action = "stopuse"
-
+class EndUseQuery(BaseJson):
     def __init__(self, card_uid: str, duration_s: int):
         self.uid = card_uid
         self.duration = duration_s
+        self.action = "stopuse"
 
     @staticmethod
     def deserialize(json_data: str):
@@ -78,11 +82,10 @@ class EndUseQuery:
         return EndUseQuery(data["uid"], data["duration"])
 
 
-class RegisterMaintenanceQuery:
-    action = "maintenance"
-
+class RegisterMaintenanceQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
+        self.action = "maintenance"
 
     @staticmethod
     def deserialize(json_data: str):

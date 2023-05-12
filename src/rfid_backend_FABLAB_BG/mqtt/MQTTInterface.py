@@ -44,6 +44,10 @@ class MQTTInterface:
         if not machine:
             return
 
+        if self._messageCallback is None:
+            logging.warning("No message callback set, message will be ignored")
+            return
+
         try:
             query = Parser.parse(message)
             if query is not None:
@@ -62,7 +66,7 @@ class MQTTInterface:
     def _publish(self, topic: str, message: str) -> bool:
         if self.connected:
             result = self._client.publish(topic, message)
-            logging.info("Publishing %s : %s, result: %s", topic, message, result)
+            logging.debug("Publishing %s : %s, result: %s", topic, message, result)
             return True
         logging.error("Not connected to MQTT broker %s", self._broker)
         return False

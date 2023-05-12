@@ -42,7 +42,7 @@ class MsgMapper:
         if machine not in self._machines:
             self._machines[machine] = MachineLogic(machine)
 
-        response = self._machines[machine].registerMaintenance(maintenance.card_uuid)
+        response = self._machines[machine].registerMaintenance(maintenance.uid)
         return response.serialize()
 
     def handleAliveQuery(self, machine: str, alive: AliveQuery) -> str:
@@ -58,7 +58,7 @@ class MsgMapper:
 
         return self._machines[machine].machineStatus().serialize()
 
-    def messageReceived(self, machine: str, query: object) -> None:
+    def messageReceived(self, machine: str, query: BaseJson) -> None:
         """This function is called when a message is received from the MQTT broker.
         It calls the appropriate handler for the message type."""
 
@@ -69,7 +69,7 @@ class MsgMapper:
         response = self._handlers[type(query)](machine, query)
 
         if response is not None:
-            logging.debug("Machine %s response: %s", machine, response)
+            logging.info("Machine %s query: %s -> response: %s", machine, query.toJSON(), response)
             if not self._mqtt.publishReply(machine, response):
                 logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
 

@@ -143,7 +143,7 @@ class InterventionRepository(BaseRepository):
         for maintenance in machine.maintenances:
             if (
                 machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance.maintenance_id)
-                > maintenance.between_hours * 3600
+                > maintenance.hours_between * 3600
             ):
                 intervention = Intervention(
                     machine_id=machine.machine_id,

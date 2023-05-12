@@ -3,6 +3,7 @@ import unittest
 
 from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
 from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
+from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
 from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
 
 
@@ -64,14 +65,44 @@ class TestMQTT(unittest.TestCase):
         self.assertTrue(d.connected)
 
     def test_alive(self):
+        CARD_UUID = "1234567890"
+        NB_TESTS = 10
+
         db = get_simple_db()
         session = db.getSession()
-        d = MQTTInterface(TEST_SETTINGS_PATH)
-        d.connect()
-        self.assertTrue(d.connected)
-        for mac in db.getMachineRepository(session).get_all():
-            self.assertTrue(d.publishQuery(mac.machine_id, '{"action"="alive"}'))
-            self.assertTrue(d.publishQuery(mac.machine_id, '{"action"="check_machine"}'))
+        mqtt = MQTTInterface(TEST_SETTINGS_PATH)
+        mapper = MsgMapper(mqtt, db)
+        mapper.registerHandlers()
+        mqtt.connect()
+        self.assertTrue(mqtt.connected)
+        user_repo = db.getUserRepository(session)
+
+        # Create card if not presents
+        user = user_repo.getUserByCardUUID(CARD_UUID)
+        if user is None:
+            user = user_repo.get_all()[0]
+            user.card_UUID = CARD_UUID
+            user_repo.update(user)
+
+        # Generate all possible messages from the boards on all machines
+        for _ in range(NB_TESTS):
+            for mac in db.getMachineRepository(session).get_all():
+                self.assertTrue(mqtt.publishQuery(mac.machine_id, '{"action": "alive"}'))
+                self.assertTrue(mqtt.publishQuery(mac.machine_id, '{"action": "check_machine"}'))
+                self.assertTrue(
+                    mqtt.publishQuery(mac.machine_id, '{"action": "check_user", "uid": "' + CARD_UUID + '"}')
+                )
+                self.assertTrue(
+                    mqtt.publishQuery(mac.machine_id, '{"action": "startuse", "uid": "' + CARD_UUID + '"}')
+                )
+                self.assertTrue(
+                    mqtt.publishQuery(
+                        mac.machine_id, '{"action": "stopuse", "uid": "' + CARD_UUID + '", "duration": 123}'
+                    )
+                )
+                self.assertTrue(
+                    mqtt.publishQuery(mac.machine_id, '{"action": "maintenance", "uid": "' + CARD_UUID + '"}')
+                )
 
 
 if __name__ == "__main__":
