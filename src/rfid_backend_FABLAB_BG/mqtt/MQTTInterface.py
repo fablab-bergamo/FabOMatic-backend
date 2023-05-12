@@ -49,8 +49,7 @@ class MQTTInterface:
             if query is not None:
                 self._messageCallback(machine, query)
         except ValueError:
-            logging.warning(
-                "Invalid message received: %s on machine %s", message, machine)
+            logging.warning("Invalid message received: %s on machine %s", message, machine)
             return
 
     def publishQuery(self, machine: str, message: str) -> bool:
@@ -63,8 +62,7 @@ class MQTTInterface:
     def _publish(self, topic: str, message: str) -> bool:
         if self.connected:
             result = self._client.publish(topic, message)
-            logging.info("Publishing %s : %s, result: %s",
-                         topic, message, result)
+            logging.info("Publishing %s : %s, result: %s", topic, message, result)
             return True
         logging.error("Not connected to MQTT broker %s", self._broker)
         return False
@@ -98,7 +96,12 @@ class MQTTInterface:
         return self._connected
 
     def stats(self) -> dict:
-        return {"Connected": self.connected, "MQTT Broker": self._broker, "Received": self._msg_recv_count, "Sent": self._msg_send_count}
+        return {
+            "Connected": self.connected,
+            "MQTT Broker": self._broker,
+            "Received": self._msg_recv_count,
+            "Sent": self._msg_send_count,
+        }
 
     def publishStats(self):
         self._publish(self._statsTopic, json.dumps(self.stats()))

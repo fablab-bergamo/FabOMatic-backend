@@ -17,8 +17,7 @@ class MachineLogic:
             raise Exception("Database not initialized")
 
         with self.database.getSession() as session:
-            machine_repo = MachineLogic.database.getMachineRepository(
-                session)
+            machine_repo = MachineLogic.database.getMachineRepository(session)
             if machine_repo.get_by_id(machine_id) is None:
                 raise Exception("Invalid machine id")
 
@@ -27,16 +26,14 @@ class MachineLogic:
     def machineStatus(self):
         try:
             with MachineLogic.database.getSession() as session:
-                machine_repo = MachineLogic.database.getMachineRepository(
-                    session)
+                machine_repo = MachineLogic.database.getMachineRepository(session)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
                     return MachineResponse(True, False, False, False)
 
-                return MachineResponse(True, True,
-                                       machine_repo.getMachineMaintenanceNeeded(
-                                           machine.machine_id)[0],
-                                       not machine.blocked)
+                return MachineResponse(
+                    True, True, machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0], not machine.blocked
+                )
         except Exception as e:
             logging.error("machineStatus exception %s", str(e), exc_info=True)
             return MachineResponse(False, False, False, False)
@@ -49,10 +46,8 @@ class MachineLogic:
     def isAuthorized(self, card_uuid: str) -> SimpleResponse:
         try:
             with MachineLogic.database.getSession() as session:
-                machine_repo = MachineLogic.database.getMachineRepository(
-                    session)
-                user_repo = MachineLogic.database.getUserRepository(
-                    session)
+                machine_repo = MachineLogic.database.getMachineRepository(session)
+                user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None or user is None:
@@ -69,8 +64,7 @@ class MachineLogic:
     def startUse(self, card_uuid: str) -> SimpleResponse:
         try:
             with MachineLogic.database.getSession() as session:
-                user_repo = MachineLogic.database.getUserRepository(
-                    session)
+                user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
                 if user is None:
                     return SimpleResponse(False, "Invalid card")
@@ -86,8 +80,7 @@ class MachineLogic:
     def endUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
         try:
             with MachineLogic.database.getSession() as session:
-                user_repo = MachineLogic.database.getUserRepository(
-                    session)
+                user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
                 if user is None:
                     return SimpleResponse(False, "Invalid card")
@@ -103,19 +96,15 @@ class MachineLogic:
     def registerMaintenance(self, card_uuid: str) -> SimpleResponse:
         try:
             with MachineLogic.database.getSession() as session:
-                user_repo = MachineLogic.database.getUserRepository(
-                    session)
+                user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
                 if user is None:
                     return SimpleResponse(False, "Wrong user card")
 
-                intervention_repo = MachineLogic.database.getInterventionRepository(
-                    session)
-                intervention_repo.registerInterventionsDone(
-                    self._machine_id, user.user_id)
+                intervention_repo = MachineLogic.database.getInterventionRepository(session)
+                intervention_repo.registerInterventionsDone(self._machine_id, user.user_id)
 
                 return SimpleResponse(True, "")
         except Exception as e:
-            logging.error("registerMaintenance exception %s",
-                          str(e), exc_info=True)
+            logging.error("registerMaintenance exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")

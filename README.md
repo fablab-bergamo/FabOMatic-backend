@@ -12,14 +12,51 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 ## Backend runtime requirements
 
 * An external MQTT Broker. Mosquitto has been used for testing.
-* A database engine. SQLAlchemy supports several, but this has been tested with SQLite only.
+* A database engine. SQLAlchemy supports several, but this has been tested with SQLite only (so far)
 
-## Configuration
+## Installation instructions
 
-* See file conf\settings.toml to setup MQTT server, database connections.
+* Missing
 
-## Dev environments
+## Configuration file
 
-* Developped with VSCode with Python extension. Create a python venv with Python >=3.11. To run tests, install pytest from Terminal window.
-* Test settings are into tests\test_settings.toml file
+* See file conf\settings.toml to setup MQTT server, database connections. Example below
 
+```
+[database]
+url = "sqlite:///machines.sqldb"
+name = "fablab"
+
+[MQTT]
+broker = "127.0.0.1"
+port = 1883
+client_id = "backend"
+topic = "machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
+reply_subtopic = "/reply"  # appended to the machine topics for replies by backend. E.g. machine/1/reply
+stats_topic = "stats/"
+```
+
+## Dev environment settings
+
+* Developped with VSCode
+* Create a python venv with Python >=3.11.
+* Test settings are into tests\test_settings.toml file, to run tests from root folder (or Terminal)
+```
+pytest -v
+```
+* VSCode extensions : Python, Black extension for automatic code formatting
+* How to run the server from Terminal (from root folder)
+```
+pip install -e . 
+python .\run.py
+```
+* Package requirements / How to package (see https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+```
+pip install --upgrade build
+pip install --upgrade twine
+```
+To update
+```
+py -m build
+py -m twine upload --repository testpypi dist/*
+```
