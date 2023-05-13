@@ -16,4 +16,8 @@ def getArgLoglevel() -> int:
     return logging.INFO
 
 
-main(getArgLoglevel())
+try:
+    main(getArgLoglevel())
+except (KeyboardInterrupt, SystemExit):
+    logging.info("Exiting...")
+    sys.exit()
