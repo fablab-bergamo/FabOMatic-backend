@@ -1,5 +1,6 @@
 """Main module of the backend."""
 import logging
+import threading
 from time import sleep
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
@@ -17,6 +18,7 @@ class Backend:
         self._mqtt = MQTTInterface()
         self._mapper = MsgMapper(self._mqtt, self._db)
         self._mapper.registerHandlers()
+        self._flaskThread = None
 
     def connect(self) -> bool:
         """Connect to the MQTT broker and the database."""
@@ -46,11 +48,27 @@ class Backend:
         self._db.createDatabase()
 
 
+_flaskThread: threading.Thread = None
+
+
+def _startApp() -> None:
+    from rfid_backend_FABLAB_BG.web.webapplication import app
+
+    app.run(host="0.0.0.0", port=23336, debug=True, use_reloader=False)
+
+
+def startServer() -> None:
+    global _flaskThread
+    _flaskThread = threading.Thread(target=lambda: _startApp(), daemon=True)
+    _flaskThread.start()
+
+
 def main(loglevel):
     """Main function of the backend."""
     configure_logger(loglevel)
     logging.info("Starting backend...")
     back = Backend()
+    startServer()
 
     while True:
         if not back.connected:
@@ -59,28 +77,3 @@ def main(loglevel):
         else:
             back.publishStats()
         sleep(5)
-
-
-def test():
-    configure_logger()
-    back = Backend()
-    back.connect()
-
-    if not back._mqtt.connected:
-        logging.error("MQTT not connected")
-        return
-
-    while True:
-        logging.debug("TEST - I'm alive")
-        with back._db.getSession() as session:
-            for mac in back._db.getMachineRepository(session).get_all():
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "alive"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "checkmachine"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "alive"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "checkmachine"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "check_user", "uid": "1234567890"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "startuse", "uid": "1234567890"}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "stopuse", "uid": "1234567890", "duration": 10}')
-                back._mqtt.publishQuery(mac.machine_id, '{"action": "maintenance", "uid": "1234567890"}')
-        back.publishStats()
-        sleep(1)
