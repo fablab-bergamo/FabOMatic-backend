@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from .repositories import *
 
 MODULE_DIR = dirname(dirname(abspath(__file__)))
-CONFIG_FILE = path.join(MODULE_DIR, "conf\\settings.toml")
+CONFIG_FILE = path.join(MODULE_DIR, "conf", "settings.toml")
 
 
 class DatabaseBackend:
