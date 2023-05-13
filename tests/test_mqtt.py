@@ -9,15 +9,15 @@ from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
 
 class TestMQTT(unittest.TestCase):
     def test_json_deserialize(self):
-        json_user_query = '{"action": "check_user", "uid": "1234567890"}'
+        json_user_query = '{"action": "checkuser", "uid": "1234567890"}'
         user_query = UserQuery.deserialize(json_user_query)
         self.assertEqual(user_query.uid, "1234567890")
-        self.assertEqual(user_query.action, "check_user")
+        self.assertEqual(user_query.action, "checkuser")
         self.assertEqual(user_query.__class__, UserQuery)
 
-        json_machine_query = '{"action": "check_machine"}'
+        json_machine_query = '{"action": "checkmachine"}'
         machine_query = MachineQuery.deserialize(json_machine_query)
-        self.assertEqual(machine_query.action, "check_machine")
+        self.assertEqual(machine_query.action, "checkmachine")
         self.assertEqual(machine_query.__class__, MachineQuery)
 
         json_start_use_query = '{"action": "startuse", "uid": "1234"}'
@@ -88,9 +88,9 @@ class TestMQTT(unittest.TestCase):
         for _ in range(NB_TESTS):
             for mac in db.getMachineRepository(session).get_all():
                 self.assertTrue(mqtt.publishQuery(mac.machine_id, '{"action": "alive"}'))
-                self.assertTrue(mqtt.publishQuery(mac.machine_id, '{"action": "check_machine"}'))
+                self.assertTrue(mqtt.publishQuery(mac.machine_id, '{"action": "checkmachine"}'))
                 self.assertTrue(
-                    mqtt.publishQuery(mac.machine_id, '{"action": "check_user", "uid": "' + CARD_UUID + '"}')
+                    mqtt.publishQuery(mac.machine_id, '{"action": "checkuser", "uid": "' + CARD_UUID + '"}')
                 )
                 self.assertTrue(
                     mqtt.publishQuery(mac.machine_id, '{"action": "startuse", "uid": "' + CARD_UUID + '"}')

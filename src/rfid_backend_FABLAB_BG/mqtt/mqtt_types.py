@@ -7,9 +7,9 @@ class Parser:
         data = json.loads(json_data)
         if "action" in data:
             match data["action"]:
-                case "check_user":
+                case "checkuser":
                     return UserQuery.deserialize(json_data)
-                case "check_machine":
+                case "checkmachine":
                     return MachineQuery.deserialize(json_data)
                 case "startuse":
                     return StartUseQuery.deserialize(json_data)
@@ -33,7 +33,7 @@ class BaseJson:
 class UserQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
-        self.action = "check_user"
+        self.action = "checkuser"
 
     @staticmethod
     def deserialize(json_data: str):
@@ -43,7 +43,7 @@ class UserQuery(BaseJson):
 
 class MachineQuery(BaseJson):
     def __init__(self):
-        self.action = "check_machine"
+        self.action = "checkmachine"
 
     @staticmethod
     def deserialize(json_data: str):
