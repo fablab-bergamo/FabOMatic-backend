@@ -6,7 +6,7 @@ import toml
 from .mqtt_types import *
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_FILE = os.path.join(MODULE_DIR, "conf\\settings.toml")
+CONFIG_FILE = os.path.join(MODULE_DIR, "conf", "settings.toml")
 
 
 class MQTTInterface:
