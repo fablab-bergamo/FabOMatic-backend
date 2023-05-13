@@ -5,10 +5,10 @@ from logging.handlers import RotatingFileHandler
 import colorlog
 
 
-def configure_logger():
+def configure_logger(loglevel=logging.DEBUG):
     # Create a logger object
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(loglevel)
 
     # Create a formatter for the logs
     formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")

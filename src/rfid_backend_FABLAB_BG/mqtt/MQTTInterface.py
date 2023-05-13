@@ -83,7 +83,7 @@ class MQTTInterface:
         # Subscribe to all first-level subtopics of machine
         self._client.subscribe(self._topic + "+")
         self._client.loop_start()
-        logging.info("Connected to MQTT broker %s", self._broker)
+        logging.info("Connected to MQTT broker %s:%s", self._broker, self._port)
         self._connected = True
 
     def setMessageCallback(self, callback: callable):
