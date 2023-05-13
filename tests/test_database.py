@@ -672,6 +672,16 @@ class TestDB(unittest.TestCase):
                 "Correct maintenance description shall be returned",
             )
 
+            # Perform maintenance
+            inter_repo = simple_db.getInterventionRepository(session)
+            inter_repo.registerInterventionsDone(machine_id=1, user_id=1)
+            self.assertFalse(
+                mac_repo.getMachineMaintenanceNeeded(machine_id=1)[0], "Machine shall not need maintenance anymore"
+            )
+
+            # Check user's use history
+            self.assertGreater(len(user_repo.getUserUses(user_repo.get_by_id(1))), 0, "User should have use history")
+
 
 if __name__ == "__main__":
     configure_logger()
