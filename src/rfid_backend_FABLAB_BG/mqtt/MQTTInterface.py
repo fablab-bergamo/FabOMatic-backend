@@ -1,5 +1,6 @@
 import logging
 import os
+from time import sleep
 
 import paho.mqtt.client as mqtt
 import toml
@@ -72,19 +73,27 @@ class MQTTInterface:
         return False
 
     def _onDisconnect(self, *args):
+        if self._connected:
+            logging.info("Disconnected to MQTT broker %s:%s", self._broker, self._port)
         self._connected = False
+        self._client.loop_stop()
+
+    def _onConnect(self, *args):
+        if not self._connected:
+            logging.info("Connected to MQTT broker %s:%s", self._broker, self._port)
+        self._connected = True
 
     def connect(self):
         self._client = mqtt.Client(self._client_id)
         self._client.on_message = self._onMessage
         self._client.on_disconnect = self._onDisconnect
+        self._client.on_connect = self._onConnect
 
         self._client.connect(self._broker, port=self._port)
         # Subscribe to all first-level subtopics of machine
         self._client.subscribe(self._topic + "+")
         self._client.loop_start()
-        logging.info("Connected to MQTT broker %s:%s", self._broker, self._port)
-        self._connected = True
+        sleep(0.5)
 
     def setMessageCallback(self, callback: callable):
         self._messageCallback = callback
@@ -93,7 +102,6 @@ class MQTTInterface:
         self._client.unsubscribe(self._topic)
         self._client.loop_stop()
         self._client.disconnect()
-        logging.info("Disconnected from MQTT broker %s", self._broker)
 
     @property
     def connected(self):

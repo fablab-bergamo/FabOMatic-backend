@@ -22,6 +22,7 @@ class Backend:
         """Connect to the MQTT broker and the database."""
         try:
             self._mqtt.connect()
+            session = self._db.getSession()
             self.createDatabase()
             return True
         except Exception as ex:
