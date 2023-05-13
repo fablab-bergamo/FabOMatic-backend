@@ -14,7 +14,7 @@ def configure_logger(loglevel=logging.DEBUG):
     formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
     # Create a rotating file handler with a maximum size of 1 MB
-    log_file = os.path.join(os.path.dirname(__file__), "log\\log.txt")
+    log_file = os.path.join(os.path.dirname(__file__), "log", "log.txt")
     file_handler = RotatingFileHandler(log_file, maxBytes=1000000, backupCount=1, encoding="latin-1")
     file_handler.setFormatter(formatter)
 
