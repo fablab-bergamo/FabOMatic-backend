@@ -70,9 +70,9 @@ class MachineLogic:
                     return SimpleResponse(False, "Invalid card")
 
                 use_repo = MachineLogic.database.getUseRepository(session)
-                use_repo.startUse(self._machine_id, user, time())
+                result = use_repo.startUse(self._machine_id, user, time())
 
-                return SimpleResponse(True, "")
+                return SimpleResponse(result, "")
         except Exception as e:
             logging.error("startUse exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")

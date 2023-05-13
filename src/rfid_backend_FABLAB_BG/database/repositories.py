@@ -293,7 +293,7 @@ class UseRepository(BaseRepository):
         machine_id: int,
         user: User,
         timestamp: float = None,
-    ) -> None:
+    ) -> bool:
         """Start a new Use of a Machine by a User.
 
         Args:
@@ -305,14 +305,21 @@ class UseRepository(BaseRepository):
         if timestamp is None:
             timestamp = time()
 
+        machine_repo = MachineRepository(self.db_session)
+        machine = machine_repo.get_by_id(machine_id)
+        if machine is None or user is None:
+            return False
+
         # Close eventual previous uses which were not closed with 0 duration
-        self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).update(
+        self.db_session.query(Use).filter(Use.machine_id == machine.machine_id, Use.end_timestamp == None).update(
             {Use.end_timestamp: Use.start_timestamp}
         )
 
         # Register start of new use
-        self.db_session.add(Use(user_id=user.user_id, machine_id=machine_id, start_timestamp=timestamp))
+        self.db_session.add(Use(user_id=user.user_id, machine_id=machine.machine_id, start_timestamp=timestamp))
         self.db_session.commit()
+
+        return True
 
     def endUse(self, machine_id: int, user: User, duration_s: int) -> int:
         """End a use that was previously started.
@@ -325,6 +332,10 @@ class UseRepository(BaseRepository):
         Returns:
             int: duration of the Use in seconds
         """
+        machine_repo = MachineRepository(self.db_session)
+        machine = machine_repo.get_by_id(machine_id)
+        if machine is None or user is None:
+            return 0
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp == None).first()
 
@@ -346,6 +357,9 @@ class UseRepository(BaseRepository):
             )
 
         self.db_session.commit()
+
+        machine.machine_hours += duration_s / 3600.0
+        machine_repo.update(machine)
 
         return duration_s
 

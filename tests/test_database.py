@@ -515,7 +515,7 @@ class TestDB(unittest.TestCase):
             machine = machine_repo.get_by_id(1)
 
             # create simple use
-            use_repo.startUse(machine.machine_id, user=userID1, timestamp=time())
+            self.assertTrue(use_repo.startUse(machine.machine_id, user=userID1, timestamp=time()))
             use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
 
             self.assertEqual(len(userID1.uses), 1, "User use not added correctly")
@@ -528,7 +528,7 @@ class TestDB(unittest.TestCase):
 
             # invalid cases
             for _ in range(100):
-                use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time())
+                self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
 
             self.assertEqual(
                 1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
@@ -562,7 +562,7 @@ class TestDB(unittest.TestCase):
             machine = machine_repo.get_by_id(1)
 
             # create simple use
-            use_repo.startUse(machine.machine_id, user=userID1, timestamp=time())
+            self.assertTrue(use_repo.startUse(machine.machine_id, user=userID1, timestamp=time()))
             use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
 
             self.assertEqual(len(userID1.uses), 1, "User use not added correctly")
@@ -575,7 +575,7 @@ class TestDB(unittest.TestCase):
 
             # invalid cases
             for _ in range(100):
-                use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time())
+                self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
 
             self.assertEqual(
                 1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
@@ -619,7 +619,7 @@ class TestDB(unittest.TestCase):
                 mac_repo.getMachineMaintenanceNeeded(machine_id=1)[0], "Machine should not need maintenance"
             )
 
-            use_repo.startUse(machine_id=1, user=user_repo.get_by_id(1), timestamp=time() - 240)
+            self.assertTrue(use_repo.startUse(machine_id=1, user=user_repo.get_by_id(1), timestamp=time() - 240))
 
             self.assertTrue(mac_repo.isMachineCurrentlyUsed(1), "Machine should be in use")
             self.assertEqual(1, len(mac_repo.getCurrentlyUsedMachines()), "One machine should be in use")
@@ -633,7 +633,7 @@ class TestDB(unittest.TestCase):
             self.assertLess(59.0, mac_repo.getTotalUseTime(machine_id=1), "Machine should have >59s total time")
 
             # Register another use
-            use_repo.startUse(machine_id=1, user=user_repo.get_by_id(1), timestamp=time() - 120)
+            self.assertTrue(use_repo.startUse(machine_id=1, user=user_repo.get_by_id(1), timestamp=time() - 120))
             use_repo.endUse(machine_id=1, user=user_repo.get_by_id(1), duration_s=60)
 
             self.assertFalse(mac_repo.isMachineCurrentlyUsed(1), "Machine should not be in use")
