@@ -28,6 +28,11 @@ class Backend:
             logging.error("Connection failed: %s", ex, exc_info=True)
             return False
 
+    @property
+    def connected(self) -> bool:
+        """Check if the MQTT broker is connected."""
+        return self._mqtt.connected
+
     def disconnect(self):
         """Disconnect from the MQTT broker"""
         self._mqtt.disconnect()
@@ -40,22 +45,19 @@ class Backend:
         self._db.createDatabase()
 
 
-def main():
+def main(loglevel):
     """Main function of the backend."""
-    configure_logger()
+    configure_logger(loglevel)
     logging.info("Starting backend...")
     back = Backend()
 
-    while not back.connect():
-        logging.warning("Failed to connect. Retrying...")
-        sleep(5)
-
-    logging.info("Connected to MQTT broker and database.")
-    logging.info(back.stats())
-
     while True:
-        back.publishStats()
-        sleep(1)
+        if not back.connected:
+            if not back.connect():
+                logging.error("Failed to connect to Database or MQTT broker")
+        else:
+            back.publishStats()
+        sleep(5)
 
 
 def test():
