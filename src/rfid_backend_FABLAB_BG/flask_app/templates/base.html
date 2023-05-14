@@ -14,8 +14,11 @@
 </head>
 <body>
     <nav>
-        <a href="#">FlaskApp</a>
-        <a href="#">About</a>
+        <a href="{{ url_for('roles') }}">Roles</a>
+        <a href="{{ url_for('view_users') }}">Users</a>
+        <a href="{{ url_for('view_machines') }}">Machines</a>
+        <a href="#">Maintenance</a>
+        <a href="#">Use</a>
     </nav>
     <hr>
     <div class="content">

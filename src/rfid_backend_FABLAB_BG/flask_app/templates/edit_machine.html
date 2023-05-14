@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Machine</title>
+</head>
+<body>
+    <h1>Edit Machine</h1>
+    <form method="POST" action="{{ url_for('update_machine') }}">
+        <input type="hidden" name="machine_id" value="{{ machine.machine_id }}" />
+        <label for="machine_name">Machine Name:</label>
+        <input type="text" id="machine_name" name="machine_name" value="{{ machine.machine_name }}" required />
+        <label for="machine_type_id">Machine Type:</label>
+        <select id="machine_type_id" name="machine_type_id">
+            {% for machine_type in machine_types %}
+            <option value="{{ machine_type.type_id }}" {% if machine_type.type_id == machine.machine_type_id %}selected{% endif %}>{{ machine_type.type_name }}</option>
+            {% endfor %}
+        </select>
+        <label for="machine_hours">Machine Hours:</label>
+        <input type="number" step="0.1" id="machine_hours" name="machine_hours" value="{{ machine.machine_hours }}" required />
+        <label for="blocked">Blocked:</label>
+        <input type="checkbox" id="blocked" name="blocked" {% if machine.blocked %}checked{% endif %} />
+        <input type="submit" value="Update Machine" />
+    </form>
+</body>
+</html>

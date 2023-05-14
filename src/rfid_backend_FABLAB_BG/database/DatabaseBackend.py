@@ -11,6 +11,18 @@ MODULE_DIR = dirname(dirname(abspath(__file__)))
 CONFIG_FILE = path.join(MODULE_DIR, "conf", "settings.toml")
 
 
+def getSetting(section: str, setting: str, settings_path: str = CONFIG_FILE) -> str:
+    """Return setting from settings.toml.
+
+    Args:
+        setting (str): Setting to return
+        section (str): Section of setting
+        settings_path (str, optional): Path to settings.toml. Defaults to CONFIG_FILE.
+    """
+    settings = toml.load(settings_path)
+    return settings[section][setting]
+
+
 class DatabaseBackend:
     """Class handling the connection from and to the database."""
 

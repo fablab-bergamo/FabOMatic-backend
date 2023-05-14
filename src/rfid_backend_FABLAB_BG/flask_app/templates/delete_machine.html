@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Machine</title>
+</head>
+<body>
+    <h1>Delete Machine</h1>
+    <p>Are you sure you want to delete the machine '{{ machine.machine_name }}'?</p>
+    <form method="POST" action="{{ url_for('delete_machine', machine_id=machine.machine_id) }}">
+        <input type="submit" value="Yes, delete machine" />
+    </form>
+    <a href="{{ url_for('view_machines') }}">No, go back</a>
+</body>
+</html>
