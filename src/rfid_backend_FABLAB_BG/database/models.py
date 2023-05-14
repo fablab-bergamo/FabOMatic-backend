@@ -38,26 +38,6 @@ class Role(Base):
         return cls(**dict_data)
 
 
-class MachineType(Base):
-    """Dataclass handling a machine type."""
-
-    __tablename__ = "machine_types"
-
-    type_id = Column(Integer, primary_key=True, autoincrement=True)
-    type_name = Column(String, unique=True, nullable=False)
-
-    __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
-
-    def serialize(self):
-        """Serialize data and return a Dict."""
-        return {"type_id": self.type_id, "type_name": self.type_name}
-
-    @classmethod
-    def from_dict(cls, dict_data):
-        """Deserialize data from Dictionary."""
-        return cls(**dict_data)
-
-
 class User(Base):
     """Dataclass handling a user."""
 
@@ -167,6 +147,25 @@ class Intervention(Base):
             "user_id": self.user_id,
             "timestamp": self.timestamp,
         }
+
+class MachineType(Base):
+    """Dataclass handling a machine type."""
+
+    __tablename__ = "machine_types"
+
+    type_id = Column(Integer, primary_key=True, autoincrement=True)
+    type_name = Column(String, unique=True, nullable=False)
+
+    __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
+
+    def serialize(self):
+        """Serialize data and return a Dict."""
+        return {"type_id": self.type_id, "type_name": self.type_name}
+
+    @classmethod
+    def from_dict(cls, dict_data):
+        """Deserialize data from Dictionary."""
+        return cls(**dict_data)
 
 
 class Machine(Base):

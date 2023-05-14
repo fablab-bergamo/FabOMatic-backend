@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Role</title>
+</head>
+<body>
+    <h1>Delete Role</h1>
+    <p>Are you sure you want to delete the role '{{ role.role_name }}'?</p>
+    <form method="POST" action="{{ url_for('delete_role', role_id=role.role_id) }}">
+        <input type="submit" value="Yes, delete role" />
+    </form>
+    <a href="{{ url_for('view_roles') }}">No, go back</a>
+</body>
+</html>

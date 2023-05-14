@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Role</title>
+</head>
+<body>
+    <h1>Add Role</h1>
+    <form method="POST" action="{{ url_for('add_role') }}">
+        <label for="role_name">Role Name:</label>
+        <input type="text" id="role_name" name="role_name" required />
+        <label for="authorize_all">Authorize All:</label>
+        <input type="checkbox" id="authorize_all" name="authorize_all" />
+        <input type="submit" value="Add Role" />
+    </form>
+</body>
+</html>
