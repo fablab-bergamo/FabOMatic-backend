@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rfid_backend_FABLAB_BG"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -12,7 +12,7 @@ authors = [
 ]
 description = "RFID backend for FabLab BG"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
