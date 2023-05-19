@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Delete User</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
     <h1>Delete User</h1>
     <p>Are you sure you want to delete the user '{{ user.name }} {{ user.surname }}'?</p>
     <form method="POST" action="{{ url_for('delete_user', user_id=user.user_id) }}">
-        <input type="submit" value="Yes, delete user" />
+        <input type="submit" value="Yes, delete user" class="btn btn-danger" />
     </form>
-    <a href="{{ url_for('view_users') }}">No, go back</a>
-</body>
-</html>
+    <a href="{{ url_for('view_users') }}" class="btn btn-secondary">No, go back</a>
+</div>
+{% endblock %}

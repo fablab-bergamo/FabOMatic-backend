@@ -1,24 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add User</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
     <h1>Add User</h1>
     <form method="POST" action="{{ url_for('create_user') }}">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required />
-        <label for="surname">Surname:</label>
-        <input type="text" id="surname" name="surname" required />
-        <label for="role_id">Role:</label>
-        <select id="role_id" name="role_id">
-            {% for role in roles %}
-            <option value="{{ role.role_id }}">{{ role.role_name }}</option>
-            {% endfor %}
-        </select>
-        <label for="card_UUID">Card UUID:</label>
-        <input type="text" id="card_UUID" name="card_UUID" />
-        <input type="submit" value="Add User" />
+        <div class="mb-3">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="surname" class="form-label">Surname:</label>
+            <input type="text" id="surname" name="surname" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="role_id" class="form-label">Role:</label>
+            <select id="role_id" name="role_id" class="form-select">
+                {% for role in roles %}
+                <option value="{{ role.role_id }}">{{ role.role_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="card_UUID" class="form-label">Card UUID:</label>
+            <input type="text" id="card_UUID" name="card_UUID" class="form-control" />
+        </div>
+        <input type="submit" value="Add User" class="btn btn-primary" />
     </form>
-</body>
-</html>
+</div>
+{% endblock %}
