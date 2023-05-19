@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Machine Use History</h1>
+    <a href="{{ url_for('view_machines') }}" class="btn btn-secondary mb-3">Back</a>
+    <ul class="list-group">
+        {% for use in uses %}
+        <li class="list-group-item" style="{% if use.end_timestamp is none %}background-color: lightorange;{% endif %}">
+            Start: {{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
+            {% if use.end_timestamp is none %}
+            End: Still in use<br>
+            {% else %}
+            End: {{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
+            Duration: {{ ((use.end_timestamp - use.start_timestamp) / 60) | round(0, 'ceil') }} minutes<br>
+            {% endif %}
+            User: {{ use.user.name }}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
