@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Add Maintenance</h1>
+  <form method="POST" action="{{ url_for('add_maintenance') }}">
+    <div class="mb-3">
+      <label for="hours_between" class="form-label">Hours Between:</label>
+      <input type="number" id="hours_between" name="hours_between" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description:</label>
+      <input type="text" id="description" name="description" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label for="machine_id" class="form-label">Machine:</label>
+      <select id="machine_id" name="machine_id" class="form-control" required>
+        {% for machine in machines %}
+        <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <input type="submit" value="Add Maintenance" class="btn btn-primary" />
+  </form>
+</div>
+{% endblock %}
