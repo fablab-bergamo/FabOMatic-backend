@@ -41,7 +41,15 @@ class MachineLogic:
     def machineAlive(self):
         """Called when a machine sends an alive message"""
         logging.debug(f"Machine {self._machine_id} alive")
-        self._last_alive = time()
+        try:
+            self._last_alive = time()
+            with MachineLogic.database.getSession() as session:
+                machine_repo = MachineLogic.database.getMachineRepository(session)
+                machine = machine_repo.get_by_id(self._machine_id)
+                machine.last_seen = time()
+                machine_repo.update(machine)
+        except Exception as e:
+            logging.error("machineAlive exception %s", str(e), exc_info=True)
 
     def isAuthorized(self, card_uuid: str) -> SimpleResponse:
         try:

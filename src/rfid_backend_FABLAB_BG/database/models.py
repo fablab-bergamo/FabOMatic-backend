@@ -178,6 +178,7 @@ class Machine(Base):
     machine_type_id = Column(Integer, ForeignKey("machine_types.type_id"))
     machine_hours = Column(Float, nullable=False, default=0.0)  # Somewhat redundant with sum of uses duration
     blocked = Column(Boolean, nullable=False, default=False)
+    last_seen = Column(Float, nullable=True)
     maintenances = relationship("Maintenance", back_populates="machine")
     interventions = relationship("Intervention", back_populates="machine")
     authorizations = relationship("Authorization", back_populates="machine")
