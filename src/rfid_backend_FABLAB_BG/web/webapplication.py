@@ -1,9 +1,11 @@
 from datetime import datetime
+import logging
 import math
 import re
 import os
 from time import time
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+from werkzeug.utils import secure_filename
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import (
@@ -22,6 +24,8 @@ from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FLASK_TEMPLATES_FOLDER = os.path.join(MODULE_DIR, "flask_app", "templates")
 FLASK_STATIC_FOLDER = os.path.join(MODULE_DIR, "flask_app", "static")
+UPLOAD_FOLDER = os.path.join(MODULE_DIR, "flask_app", "upload")
+ALLOWED_EXTENSIONS = {"txt", "pdf", "docx"}
 
 app = Flask(__name__, template_folder=FLASK_TEMPLATES_FOLDER, static_folder=FLASK_STATIC_FOLDER)
 app.config["SECRET_KEY"] = getSetting("web", "secret_key")
@@ -29,6 +33,10 @@ app.config["SECRET_KEY"] = getSetting("web", "secret_key")
 engine = create_engine(getSetting("database", "url"), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # Custom filter for datetime formatting
@@ -45,6 +53,11 @@ def datetimeformat(value, format="%b %d, %Y %I:%M %p"):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/download_attachment/<filename>")
+def download_attachment(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 
 @app.route("/interventions")
@@ -68,11 +81,9 @@ def add_intervention():
         timestamp = time()
 
         intervention = Intervention(
-            maintenance_id=maintenance_id,
-            machine_id=machine_id,
-            user_id=user_id,
-            timestamp=timestamp,
+            maintenance_id=maintenance_id, machine_id=machine_id, user_id=user_id, timestamp=timestamp
         )
+
         session.add(intervention)
         session.commit()
 
@@ -208,11 +219,25 @@ def maintenances():
 @app.route("/maintenances/add", methods=["GET", "POST"])
 def add_maintenance():
     session = DBSession()
+    logging.debug("Processing add_maintenance %s", request)
     if request.method == "POST":
         hours_between = request.form["hours_between"]
         description = request.form["description"]
         machine_id = request.form["machine_id"]
-        maintenance = Maintenance(hours_between=hours_between, description=description, machine_id=machine_id)
+        attachment = None
+
+        if "attachment" in request.files:
+            file = request.files["attachment"]
+            if file.filename != "" and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                attachment = filename
+            else:
+                logging.warning(f"Invalid file uploaded {file.filename}")
+
+        maintenance = Maintenance(
+            hours_between=hours_between, description=description, machine_id=machine_id, attachment=attachment
+        )
         session.add(maintenance)
         session.commit()
         return redirect(url_for("maintenances"))
@@ -229,6 +254,15 @@ def edit_maintenance(maintenance_id):
         maintenance.hours_between = request.form["hours_between"]
         maintenance.description = request.form["description"]
         maintenance.machine_id = request.form["machine_id"]
+        maintenance.attachment = None
+        if "attachment" in request.files:
+            file = request.files["attachment"]
+            if file.filename != "" and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                maintenance.attachment = filename
+            else:
+                logging.warning(f"Invalid file uploaded {file.filename}")
         session.add(maintenance)
         session.commit()
         return redirect(url_for("maintenances"))

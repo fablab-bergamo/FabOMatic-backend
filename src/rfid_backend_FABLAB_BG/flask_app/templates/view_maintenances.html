@@ -12,6 +12,11 @@
                 Description: {{ maintenance.description }}<br>
                 Machine : {{ maintenance.machine.machine_name }}
             </div>
+            {% if maintenance.attachment %}
+            <div>
+                <a href="{{ url_for('download_attachment', filename=maintenance.attachment) }}">Attachment</a>
+            </div>
+            {% endif %}
             <div>
                 <a href="{{ url_for('edit_maintenance', maintenance_id=maintenance.maintenance_id) }}" class="btn btn-warning">Edit</a>
                 <a href="{{ url_for('delete_maintenance', maintenance_id=maintenance.maintenance_id) }}" class="btn btn-danger">Delete</a>
