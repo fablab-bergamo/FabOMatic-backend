@@ -13,6 +13,7 @@
                 <th>Hours</th>
                 <th>Blocked</th>
                 <th>Maintenances</th>
+                <th>Last seen</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,6 +38,7 @@
                     {% endfor %}
                     </ul>
                 </td>
+                <td>{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
                 <td>
                     <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
                     class="btn btn-info">View history</a>
