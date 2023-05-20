@@ -104,6 +104,7 @@ class Maintenance(Base):
     hours_between = Column(Float, nullable=False)
     description = Column(String, nullable=False)
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
+    attachment = Column(String, nullable=True)
 
     machine = relationship("Machine", back_populates="maintenances")
     interventions = relationship("Intervention", back_populates="maintenance")
@@ -122,6 +123,17 @@ class Maintenance(Base):
         """Deserialize data from Dictionary."""
         return cls(**dict_data)
 
+    @property
+    def attachment_path(self):
+        """Get the file attachment path."""
+        if self.attachment:
+            return os.path.join("upload", self.attachment)
+        return None
+
+    @property
+    def has_attachment(self):
+        """Check if the intervention has an attachment."""
+        return bool(self.attachment)
 
 class Intervention(Base):
     """Class handling an intervention."""
@@ -147,6 +159,7 @@ class Intervention(Base):
             "user_id": self.user_id,
             "timestamp": self.timestamp,
         }
+
 
 class MachineType(Base):
     """Dataclass handling a machine type."""
