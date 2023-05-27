@@ -41,7 +41,7 @@ class TestDB(unittest.TestCase):
         with empty_db.getSession() as session:
             role_repo = empty_db.getRoleRepository(session)
             for i, r in enumerate(role_names):
-                role_repo.create(Role(role_id=i, role_name=r))
+                role_repo.create(Role(role_id=i, role_name=r, reserved=True, authorize_all=True, maintenance=True))
 
             # check if roles were added
             self.assertEqual(len(role_names), len(role_repo.get_all()))

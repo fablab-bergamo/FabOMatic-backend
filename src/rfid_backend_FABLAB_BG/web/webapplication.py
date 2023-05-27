@@ -49,6 +49,20 @@ def datetimeformat(value, format="%b %d, %Y %I:%M %p"):
     return value.strftime(format)
 
 
+@app.template_filter("format_hours")
+def format_hours(value):
+    if value is None:
+        return "-"
+    hours = int(value)
+    minutes = int((value % 1) * 60)
+    if hours == 0:
+        if minutes == 0:
+            return "-"
+        else:
+            return f"{minutes} minutes"
+    return f"{hours} hours {minutes} minutes"
+
+
 # Define routes
 @app.route("/")
 def index():
@@ -141,7 +155,11 @@ def delete_intervention(intervention_id):
 def view_machine_use_history(machine_id):
     session = DBSession()
     uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp).all()
-    return render_template("view_machine_use_history.html", uses=uses)
+    machine = session.query(Machine).filter_by(machine_id=machine_id).one()
+    if machine is None:
+        return "Machine not found", 404
+    
+    return render_template("view_machine_use_history.html", uses=uses, machine=machine)
 
 
 @app.route("/delete_use/<int:use_id>", methods=["POST"])
@@ -202,6 +220,77 @@ def logout():
     # here you would add your logout logic, like clearing session, etc.
     # then redirect to the login page (or wherever you want)
     return redirect(url_for("login"))
+
+
+@app.route("/authorizations", methods=["GET"])
+def view_authorizations():
+    session = DBSession()
+    authorizations = session.query(Authorization).all()
+    return render_template("view_authorizations.html", authorizations=authorizations)
+
+
+@app.route("/authorizations/add", methods=["GET"])
+def add_authorization():
+    session = DBSession()
+    users = session.query(User).all()
+    machines = session.query(Machine).all()
+    return render_template("add_authorization.html", users=users, machines=machines)
+
+
+@app.route("/authorizations/create", methods=["POST"])
+def create_authorization():
+    session = DBSession()
+    authorization_data = request.form
+    new_authorization = Authorization(
+        user_id=authorization_data["user_id"],
+        machine_id=authorization_data["machine_id"],
+    )
+    session.add(new_authorization)
+    session.commit()
+    return redirect(url_for("view_authorizations"))
+
+
+@app.route("/authorizations/edit/<int:authorization_id>", methods=["GET"])
+def edit_authorization(authorization_id):
+    session = DBSession()
+    authorization = session.query(Authorization).all()
+    users = session.query(User).all()
+    machines = session.query(Machine).all()
+    if authorization:
+        return render_template("edit_authorization.html", authorization=authorization, users=users, machines=machines)
+    else:
+        return "Authorization not found", 404
+
+
+@app.route("/authorizations/update", methods=["POST"])
+def update_authorization():
+    session = DBSession()
+    authorization_data = request.form
+    authorization = (
+        session.query(Authorization).filter_by(authorization_id=authorization_data["authorization_id"]).one()
+    )
+    if authorization:
+        authorization.user_id = authorization_data["user_id"]
+        authorization.machine_id = authorization_data["machine_id"]
+        session.commit()
+        return redirect(url_for("view_authorizations"))
+    else:
+        return "Authorization not found", 404
+
+
+@app.route("/authorizations/delete/<int:authorization_id>", methods=["GET", "POST"])
+def delete_authorization(authorization_id):
+    session = DBSession()
+    authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
+    if not authorization:
+        return "Authorization not found", 404
+
+    if request.method == "POST":
+        session.delete(authorization)
+        session.commit()
+        return redirect(url_for("view_authorizations"))
+
+    return render_template("delete_authorization.html", authorization=authorization)
 
 
 @app.route("/about")
@@ -352,7 +441,7 @@ def add_role():
         session = DBSession()
         role_name = request.form["role_name"]
         authorize_all = request.form.get("authorize_all", "off") == "on"
-        role = Role(role_name=role_name, authorize_all=authorize_all)
+        role = Role(role_name=role_name, authorize_all=authorize_all, reserved=False)
         session.add(role)
         session.commit()
         return redirect(url_for("roles"))
@@ -364,14 +453,22 @@ def add_role():
 def edit_role(role_id):
     session = DBSession()
     role = session.query(Role).filter_by(role_id=role_id).one()
+
+    # Block editing of reserved roles
+    if not role:
+        return "Role not found", 404
+
+    if role.reserved:
+        return "Cannot edit reserved role", 403
+
     if request.method == "POST":
         role.role_name = request.form["role_name"]
         role.authorize_all = request.form.get("authorize_all", "off") == "on"
         session.add(role)
         session.commit()
         return redirect(url_for("roles"))
-    else:
-        return render_template("edit_role.html", role_id=role.role_id, role=role)
+
+    return render_template("edit_role.html", role_id=role.role_id, role=role)
 
 
 @app.route("/roles/delete/<int:role_id>", methods=["GET", "POST"])
@@ -381,6 +478,8 @@ def delete_role(role_id):
     role = role_repo.get_by_id(role_id)
     if not role:
         return "Role not found", 404
+    if role.reserved:
+        return "Cannot delete reserved role", 403
 
     if request.method == "POST":
         role_repo.delete(role)

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Edit Authorization</h1>
+    <form method="POST" action="{{ url_for('update_authorization') }}">
+        <input type="hidden" name="authorization_id" value="{{ authorization.authorization_id }}" />
+        <div class="form-group">
+            <label for="user_id">User</label>
+            <select class="form-control" id="user_id" name="user_id">
+                {% for user in users %}
+                <option value="{{ user.user_id }}" {% if user.user_id == authorization.user_id %}selected{% endif %}>{{ user.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="machine_id">Machine</label>
+            <select class="form-control" id="machine_id" name="machine_id">
+                {% for machine in machines %}
+                <option value="{{ machine.machine_id }}" {% if machine.machine_id == authorization.machine_id %}selected{% endif %}>{{ machine.machine_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Authorization</button>
+    </form>
+{% endblock %}

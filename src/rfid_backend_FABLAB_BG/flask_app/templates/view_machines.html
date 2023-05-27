@@ -3,16 +3,17 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Machines</h1>
+    <h3>Use this page to view and configure FabLab machines.</h3>
     <a href="{{ url_for('add_machine') }}" class="btn btn-primary mb-3">Add Machine</a>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Type ID</th>
-                <th>Hours</th>
-                <th>Blocked</th>
-                <th>Maintenances</th>
+                <th>Machine type</th>
+                <th>Cumulated usage</th>
+                <th>Blocked for all?</th>
+                <th>Maintenance plan</th>
                 <th>Last seen</th>
                 <th>Actions</th>
             </tr>
@@ -22,8 +23,8 @@
             <tr>
                 <td>{{ machine.machine_id }}</td>
                 <td>{{ machine.machine_name }}</td>
-                <td>{{ machine.machine_type_id }}</td>
-                <td>{{ machine.machine_hours }}</td>
+                <td>{{ machine.machine_type.type_name }}</td>
+                <td>{{ machine.machine_hours | format_hours }}</td>
                 <td>
                     {% if machine.blocked %}
                     <i class="fas fa-lock"></i> <!-- Locked Icon -->

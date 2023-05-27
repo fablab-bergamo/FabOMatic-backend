@@ -23,14 +23,22 @@ class Role(Base):
 
     role_id = Column(Integer, primary_key=True, autoincrement=True)
     role_name = Column(String, unique=True, nullable=False)
-    authorize_all = Column(Boolean, default=False)
+    authorize_all = Column(Boolean, default=False, nullable=False)
+    reserved = Column(Boolean, default=False, nullable=False)
+    maintenance = Column(Boolean, default=False, nullable=False)
 
     users = relationship("User", back_populates="role")
     __table_args__ = (Index("idx_roles_role_name_unique", "role_name", unique=True),)
 
     def serialize(self):
         """Serialize data and return a Dict."""
-        return {"role_id": self.role_id, "role_name": self.role_name, "authorize_all": self.authorize_all}
+        return {
+            "role_id": self.role_id,
+            "role_name": self.role_name,
+            "authorize_all": self.authorize_all,
+            "reserved": self.reserved,
+            "maintenance": self.maintenance,
+        }
 
     @classmethod
     def from_dict(cls, dict_data):
@@ -135,6 +143,7 @@ class Maintenance(Base):
         """Check if the intervention has an attachment."""
         return bool(self.attachment)
 
+
 class Intervention(Base):
     """Class handling an intervention."""
 
@@ -169,6 +178,7 @@ class MachineType(Base):
     type_id = Column(Integer, primary_key=True, autoincrement=True)
     type_name = Column(String, unique=True, nullable=False)
 
+    machines = relationship("Machine", back_populates="machine_type")
     __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
 
     def serialize(self):
@@ -195,6 +205,7 @@ class Machine(Base):
     maintenances = relationship("Maintenance", back_populates="machine")
     interventions = relationship("Intervention", back_populates="machine")
     authorizations = relationship("Authorization", back_populates="machine")
+    machine_type = relationship("MachineType", back_populates="machines")
     uses = relationship("Use", back_populates="machine")
 
     __table_args__ = (Index("idx_machines_machine_name_unique", "machine_name", unique=True),)

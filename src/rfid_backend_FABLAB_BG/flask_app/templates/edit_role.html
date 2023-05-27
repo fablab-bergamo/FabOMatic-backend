@@ -3,15 +3,27 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Edit Role</h1>
-    <form method="POST" action="{{ url_for('edit_role') }}">
+    <form method="POST" action="{{ url_for('edit_role', role_id = role.role_id) }}">
         <input type="hidden" name="role_id" value="{{ role.role_id }}" />
         <div class="mb-3">
             <label for="role_name" class="form-label">Role Name:</label>
-            <input type="text" id="role_name" name="role_name" value="{{ role.role_name }}" class="form-control" required />
+            <input type="text" id="role_name" name="role_name" value="{{ role.role_name }}" class="form-control"
+                required />
         </div>
         <div class="mb-3 form-check">
-            <input type="checkbox" id="authorize_all" name="authorize_all" {% if role.authorize_all %}checked{% endif %} class="form-check-input" />
-            <label for="authorize_all" class="form-check-label">Authorize All:</label>
+            <label for="reserved" class="form-label">System reserved</label>
+            <input type="checkbox" id="reserved" name="reserved" {% if role.reserved %}checked{% endif %}
+                class="form-check-input" aria-disabled="true" disabled />
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" id="maintenance" name="maintenance" {% if role.maintenance %}checked{% endif %}
+                class="form-check-input" />
+            <label for="maintenance" class="form-check-label">Can perform maintenance</label>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" id="authorize_all" name="authorize_all" {% if role.authorize_all %}checked{% endif %}
+                class="form-check-input" />
+            <label for="authorize_all" class="form-check-label">Super user</label>
         </div>
         <input type="submit" value="Update Role" class="btn btn-primary" />
     </form>
