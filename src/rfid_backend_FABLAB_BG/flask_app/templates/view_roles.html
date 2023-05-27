@@ -3,13 +3,16 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Roles</h1>
+    <h2>This system page configures the possible role of the users</h2>
     <a href="{{ url_for('add_role') }}" class="btn btn-primary mb-3">Add Role</a>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Authorize All</th>
+                <th>Reserved</th>
+                <th>Maintenance?</th>
+                <th>Authorize All?</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -18,6 +21,8 @@
             <tr>
                 <td>{{ role.role_id }}</td>
                 <td>{{ role.role_name }}</td>
+                <td>{{ role.reserved }}</td>
+                <td>{{ role.maintenance }}</td>
                 <td>{{ role.authorize_all }}</td>
                 <td>
                     <a href="{{ url_for('edit_role', role_id=role.role_id) }}" class="btn btn-warning">Edit</a>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Add Authorization</h1>
+    <form method="POST" action="{{ url_for('create_authorization') }}">
+        <div class="form-group">
+            <label for="user_id">User</label>
+            <select class="form-control" id="user_id" name="user_id">
+                {% for user in users %}
+                <option value="{{ user.user_id }}">{{ user.name }} {{ user.surname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="machine_id">Machine</label>
+            <select class="form-control" id="machine_id" name="machine_id">
+                {% for machine in machines %}
+                <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Authorization</button>
+    </form>
+{% endblock %}

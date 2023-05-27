@@ -108,7 +108,9 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 if user is None:
                     return SimpleResponse(False, "Wrong user card")
-
+                if not user.role.maintenance:
+                    return SimpleResponse(False, "Not authorized")
+                
                 intervention_repo = MachineLogic.database.getInterventionRepository(session)
                 intervention_repo.registerInterventionsDone(self._machine_id, user.user_id)
 

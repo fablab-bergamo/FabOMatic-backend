@@ -19,16 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('roles') }}">Roles</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('view_users') }}">Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('machinetypes') }}">Machine types</a>
+                        <a class="nav-link" href="{{ url_for('view_machines') }}">Machines</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_machines') }}">Machines</a>
+                        <a class="nav-link" href="{{ url_for('view_authorizations') }}">Authorizations</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('maintenances') }}">Maintenance</a>
@@ -38,6 +35,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('view_uses') }}">Usage history</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('roles') }}">Roles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('machinetypes') }}">Machine types</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>

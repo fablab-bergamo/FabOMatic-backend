@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Machine Use History</h1>
+    <h3>This page shows the most recent usages of the machine {{ machine.machine_name }}.</h3>
     <a href="{{ url_for('view_machines') }}" class="btn btn-secondary mb-3">Back</a>
     <ul class="list-group">
         {% for use in uses %}
