@@ -63,7 +63,7 @@ def startServer() -> None:
     _flaskThread.start()
 
 
-def main(loglevel):
+def start(loglevel):
     """Main function of the backend."""
     configure_logger(loglevel)
     logging.info("Starting backend...")
