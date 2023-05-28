@@ -4,3 +4,4 @@ toml==0.10.2
 colorlog==6.7.0
 flask==2.3.2
 waitress==2.1.2
+-e .
