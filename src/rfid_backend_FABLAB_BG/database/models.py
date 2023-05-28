@@ -1,4 +1,5 @@
 import sqlite3
+import os
 
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy import event, Engine, Index
