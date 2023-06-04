@@ -13,6 +13,7 @@
                 <th>Surname</th>
                 <th>Role</th>
                 <th>Card UUID</th>
+                <th>Disabled?</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ user.surname }}</td>
                 <td>{{ user.role.role_name }}</td>
                 <td>{{ user.card_UUID }}</td>
+                <td>{{ user.disabled }}</td>
                 <td>
                     <a href="{{ url_for('edit_user', user_id=user.user_id) }}" class="btn btn-warning">Edit</a>
                     <form method="POST" action="{{ url_for('delete_user', user_id=user.user_id) }}" class="d-inline">

@@ -218,7 +218,7 @@ class TestDB(unittest.TestCase):
             roleRepo = simple_db.getRoleRepository(session)
 
             # add roles
-            role = Role(role_name="normal role", authorize_all=False)
+            role = Role(role_name="normal role", authorize_all=False, maintenance=True)
             roleRepo.create(role)
 
             # add user with UUID
@@ -279,6 +279,19 @@ class TestDB(unittest.TestCase):
                 userRepo.IsUserAuthorizedForMachine(machine3, user), "T3 User should not be authorized for machine3"
             )
 
+            # Check disabled is working
+            user.disabled = True
+            userRepo.update(user)
+            self.assertFalse(
+                userRepo.IsUserAuthorizedForMachine(machine1, user),
+                "T3 User should be disabled and not authorized for machine1",
+            )
+            user.disabled = False
+            userRepo.update(user)
+            self.assertTrue(
+                userRepo.IsUserAuthorizedForMachine(machine1, user), "T3 User should be authorized for machine1"
+            )
+
             auth2 = Authorization(user_id=user.user_id, machine_id=machine3.machine_id)
             authRepo.create(auth2)
 
@@ -312,7 +325,7 @@ class TestDB(unittest.TestCase):
             name = "Mario"
             surname = "Rossi"
 
-            role = Role(role_name="normal role", authorize_all=False)
+            role = Role(role_name="normal role", authorize_all=False, maintenance=False)
             db.getRoleRepository(session).create(role)
             userRepo = db.getUserRepository(session)
 

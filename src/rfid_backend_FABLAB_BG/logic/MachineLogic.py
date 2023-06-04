@@ -4,6 +4,7 @@ from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
 from time import time
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
+from rfid_backend_FABLAB_BG.database.constants import USER_LEVEL
 
 
 class MachineLogic:
@@ -51,7 +52,7 @@ class MachineLogic:
         except Exception as e:
             logging.error("machineAlive exception %s", str(e), exc_info=True)
 
-    def isAuthorized(self, card_uuid: str) -> SimpleResponse:
+    def isAuthorized(self, card_uuid: str) -> UserResponse:
         try:
             with MachineLogic.database.getSession() as session:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
@@ -59,15 +60,16 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None or user is None:
-                    return SimpleResponse(False, "Invalid card or machine")
+                    return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID)
 
                 if user_repo.IsUserAuthorizedForMachine(machine, user):
-                    return SimpleResponse(True)
+                    return UserResponse(True, True, user.name, user.user_level())
                 else:
-                    return SimpleResponse(False, "User not authorized")
+                    return UserResponse(True, False, "User not authorized", USER_LEVEL.INVALID)
+
         except Exception as e:
             logging.error("isAuthorized exception %s", str(e), exc_info=True)
-            return SimpleResponse(False, "BACKEND EXCEPTION")
+            return UserResponse(False, False, "", USER_LEVEL.INVALID)
 
     def startUse(self, card_uuid: str) -> SimpleResponse:
         try:
@@ -108,9 +110,9 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 if user is None:
                     return SimpleResponse(False, "Wrong user card")
-                if not user.role.maintenance:
+                if not user.role.maintenance or user.disabled:
                     return SimpleResponse(False, "Not authorized")
-                
+
                 intervention_repo = MachineLogic.database.getInterventionRepository(session)
                 intervention_repo.registerInterventionsDone(self._machine_id, user.user_id)
 
