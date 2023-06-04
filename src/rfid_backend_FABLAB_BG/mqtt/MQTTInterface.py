@@ -72,9 +72,9 @@ class MQTTInterface:
         logging.error("Not connected to MQTT broker %s", self._broker)
         return False
 
-    def _onDisconnect(self, *args):
+    def _onDisconnect(self, client, userdata, rc):
         if self._connected:
-            logging.info("Disconnected to MQTT broker %s:%s", self._broker, self._port)
+            logging.info("Disconnected to MQTT broker reason code:%d", rc)
         self._connected = False
         self._client.loop_stop()
 
@@ -84,14 +84,20 @@ class MQTTInterface:
         self._connected = True
 
     def connect(self):
-        self._client = mqtt.Client(self._client_id)
+        self._client = mqtt.Client(self._client_id, clean_session=False)
         self._client.on_message = self._onMessage
         self._client.on_disconnect = self._onDisconnect
         self._client.on_connect = self._onConnect
-
+        self._client.username_pw_set("backend", None)
         self._client.connect(self._broker, port=self._port)
         # Subscribe to all first-level subtopics of machine
-        self._client.subscribe(self._topic + "+")
+        topic = self._topic + "+"
+        result = self._client.subscribe(topic, qos=1)
+        if result[0] != mqtt.MQTT_ERR_SUCCESS:
+            logging.error("Failure to subscribe %s : error %d", topic, result[0])
+        else:
+            logging.debug("Subscribed to %s", topic)
+
         self._client.loop_start()
         sleep(0.5)
 
