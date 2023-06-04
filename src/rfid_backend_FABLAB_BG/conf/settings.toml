@@ -3,12 +3,13 @@ url = "sqlite:///machines-test.sqldb"
 name = "fablab"
 
 [MQTT]
-broker = "127.0.0.1"
+broker = "192.168.1.123"
 port = 1883
-client_id = "backend"
-topic = "machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
+client_id = "backend-1"
+topic = "/machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
 reply_subtopic = "/reply"  # appended to the machine topics for replies by backend. E.g. machine/1/reply
-stats_topic = "stats/"
+stats_topic = "/stats/"
+user = "backend"
 
 [web]
 secret_key = "lkgsjòlgjsd"
