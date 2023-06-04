@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from .constants import USER_LEVEL
 
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy import event, Engine, Index
@@ -57,6 +58,7 @@ class User(Base):
     surname = Column(String, nullable=False)
     role_id = Column(Integer, ForeignKey("roles.role_id"), nullable=False)
     card_UUID = Column(String, unique=True, nullable=True)
+    disabled = Column(Boolean, unique=False, nullable=False, default=False)
 
     authorizations = relationship("Authorization", back_populates="user")
     interventions = relationship("Intervention", back_populates="user")
@@ -80,6 +82,13 @@ class User(Base):
     def from_dict(cls, dict_data):
         """Deserialize data from Dictionary."""
         return cls(**dict_data)
+
+    def user_level(self) -> USER_LEVEL:
+        if self.disabled:
+            return USER_LEVEL.INVALID
+        if self.role.authorize_all:
+            return USER_LEVEL.ADMIN
+        return USER_LEVEL.NORMAL
 
 
 class Authorization(Base):

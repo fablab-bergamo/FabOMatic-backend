@@ -88,6 +88,9 @@ class UserRepository(BaseRepository):
 
     def IsUserAuthorizedForMachine(self, machine: Machine, user: User) -> bool:
         """Return True if the User is authorized to use the Machine, False otherwise."""
+        if user.disabled:
+            return False
+
         if user.role.authorize_all:
             return True
 
@@ -138,6 +141,9 @@ class InterventionRepository(BaseRepository):
         if machine is None or user is None:
             raise Exception("Wrong machine_id or user_id")
 
+        if user.disabled:
+            raise Exception("Invalid user")
+        
         machine_repo = MachineRepository(self.db_session)
         timestamp = time()
         for maintenance in machine.maintenances:
