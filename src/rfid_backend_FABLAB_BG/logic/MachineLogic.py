@@ -30,14 +30,14 @@ class MachineLogic:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
-                    return MachineResponse(True, False, False, False)
+                    return MachineResponse(True, False, False, False, "?")
 
                 return MachineResponse(
-                    True, True, machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0], not machine.blocked
+                    True, True, machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0], not machine.blocked, machine.machine_name
                 )
         except Exception as e:
             logging.error("machineStatus exception %s", str(e), exc_info=True)
-            return MachineResponse(False, False, False, False)
+            return MachineResponse(False, False, False, False, "?")
 
     def machineAlive(self):
         """Called when a machine sends an alive message"""
