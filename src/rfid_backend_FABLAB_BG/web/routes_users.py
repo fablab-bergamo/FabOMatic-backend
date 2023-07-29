@@ -61,10 +61,12 @@ def update_user():
         if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
             flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
             return redirect(url_for("edit_user", user_id=user.user_id))
+        if card_UUID == "":
+            card_UUID = None
         user.name = user_data["name"]
         user.surname = user_data["surname"]
         user.role_id = user_data["role_id"]
-        user.card_UUID = user_data.get("card_UUID", None)
+        user.card_UUID = card_UUID
         user.disabled = user_data.get("disabled", "off") == "on"
         session.commit()
         return redirect(url_for("view_users"))

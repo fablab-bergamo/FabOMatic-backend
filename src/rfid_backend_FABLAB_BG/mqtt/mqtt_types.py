@@ -111,11 +111,12 @@ class UserResponse:
 
 
 class MachineResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool):
+    def __init__(self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool, name: str):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.maintenance = needs_maintenance
         self.allowed = allowed
+        self.name = name
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
