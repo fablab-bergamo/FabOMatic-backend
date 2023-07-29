@@ -60,12 +60,12 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None or user is None:
-                    return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID)
+                    return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID, False)
 
                 if user_repo.IsUserAuthorizedForMachine(machine, user):
-                    return UserResponse(True, True, user.name, user.user_level())
+                    return UserResponse(True, True, user.name, user.user_level(), False)
                 else:
-                    return UserResponse(True, False, "User not authorized", USER_LEVEL.INVALID)
+                    return UserResponse(True, False, "User not authorized", USER_LEVEL.INVALID, True)
 
         except Exception as e:
             logging.error("isAuthorized exception %s", str(e), exc_info=True)

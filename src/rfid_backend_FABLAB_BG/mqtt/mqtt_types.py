@@ -96,10 +96,11 @@ class RegisterMaintenanceQuery(BaseJson):
 
 
 class UserResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, holder_name: str, user_level: USER_LEVEL | int):
+    def __init__(self, request_ok: bool, is_valid: bool, holder_name: str, user_level: USER_LEVEL | int, missing_auth: bool):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.name = holder_name
+        self.missing_auth = missing_auth
         if isinstance(user_level, USER_LEVEL):
             self.level = user_level.value
         else:
@@ -127,3 +128,4 @@ class SimpleResponse:
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
+b
