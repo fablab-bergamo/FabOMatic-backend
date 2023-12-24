@@ -8,6 +8,13 @@
             <label class="form-label">Type Name</label>
             <input type="text" class="form-control" name="type_name" required>
         </div>
+        <div class="mb-3 ">
+            <label class="form-label">Auto-logoff delay</label>
+            <div class="input-group-prepend">
+                <div class="input-group-text">(minutes)</div>
+              </div>
+            <input type="number" class="form-control" name="type_timeout_min" value="0" required>
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
