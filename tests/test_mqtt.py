@@ -44,14 +44,18 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(alive_query.__class__, AliveQuery)
 
     def test_json_serialize(self):
-        response = UserResponse(True, True, "user name", 2)
-        json_response = response.serialize()
-        self.assertEqual(json_response, '{"request_ok": true, "is_valid": true, "name": "user name", "level": 2}')
-
-        response = MachineResponse(True, True, False, True, "Machine")
+        response = UserResponse(True, True, "user name", 2, False)
         json_response = response.serialize()
         self.assertEqual(
-            json_response, '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true, "name": "Machine"}'
+            json_response,
+            '{"request_ok": true, "is_valid": true, "name": "user name", "missing_auth": false, "level": 2}',
+        )
+
+        response = MachineResponse(True, True, False, True, "Machine", 120)
+        json_response = response.serialize()
+        self.assertEqual(
+            json_response,
+            '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true, "name": "Machine", "timeout_min": 120}',
         )
 
         response = SimpleResponse(True)
