@@ -23,9 +23,9 @@ class Backend:
     def connect(self) -> bool:
         """Connect to the MQTT broker and the database."""
         try:
-            self._mqtt.connect()
             session = self._db.getSession()
             self.createDatabase()
+            self._mqtt.connect()
             return True
         except Exception as ex:
             logging.error("Connection failed: %s", ex, exc_info=True)

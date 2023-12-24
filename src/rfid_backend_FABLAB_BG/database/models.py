@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from .constants import USER_LEVEL
+from .constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy import event, Engine, Index
@@ -187,13 +187,13 @@ class MachineType(Base):
 
     type_id = Column(Integer, primary_key=True, autoincrement=True)
     type_name = Column(String, unique=True, nullable=False)
-
+    type_timeout_min = Column(Integer, unique=False, nullable=False, default=DEFAULT_TIMEOUT_MINUTES)
     machines = relationship("Machine", back_populates="machine_type")
     __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
 
     def serialize(self):
         """Serialize data and return a Dict."""
-        return {"type_id": self.type_id, "type_name": self.type_name}
+        return {"type_id": self.type_id, "type_name": self.type_name, "type_timeout_min": self.type_timeout_min}
 
     @classmethod
     def from_dict(cls, dict_data):

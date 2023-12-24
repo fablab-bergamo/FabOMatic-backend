@@ -96,7 +96,9 @@ class RegisterMaintenanceQuery(BaseJson):
 
 
 class UserResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, holder_name: str, user_level: USER_LEVEL | int, missing_auth: bool):
+    def __init__(
+        self, request_ok: bool, is_valid: bool, holder_name: str, user_level: USER_LEVEL | int, missing_auth: bool
+    ):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.name = holder_name
@@ -111,12 +113,15 @@ class UserResponse:
 
 
 class MachineResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool, name: str):
+    def __init__(
+        self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool, name: str, timeout_min: int = 0
+    ):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.maintenance = needs_maintenance
         self.allowed = allowed
         self.name = name
+        self.timeout_min = timeout_min
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
@@ -129,4 +134,3 @@ class SimpleResponse:
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
-b
