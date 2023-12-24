@@ -89,6 +89,9 @@ class MQTTInterface:
         self._client.on_disconnect = self._onDisconnect
         self._client.on_connect = self._onConnect
         self._client.username_pw_set("backend", None)
+
+        logging.debug("Connecting to MQTT broker %s:%s...", self._broker, self._port)
+
         self._client.connect(self._broker, port=self._port)
         # Subscribe to all first-level subtopics of machine
         topic = self._topic + "+"
