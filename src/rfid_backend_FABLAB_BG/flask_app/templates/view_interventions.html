@@ -27,11 +27,8 @@
                 <td>
                     <a href="{{ url_for('edit_intervention', intervention_id=intervention.intervention_id) }}"
                         class="btn btn-warning">Edit</a>
-                    <form method="POST"
-                        action="{{ url_for('delete_intervention', intervention_id=intervention.intervention_id) }}"
-                        class="d-inline">
-                        <input type="submit" value="Delete" class="btn btn-danger" />
-                    </form>
+                    <a href="{{ url_for('delete_intervention', intervention_id=intervention.intervention_id) }}"
+                        class="btn btn-danger">Delete</a>
                 </td>
             </tr>
             {% endfor %}

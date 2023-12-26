@@ -75,9 +75,7 @@
           {% endif %}
         </td>
         <td>
-          <form method="POST" action="{{ url_for('delete_use', use_id=use.use_id) }}">
-            <input type="submit" value="Delete" class="btn btn-danger" />
-          </form>
+          <a href="{{ url_for('delete_use', use_id=use.use_id) }}" class="btn btn-danger">Delete</a>
         </td>
       </tr>
       {% endfor %}
