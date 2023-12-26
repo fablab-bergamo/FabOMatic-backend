@@ -1,4 +1,5 @@
 """ This module contains the routes for the maintenance management. """
+# pylint: disable=C0116
 
 import logging
 import os

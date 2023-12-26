@@ -1,4 +1,5 @@
 """ Routes for machines management. """
+# pylint: disable=C0116
 
 from flask import render_template, request, redirect, url_for
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType

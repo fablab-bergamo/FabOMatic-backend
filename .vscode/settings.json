@@ -11,5 +11,11 @@
     "tests"
   ],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "pylint.args": [
+    "--max-line-length=120",
+    "--variable-naming-style=any",
+    "--class-naming-style=any",
+    "--method-naming-style=any"
+  ]
 }
