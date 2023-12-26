@@ -173,6 +173,8 @@ class UserRepository(BaseRepository):
         """
         if user.disabled:
             return False
+        if user.deleted:
+            return False
 
         if user.role.authorize_all:
             return True

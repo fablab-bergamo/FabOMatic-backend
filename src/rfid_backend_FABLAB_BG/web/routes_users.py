@@ -11,7 +11,7 @@ from .webapplication import DBSession, app
 @app.route("/users", methods=["GET"])
 def view_users():
     session = DBSession()
-    users = session.query(User).order_by(User.user_id).all()
+    users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
     return render_template("view_users.html", users=users)
 
 
@@ -86,7 +86,8 @@ def delete_user(user_id):
         return "User not found", 404
 
     if request.method == "POST":
-        session.delete(user)
+        user.deleted = True
+        user.card_UUID = None
         session.commit()
         return redirect(url_for("view_users"))
 

@@ -292,6 +292,20 @@ class TestDB(unittest.TestCase):
                 userRepo.IsUserAuthorizedForMachine(machine1, user), "T3 User should be authorized for machine1"
             )
 
+            # Check deleted is working
+            user.deleted = True
+            userRepo.update(user)
+            self.assertFalse(
+                userRepo.IsUserAuthorizedForMachine(machine1, user),
+                "T3 User should be deleted and not authorized for machine1",
+            )
+            user.deleted = False
+            userRepo.update(user)
+            self.assertTrue(
+                userRepo.IsUserAuthorizedForMachine(machine1, user), "T3 User should be authorized for machine1"
+            )
+
+            # More auth checks
             auth2 = Authorization(user_id=user.user_id, machine_id=machine3.machine_id)
             authRepo.create(auth2)
 

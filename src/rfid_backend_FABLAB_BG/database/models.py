@@ -63,6 +63,7 @@ class User(Base):
     role_id = Column(Integer, ForeignKey("roles.role_id"), nullable=False)
     card_UUID = Column(String, unique=True, nullable=True)
     disabled = Column(Boolean, unique=False, nullable=False, default=False)
+    deleted = Column(Boolean, unique=False, nullable=False, default=False)
 
     authorizations = relationship("Authorization", back_populates="user")
     interventions = relationship("Intervention", back_populates="user")
@@ -80,6 +81,8 @@ class User(Base):
             "role_id": self.role_id,
             "authorization_ids": [auth.authorization_id for auth in self.authorizations],
             "card_UUID": self.card_UUID,
+            "disabled": self.disabled,
+            "deleted": self.deleted,
         }
 
     @classmethod
