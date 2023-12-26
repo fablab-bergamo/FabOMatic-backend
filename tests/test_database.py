@@ -528,10 +528,13 @@ class TestDB(unittest.TestCase):
             machine = machine_repo.get_by_id(1)
 
             # create simple use
+            self.assertEqual(len(userID1.uses), 0, "No previous user records should exist")
             self.assertTrue(use_repo.startUse(machine.machine_id, user=userID1, timestamp=time()))
+            self.assertEqual(len(userID1.uses), 1, "User start of usage is registered correctly")
+
             use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
 
-            self.assertEqual(len(userID1.uses), 1, "User use not added correctly")
+            self.assertEqual(len(userID1.uses), 1, "User usage has been closed correctly")
             self.assertEqual(len(machine.uses), 1, "Machine use not added correctly")
 
             use_repo.delete(userID1.uses[0])

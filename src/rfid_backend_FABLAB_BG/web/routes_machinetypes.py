@@ -15,7 +15,8 @@ def add_machinetype():
     if request.method == "POST":
         session = DBSession()
         type_name = request.form["type_name"]
-        machine_type = MachineType(type_name=type_name)
+        timeout_min = request.form["type_timeout_min"]
+        machine_type = MachineType(type_name=type_name, type_timeout_min=timeout_min)
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))
@@ -29,6 +30,7 @@ def edit_machinetype(type_id):
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
     if request.method == "POST":
         machine_type.type_name = request.form["type_name"]
+        machine_type.type_timeout_min = request.form["type_timeout_min"]
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))

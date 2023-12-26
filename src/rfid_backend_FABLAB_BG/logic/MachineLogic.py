@@ -4,7 +4,7 @@ from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
 from time import time
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.constants import USER_LEVEL
+from rfid_backend_FABLAB_BG.database.constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 
 class MachineLogic:
@@ -30,14 +30,19 @@ class MachineLogic:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
-                    return MachineResponse(True, False, False, False, "?")
+                    return MachineResponse(True, False, False, False, "?", DEFAULT_TIMEOUT_MINUTES)
 
                 return MachineResponse(
-                    True, True, machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0], not machine.blocked, machine.machine_name
+                    True,
+                    True,
+                    machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0],
+                    not machine.blocked,
+                    machine.machine_name,
+                    machine.machine_type.type_timeout_min,
                 )
         except Exception as e:
             logging.error("machineStatus exception %s", str(e), exc_info=True)
-            return MachineResponse(False, False, False, False, "?")
+            return MachineResponse(False, False, False, False, "?", DEFAULT_TIMEOUT_MINUTES)
 
     def machineAlive(self):
         """Called when a machine sends an alive message"""
@@ -60,12 +65,12 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None or user is None:
-                    return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID)
+                    return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID, False)
 
                 if user_repo.IsUserAuthorizedForMachine(machine, user):
-                    return UserResponse(True, True, user.name, user.user_level())
+                    return UserResponse(True, True, user.name, user.user_level(), False)
                 else:
-                    return UserResponse(True, False, "User not authorized", USER_LEVEL.INVALID)
+                    return UserResponse(True, False, "User not authorized", USER_LEVEL.INVALID, True)
 
         except Exception as e:
             logging.error("isAuthorized exception %s", str(e), exc_info=True)
