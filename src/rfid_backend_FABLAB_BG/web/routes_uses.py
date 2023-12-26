@@ -7,7 +7,7 @@ import datetime
 @app.route("/machines/history/<int:machine_id>", methods=["GET"])
 def view_machine_use_history(machine_id):
     session = DBSession()
-    uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp).all()
+    uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).all()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if machine is None:
         return "Machine not found", 404
@@ -51,7 +51,7 @@ def view_uses():
     if start_time:
         uses = uses.filter(Use.start_timestamp >= start_time)
 
-    uses = uses.all()
+    uses = uses.order_by(Use.start_timestamp.desc()).all()
 
     # Query the database to get all users and machines for the filter dropdowns
     all_users = session.query(User).all()

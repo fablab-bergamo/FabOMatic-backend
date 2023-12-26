@@ -3,7 +3,7 @@ url = "sqlite:///machines-test.sqldb"
 name = "fablab"
 
 [MQTT]
-broker = "192.168.1.123"
+broker = "localhost"
 port = 1883
 client_id = "backend-1"
 topic = "/machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed

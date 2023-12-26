@@ -7,3 +7,5 @@ class USER_LEVEL(Enum):
     INVALID = 0
     NORMAL = 1
     ADMIN = 2
+
+DEFAULT_TIMEOUT_MINUTES = 24*60
