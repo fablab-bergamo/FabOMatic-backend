@@ -1,12 +1,12 @@
+""" This module contains the web application and common functions. """
+
 from datetime import datetime
-import logging
 import os
-from time import time
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+
+from flask import Flask, render_template, redirect, url_for, send_from_directory
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base
-from rfid_backend_FABLAB_BG.database.repositories import *
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +32,7 @@ def allowed_file(filename):
 def datetimeformat(value, format="%b %d, %Y %I:%M %p"):
     if value is None:
         return "-"
-    if type(value) is not datetime:
+    if not isinstance(value, datetime):
         value = datetime.fromtimestamp(value)
     return value.strftime(format)
 
@@ -60,6 +60,7 @@ def index():
 @app.route("/download_attachment/<filename>")
 def download_attachment(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
+
 
 @app.route("/logout")
 def logout():

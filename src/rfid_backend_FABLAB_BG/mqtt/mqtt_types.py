@@ -6,6 +6,18 @@ from rfid_backend_FABLAB_BG.database.constants import USER_LEVEL
 class Parser:
     @staticmethod
     def parse(json_data: str):
+        """
+        Parses the given JSON data and returns the corresponding query object based on the 'action' field.
+
+        Args:
+            json_data (str): The JSON data to parse.
+
+        Returns:
+            object: The deserialized query object based on the 'action' field.
+
+        Raises:
+            ValueError: If the 'action' field is missing or invalid.
+        """
         data = json.loads(json_data)
         if "action" in data:
             match data["action"]:

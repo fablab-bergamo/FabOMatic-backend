@@ -1,18 +1,22 @@
+"""Database models for the rfid_backend_FABLAB_BG application."""
+
 import sqlite3
 import os
-from .constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy import event, Engine, Index
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 
+from .constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
+
 Base = declarative_base()
 
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    if type(dbapi_connection) is sqlite3.Connection:  # play well with other DB backends
+    """Set SQLite PRAGMA foreign_keys=ON."""
+    if isinstance(dbapi_connection, sqlite3.Connection):  # play well with other DB backends
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
@@ -84,6 +88,7 @@ class User(Base):
         return cls(**dict_data)
 
     def user_level(self) -> USER_LEVEL:
+        """Get the user level."""
         if self.disabled:
             return USER_LEVEL.INVALID
         if self.role.authorize_all:

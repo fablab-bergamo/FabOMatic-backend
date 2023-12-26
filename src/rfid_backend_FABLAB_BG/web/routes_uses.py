@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+""" This module contains the routes for the uses pages. """
+
+from datetime import datetime
+
+from flask import render_template, request, redirect, url_for, flash
 from rfid_backend_FABLAB_BG.database.models import Machine, Use, User
 from .webapplication import DBSession, app
-import datetime
 
 
 @app.route("/machines/history/<int:machine_id>", methods=["GET"])

@@ -1,6 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
-from rfid_backend_FABLAB_BG.database.models import User, Role
+""" This module contains the routes for the users management. """
+
 import re
+
+from flask import render_template, request, redirect, url_for, flash
+from rfid_backend_FABLAB_BG.database.models import User, Role
+
 from .webapplication import DBSession, app
 
 

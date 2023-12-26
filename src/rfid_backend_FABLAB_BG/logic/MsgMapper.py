@@ -1,7 +1,19 @@
+""" This module provides the MsgMapper class"""
+
 import logging
+
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
 from rfid_backend_FABLAB_BG.mqtt import MQTTInterface
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+    UserQuery,
+    StartUseQuery,
+    EndUseQuery,
+    RegisterMaintenanceQuery,
+    AliveQuery,
+    MachineQuery,
+    BaseJson,
+    SimpleResponse,
+)
 
 from .MachineLogic import MachineLogic
 
@@ -18,6 +30,15 @@ class MsgMapper:
         self._handlers = {}
 
     def getMachineLogic(self, machineId: str) -> MachineLogic | None:
+        """
+        Retrieves the MachineLogic object associated with the given machine ID.
+
+        Args:
+            machineId (str): The ID of the machine.
+
+        Returns:
+            MachineLogic | None: The MachineLogic object if found, None otherwise.
+        """
         if machineId not in self._machines:
             try:
                 self._machines[machineId] = MachineLogic(machineId)
@@ -43,10 +64,30 @@ class MsgMapper:
         return response.serialize()
 
     def handleAliveQuery(self, machine_logic: MachineLogic, alive: AliveQuery) -> str:
+        """
+        Handles an alive query message.
+
+        Args:
+            machine_logic (MachineLogic): The machine logic instance.
+            alive (AliveQuery): The alive query message.
+
+        Returns:
+            str: None
+        """
         machine_logic.machineAlive()
         return None
 
     def handleMachineQuery(self, machine_logic: MachineLogic, machineQuery: MachineQuery) -> str:
+        """
+        Handles a machine query and returns the serialized machine status.
+
+        Args:
+            machine_logic (MachineLogic): The machine logic object.
+            machineQuery (MachineQuery): The machine query object.
+
+        Returns:
+            str: The serialized machine status.
+        """
         return machine_logic.machineStatus().serialize()
 
     def messageReceived(self, machine: str, query: BaseJson) -> None:

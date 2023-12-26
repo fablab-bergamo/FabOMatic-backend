@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+""" Routes for managing roles. """
+
+from flask import render_template, request, redirect, url_for, flash
 from rfid_backend_FABLAB_BG.database.models import Role
 from rfid_backend_FABLAB_BG.database.repositories import RoleRepository
 from .webapplication import DBSession, app
@@ -7,8 +9,8 @@ from .webapplication import DBSession, app
 @app.route("/roles")
 def roles():
     session = DBSession()
-    roles = session.query(Role).all()
-    return render_template("view_roles.html", roles=roles)
+    roles_list = session.query(Role).all()
+    return render_template("view_roles.html", roles=roles_list)
 
 
 @app.route("/roles/add", methods=["GET", "POST"])

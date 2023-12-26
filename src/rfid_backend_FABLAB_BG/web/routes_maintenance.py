@@ -1,9 +1,13 @@
+""" This module contains the routes for the maintenance management. """
+
 import logging
-from flask import render_template, request, redirect, url_for, flash
-from rfid_backend_FABLAB_BG.database.models import Machine, Maintenance
 import os
-from .webapplication import DBSession, allowed_file, app, UPLOAD_FOLDER
+
+from flask import render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
+
+from rfid_backend_FABLAB_BG.database.models import Machine, Maintenance
+from .webapplication import DBSession, allowed_file, app, UPLOAD_FOLDER
 
 
 @app.route("/maintenances")
@@ -38,7 +42,7 @@ def add_maintenance():
         session.add(maintenance)
         session.commit()
         return redirect(url_for("maintenances"))
-    
+
     machines = session.query(Machine).all()
     return render_template("add_maintenance.html", machines=machines)
 

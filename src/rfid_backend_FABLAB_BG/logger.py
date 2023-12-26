@@ -6,6 +6,15 @@ import colorlog
 
 
 def configure_logger(loglevel=logging.DEBUG):
+    """
+    Configures the logger with the specified log level.
+
+    Args:
+        loglevel (int): The log level to set for the logger. Defaults to logging.DEBUG.
+
+    Returns:
+        None
+    """
     # Create a logger object
     logger = logging.getLogger()
     logger.setLevel(loglevel)
