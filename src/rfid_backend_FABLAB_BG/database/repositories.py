@@ -1,3 +1,5 @@
+""" Database repositories for the rfid_backend_FABLAB_BG application."""
+
 from time import time
 from typing import List, Optional, Tuple
 
@@ -8,69 +10,143 @@ from .constants import DEFAULT_TIMEOUT_MINUTES
 
 
 class BaseRepository:
+    """Base class for all repositories."""
+
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
     def create(self, model: Base):
+        """Create a new model instance in the database."""
         self.db_session.add(model)
         self.db_session.commit()
         self.db_session.refresh(model)
 
     def update(self, model: Base):
+        """Update an existing model instance in the database."""
         self.db_session.add(model)
         self.db_session.commit()
 
     def delete(self, model: Base):
+        """Delete a model instance from the database."""
         self.db_session.delete(model)
         self.db_session.commit()
 
     def rollback(self):
+        """Rollback the current database session."""
         self.db_session.rollback()
 
     def get_all_model(self, model_class: type) -> List[Base]:
+        """Retrieve all model instances of a given class from the database."""
         return self.db_session.query(model_class).all()
 
     def filter_by_model(self, model_class: type, **kwargs) -> List[Base]:
+        """Filter model instances of a given class by specified criteria."""
         return self.db_session.query(model_class).filter_by(**kwargs).all()
 
     def get_model_by_id(self, model_class: type, id_filter: int) -> Base:
+        """Retrieve a model instance of a given class by its ID."""
         primary_key_name = model_class.__table__.primary_key.columns.keys()[0]
         return self.db_session.query(model_class).filter_by(**{primary_key_name: id_filter}).first()
 
 
 class RoleRepository(BaseRepository):
+    """
+    Repository class for managing Role objects in the database.
+    """
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
     def get_by_role_name(self, role_name: str) -> Optional[Role]:
+        """
+        Retrieve a role by its name.
+
+        Args:
+            role_name (str): The name of the role.
+
+        Returns:
+            Optional[Role]: The role object if found, None otherwise.
+        """
         return self.db_session.query(Role).filter_by(role_name=role_name).first()
 
     def get_all(self) -> List[Role]:
+        """
+        Retrieve all roles.
+
+        Returns:
+            List[Role]: A list of all roles.
+        """
         return self.db_session.query(Role).order_by(Role.role_id).all()
 
     def get_by_id(self, id: int) -> Base:
+        """
+        Retrieve a role by its ID.
+
+        Args:
+            id (int): The ID of the role.
+
+        Returns:
+            Base: The role object if found, None otherwise.
+        """
         return self.db_session.query(Role).filter_by(role_id=id).first()
 
 
 class MachineTypeRepository(BaseRepository):
+    """
+    Repository class for managing MachineType entities.
+    """
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
     def get_all(self) -> List[MachineType]:
+        """
+        Retrieves all MachineType entities from the database.
+
+        Returns:
+            A list of MachineType entities.
+        """
         return self.db_session.query(MachineType).order_by(MachineType.type_id).all()
 
     def get_by_id(self, id: int) -> Base:
+        """
+        Retrieves a MachineType entity by its ID.
+
+        Args:
+            id: The ID of the MachineType entity to retrieve.
+
+        Returns:
+            The MachineType entity with the specified ID, or None if not found.
+        """
         return self.db_session.query(MachineType).filter_by(type_id=id).first()
 
 
 class UserRepository(BaseRepository):
+    """Repository class for managing User objects in the database."""
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
     def getUserByCardUUID(self, card_uuid: str) -> Optional[User]:
+        """Get a user by their card UUID.
+
+        Args:
+            card_uuid (str): The card UUID of the user.
+
+        Returns:
+            Optional[User]: The user object if found, None otherwise.
+        """
         return self.db_session.query(User).filter_by(card_UUID=card_uuid).first()
 
     def getUserUses(self, user: User) -> List[Use]:
+        """Get all the uses of a user.
+
+        Args:
+            user (User): The user object.
+
+        Returns:
+            List[Use]: A list of use objects associated with the user.
+        """
         return self.db_session.query(Use).filter(Use.user_id == user.user_id).all()
 
     def getUserTotalTime(self, user_id: int) -> float:
@@ -82,13 +158,19 @@ class UserRepository(BaseRepository):
         Returns:
             float: User time in seconds
         """
-
         uses = self.db_session.query(Use).filter(Use.user_id == user_id, Use.end_timestamp.is_not(None)).all()
-
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
     def IsUserAuthorizedForMachine(self, machine: Machine, user: User) -> bool:
-        """Return True if the User is authorized to use the Machine, False otherwise."""
+        """Return True if the User is authorized to use the Machine, False otherwise.
+
+        Args:
+            machine (Machine): The machine object.
+            user (User): The user object.
+
+        Returns:
+            bool: True if the user is authorized, False otherwise.
+        """
         if user.disabled:
             return False
 
@@ -104,46 +186,100 @@ class UserRepository(BaseRepository):
         return machine.machine_id in machine_ids
 
     def get_all(self) -> List[User]:
+        """Get all users.
+
+        Returns:
+            List[User]: A list of all user objects.
+        """
         return self.db_session.query(User).order_by(User.user_id).all()
 
     def get_by_id(self, id: int) -> Optional[User]:
+        """Get a user by their ID.
+
+        Args:
+            id (int): The ID of the user.
+
+        Returns:
+            Optional[User]: The user object if found, None otherwise.
+        """
         return self.db_session.query(User).filter_by(user_id=id).first()
 
 
 class AuthorizationRepository(BaseRepository):
+    """
+    Repository class for managing authorizations in the database.
+    """
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
     def get_all(self) -> List[Authorization]:
+        """
+        Retrieves all authorizations from the database.
+
+        Returns:
+            A list of Authorization objects.
+        """
         return self.db_session.query(Authorization).order_by(Authorization.authorization_id).all()
 
 
 class MaintenanceRepository(BaseRepository):
+    """
+    Repository class for handling maintenance operations.
+    """
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
     def get_all(self) -> List[Maintenance]:
+        """
+        Retrieve all maintenance records from the database.
+
+        Returns:
+            A list of Maintenance objects.
+        """
         return self.db_session.query(Maintenance).order_by(Maintenance.maintenance_id).all()
 
 
 class InterventionRepository(BaseRepository):
     def __init__(self, db_session: Session):
+        """
+        Initializes an instance of InterventionRepository.
+
+        Args:
+            db_session (Session): The database session object.
+        """
         super().__init__(db_session)
 
     def get_all(self) -> List[Intervention]:
+        """
+        Retrieves all interventions from the database.
+
+        Returns:
+            List[Intervention]: A list of Intervention objects.
+        """
         return self.db_session.query(Intervention).order_by(Intervention.intervention_id).all()
 
     def registerInterventionsDone(self, machine_id: int, user_id: int):
-        """Register interventions done by the user on the machine."""
+        """
+        Register interventions done by the user on the machine.
 
+        Args:
+            machine_id (int): The ID of the machine.
+            user_id (int): The ID of the user.
+
+        Raises:
+            ValueError: If the machine_id or user_id is invalid.
+            ValueError: If the user is disabled.
+        """
         machine = self.db_session.query(Machine).filter_by(machine_id=machine_id).first()
         user = self.db_session.query(User).filter_by(user_id=user_id).first()
 
         if machine is None or user is None:
-            raise Exception("Wrong machine_id or user_id")
+            raise ValueError("Wrong machine_id or user_id")
 
         if user.disabled:
-            raise Exception("Invalid user")
+            raise ValueError("Invalid user")
 
         machine_repo = MachineRepository(self.db_session)
         timestamp = time()
@@ -163,6 +299,10 @@ class InterventionRepository(BaseRepository):
 
 
 class MachineRepository(BaseRepository):
+    """
+    Repository class for interacting with the Machine table in the database.
+    """
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
@@ -181,6 +321,15 @@ class MachineRepository(BaseRepository):
         )
 
     def getTimeout(self, machine_id: int) -> int:
+        """
+        Retrieves the timeout value for a given machine.
+
+        Args:
+            machine_id (int): The ID of the machine.
+
+        Returns:
+            int: The timeout value in minutes.
+        """
         machine = self.get_by_id(machine_id)
         if machine is None:
             return DEFAULT_TIMEOUT_MINUTES
@@ -200,9 +349,24 @@ class MachineRepository(BaseRepository):
         )
 
     def get_by_id(self, machine_id: int = None) -> Optional[Machine]:
+        """
+        Retrieve a Machine by its ID.
+
+        Args:
+            machine_id (int): The ID of the machine.
+
+        Returns:
+            Optional[Machine]: The Machine object if found, None otherwise.
+        """
         return self.db_session.query(Machine).filter_by(machine_id=machine_id).first()
 
     def get_all(self) -> List[Machine]:
+        """
+        Retrieve all machines.
+
+        Returns:
+            List[Machine]: A list of all machines.
+        """
         return self.db_session.query(Machine).order_by(Machine.machine_id).all()
 
     def getRelativeUseTime(self, machine_id: int) -> int:
@@ -302,6 +466,8 @@ class MachineRepository(BaseRepository):
 
 
 class UseRepository(BaseRepository):
+    """Repository class for managing Use objects in the database."""
+
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
@@ -317,6 +483,9 @@ class UseRepository(BaseRepository):
             machine_id (int): id of the Machine
             user (User): User that is using the Machine
             timestamp (float, optional): timestamp of the start of the Use. Current time if None. Defaults to None.
+
+        Returns:
+            bool: True if the use was started successfully, False otherwise.
         """
 
         if timestamp is None:
@@ -381,4 +550,10 @@ class UseRepository(BaseRepository):
         return duration_s
 
     def get_all(self) -> List[Use]:
+        """
+        Retrieve all Use objects from the database.
+
+        Returns:
+            List[Use]: A list of all Use objects.
+        """
         return self.db_session.query(Use).order_by(Use.use_id).all()

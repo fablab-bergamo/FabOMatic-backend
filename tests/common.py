@@ -1,33 +1,49 @@
+""" This module contains common functions used in the tests. """
+
 import logging
 import os
 from logging.handlers import RotatingFileHandler
 from time import time
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import *
+from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, User, Intervention
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
 
 
 def configure_logger():
-    # Create a logger object
+    """
+    Configures a logger object with a rotating file handler.
+
+    The logger is named "test_logger" and is set to log messages at the DEBUG level.
+    The logs are formatted with the timestamp, log level, and message.
+    The logs are written to a file named "test-log.txt" in the same directory as this script.
+    The file handler rotates the log file when it reaches a maximum size of 1 MB, keeping 1 backup file.
+    The file is encoded using the "latin-1" encoding.
+
+    Returns:
+        None
+    """
     logger = logging.getLogger("test_logger")
     logger.setLevel(logging.DEBUG)
 
-    # Create a formatter for the logs
     formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
-    # Create a rotating file handler with a maximum size of 1 MB
     log_file = os.path.join(os.path.dirname(__file__), "test-log.txt")
     file_handler = RotatingFileHandler(log_file, maxBytes=1000000, backupCount=1, encoding="latin-1")
     file_handler.setFormatter(formatter)
 
-    # Add the file handler to the logger object
     logger.addHandler(file_handler)
 
 
 def get_empty_db() -> DatabaseBackend:
+    """
+    Returns an instance of DatabaseBackend with an empty database.
+
+    Returns:
+        DatabaseBackend: An instance of DatabaseBackend with an empty database.
+    """
     d = DatabaseBackend(TEST_SETTINGS_PATH)
     d.createDatabase()
     d.dropContents()
@@ -35,6 +51,12 @@ def get_empty_db() -> DatabaseBackend:
 
 
 def seed_db() -> DatabaseBackend:
+    """
+    Seeds the database with initial data for testing purposes.
+
+    Returns:
+        DatabaseBackend: The seeded database instance.
+    """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
     empty_db.createDatabase()
     empty_db.dropContents()
@@ -67,6 +89,12 @@ def seed_db() -> DatabaseBackend:
 
 
 def get_simple_db() -> DatabaseBackend:
+    """
+    Creates a simple database with predefined data for testing purposes.
+
+    Returns:
+        DatabaseBackend: An instance of the created database.
+    """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
     empty_db.createDatabase()
     empty_db.dropContents()
@@ -103,7 +131,6 @@ def get_simple_db() -> DatabaseBackend:
         empty_db.getMachineRepository(session).create(m2)
 
         maint1 = Maintenance(hours_between=10, description="replace engine", machine_id=m1.machine_id)
-
         empty_db.getMaintenanceRepository(session).create(maint1)
 
         maint2 = Maintenance(hours_between=10, description="replace brushes", machine_id=m2.machine_id)

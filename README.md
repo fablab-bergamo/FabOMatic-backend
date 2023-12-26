@@ -22,7 +22,7 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 * See file conf\settings.toml to setup MQTT server, database connections. Example below
 
-```
+```text
 [database]
 url = "sqlite:///machines.sqldb"
 name = "fablab"
@@ -54,7 +54,7 @@ pip install -e .
 python .\run.py
 ```
 
-* Package requirements / How to package (see https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+* Package requirements / How to package (see [Python docs(https://packaging.python.org/en/latest/tutorials/packaging-projects/)])
 
 ```shell
 pip install --upgrade build

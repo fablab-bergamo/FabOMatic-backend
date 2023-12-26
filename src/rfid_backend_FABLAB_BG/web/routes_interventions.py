@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+""" This module contains the routes for the interventions. """
+
+from time import time
+
+from flask import render_template, request, redirect, url_for
 from rfid_backend_FABLAB_BG.database.models import Intervention, Machine, Maintenance, User
 from .webapplication import DBSession, app
-import time
 
 
 @app.route("/interventions")

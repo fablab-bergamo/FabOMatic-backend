@@ -1,5 +1,6 @@
-from enum import Enum
+"""This module contains constants used in the database module"""
 
+from enum import Enum
 
 class USER_LEVEL(Enum):
     """This class maps to the Board c++ FabUser.UserLevel int value"""

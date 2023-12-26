@@ -1,30 +1,54 @@
+""" This module contains the MachineLogic class. """
+
 import logging
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
 from time import time
 
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import MachineResponse, SimpleResponse, UserResponse
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
 from rfid_backend_FABLAB_BG.database.constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 
 class MachineLogic:
+    """
+    The MachineLogic class represents the logic for interacting with a machine in the system.
+    It provides methods for checking the machine status, handling machine alive messages,
+    authorizing users, starting and ending machine use, and registering maintenance interventions.
+    """
+
     database: DatabaseBackend = None
 
     def __init__(self, machine_id):
+        """
+        Initializes a new instance of the MachineLogic class.
+
+        Args:
+            machine_id (int): The ID of the machine.
+
+        Raises:
+            Exception: If the database is not initialized.
+            Exception: If the machine ID is invalid.
+        """
         self._machine_id = machine_id
         self._last_alive = 0
 
         if MachineLogic.database is None:
-            raise Exception("Database not initialized")
+            raise ValueError("Database not initialized")
 
         with self.database.getSession() as session:
             machine_repo = MachineLogic.database.getMachineRepository(session)
             if machine_repo.get_by_id(machine_id) is None:
-                raise Exception("Invalid machine id")
+                raise ValueError("Invalid machine id")
 
         logging.info(f"Machine logic instance for ID:{machine_id} initialized")
 
     def machineStatus(self):
+        """
+        Gets the status of the machine.
+
+        Returns:
+            MachineResponse: The machine response object containing the status information.
+        """
         try:
             with MachineLogic.database.getSession() as session:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
@@ -45,7 +69,9 @@ class MachineLogic:
             return MachineResponse(False, False, False, False, "?", DEFAULT_TIMEOUT_MINUTES)
 
     def machineAlive(self):
-        """Called when a machine sends an alive message"""
+        """
+        Called when a machine sends an alive message.
+        """
         logging.debug(f"Machine {self._machine_id} alive")
         try:
             self._last_alive = time()
@@ -58,6 +84,15 @@ class MachineLogic:
             logging.error("machineAlive exception %s", str(e), exc_info=True)
 
     def isAuthorized(self, card_uuid: str) -> UserResponse:
+        """
+        Checks if a user is authorized to use the machine.
+
+        Args:
+            card_uuid (str): The UUID of the user's card.
+
+        Returns:
+            UserResponse: The user response object containing the authorization information.
+        """
         try:
             with MachineLogic.database.getSession() as session:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
@@ -74,9 +109,18 @@ class MachineLogic:
 
         except Exception as e:
             logging.error("isAuthorized exception %s", str(e), exc_info=True)
-            return UserResponse(False, False, "", USER_LEVEL.INVALID)
+            return UserResponse(False, False, "", USER_LEVEL.INVALID, True)
 
     def startUse(self, card_uuid: str) -> SimpleResponse:
+        """
+        Starts the use of the machine by a user.
+
+        Args:
+            card_uuid (str): The UUID of the user's card.
+
+        Returns:
+            SimpleResponse: The simple response object indicating the success or failure of the operation.
+        """
         try:
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
@@ -93,6 +137,16 @@ class MachineLogic:
             return SimpleResponse(False, "BACKEND EXCEPTION")
 
     def endUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
+        """
+        Ends the use of the machine by a user.
+
+        Args:
+            card_uuid (str): The UUID of the user's card.
+            duration_s (int): The duration of the machine use in seconds.
+
+        Returns:
+            SimpleResponse: The simple response object indicating the success or failure of the operation.
+        """
         try:
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
@@ -109,6 +163,15 @@ class MachineLogic:
             return SimpleResponse(False, "BACKEND EXCEPTION")
 
     def registerMaintenance(self, card_uuid: str) -> SimpleResponse:
+        """
+        Registers a maintenance intervention for the machine.
+
+        Args:
+            card_uuid (str): The UUID of the user's card.
+
+        Returns:
+            SimpleResponse: The simple response object indicating the success or failure of the operation.
+        """
         try:
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)

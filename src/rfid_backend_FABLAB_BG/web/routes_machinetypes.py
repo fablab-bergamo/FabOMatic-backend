@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+""" Routes for Machine Types management """
+
+from flask import render_template, request, redirect, url_for, flash
 from rfid_backend_FABLAB_BG.database.models import MachineType
 from .webapplication import DBSession, app
 
