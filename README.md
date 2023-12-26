@@ -39,24 +39,31 @@ stats_topic = "stats/"
 ## Dev environment settings
 
 * Developped with VSCode
-* Create a python venv with Python >=3.11.
+* Create a python venv with Python >=3.10
 * Test settings are into tests\test_settings.toml file, to run tests from root folder (or Terminal)
-```
+
+```shell
 pytest -v
 ```
+
 * VSCode extensions : Python, Black extension for automatic code formatting
 * How to run the server from Terminal (from root folder)
-```
+
+```shell
 pip install -e . 
 python .\run.py
 ```
+
 * Package requirements / How to package (see https://packaging.python.org/en/latest/tutorials/packaging-projects/)
-```
+
+```shell
 pip install --upgrade build
 pip install --upgrade twine
 ```
+
 To update
-```
+
+```shell
 py -m build
 py -m twine upload --repository testpypi dist/*
 ```
