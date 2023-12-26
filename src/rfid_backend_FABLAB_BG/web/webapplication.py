@@ -1,4 +1,5 @@
 """ This module contains the web application and common functions. """
+# pylint: disable=C0116
 
 from datetime import datetime
 import os

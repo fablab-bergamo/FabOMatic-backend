@@ -1,3 +1,6 @@
+""" This module contains the routes for the authorizations. """
+# pylint: disable=C0116
+
 from flask import render_template, request, redirect, url_for
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app

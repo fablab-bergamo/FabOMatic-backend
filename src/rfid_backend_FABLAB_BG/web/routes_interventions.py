@@ -1,4 +1,5 @@
 """ This module contains the routes for the interventions. """
+# pylint: disable=C0116
 
 from time import time
 

@@ -1,12 +1,25 @@
+""" Test the database backend. """
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import random
 import unittest
+from random import randint
 from string import ascii_uppercase
 from time import time
 
 from sqlalchemy.exc import IntegrityError
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import *
+from rfid_backend_FABLAB_BG.database.models import (
+    Role,
+    MachineType,
+    User,
+    Machine,
+    Maintenance,
+    Authorization,
+    Use,
+    Intervention,
+)
 from tests.common import TEST_SETTINGS_PATH, get_empty_db, get_simple_db, configure_logger
 
 
@@ -204,7 +217,7 @@ class TestDB(unittest.TestCase):
             role_1 = role_repo.get_by_id(1)
 
             # check if the role is linked to the user
-
+            self.assertIsNotNone(role_1)
             self.assertIsNone(role_repo.get_by_id(10))
             self.assertIsNone(role_repo.get_by_role_name("nonexistent role"))
 
@@ -395,7 +408,6 @@ class TestDB(unittest.TestCase):
                     machineRepo.get_by_id(current_id).machine_name, NAME, "Machine name not updated correctly"
                 )
                 # test new type
-                from random import randint
 
                 NEW_TYPE = randint(1, TYPES)
                 machine.machine_type_id = NEW_TYPE
@@ -561,11 +573,11 @@ class TestDB(unittest.TestCase):
                 self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
 
             self.assertEqual(
-                1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
+                1, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "Only one open use should exist"
             )
             self.assertEqual(
                 99,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
 
@@ -574,14 +586,14 @@ class TestDB(unittest.TestCase):
 
             self.assertEqual(
                 199,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
             self.assertEqual(
-                0, len(session.query(Use).filter(Use.end_timestamp == None).all()), "No open uses should exist"
+                0, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "No open uses should exist"
             )
 
-    def test_use_helpers(self):
+    def test_user_helpers(self):
         simple_db = get_simple_db()
         with simple_db.getSession() as session:
             use_repo = simple_db.getUseRepository(session)
@@ -608,11 +620,11 @@ class TestDB(unittest.TestCase):
                 self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
 
             self.assertEqual(
-                1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
+                1, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "Only one open use should exist"
             )
             self.assertEqual(
                 99,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
 
@@ -621,11 +633,11 @@ class TestDB(unittest.TestCase):
 
             self.assertEqual(
                 199,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
             self.assertEqual(
-                0, len(session.query(Use).filter(Use.end_timestamp == None).all()), "No open uses should exist"
+                0, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "No open uses should exist"
             )
 
     def test_use_helpers(self):

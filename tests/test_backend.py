@@ -1,3 +1,6 @@
+""" Test the backend module. """
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import unittest
 
 from rfid_backend_FABLAB_BG.main import Backend

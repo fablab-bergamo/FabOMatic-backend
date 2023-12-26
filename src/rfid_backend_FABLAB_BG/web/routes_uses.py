@@ -1,4 +1,5 @@
 """ This module contains the routes for the uses pages. """
+# pylint: disable=C0116
 
 from datetime import datetime
 

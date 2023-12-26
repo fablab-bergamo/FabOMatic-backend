@@ -1,3 +1,6 @@
+""" Test the MQTT interface and the message mapper """
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import os
 import unittest
 

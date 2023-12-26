@@ -1,4 +1,5 @@
 """ This module contains the routes for the users management. """
+# pylint: disable=C0116
 
 import re
 
