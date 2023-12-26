@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app
 
@@ -34,7 +34,7 @@ def create_authorization():
 @app.route("/authorizations/edit/<int:authorization_id>", methods=["GET"])
 def edit_authorization(authorization_id):
     session = DBSession()
-    authorization = session.query(Authorization).all()
+    authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
     users = session.query(User).all()
     machines = session.query(Machine).all()
     if authorization:
