@@ -12,8 +12,8 @@
           <select id="user_id" name="user_id" class="form-control">
             <option value="">All Users</option>
             {% for user in all_users %}
-            <option value="{{ user.user_id }}" {% if user.user_id==selected_user_id %}selected{% endif %}>{{ user.name
-              }}</option>
+            <option value="{{ user.user_id }}" {% if user.user_id==selected_user_id %}selected{% endif %}>
+              {{ user.name}} {{ user.surname}}</option>
             {% endfor %}
           </select>
         </div>
@@ -57,7 +57,13 @@
       {% for use in uses %}
       <tr class="{% if use.end_timestamp is none %}table-warning{% endif %}">
         <td>{{ use.use_id }}</td>
-        <td>{{ use.user.name }}</td>
+        <td>
+          {% if use.user.deleted %}
+          deleted user
+          {% else %}
+          {{ use.user.name }} {{ use.user.surname }}
+          {% endif %}
+        </td>
         <td>{{ use.machine.machine_name }}</td>
         <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
         <td>

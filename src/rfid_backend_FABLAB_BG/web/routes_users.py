@@ -28,6 +28,10 @@ def create_user():
     session = DBSession()
     user_data = request.form
     card_UUID = user_data.get("card_UUID", None)
+
+    if card_UUID == "":  # If the card_UUID is empty, set it to None
+        card_UUID = None
+
     if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
         flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
         return redirect(url_for("view_users"))
@@ -63,6 +67,7 @@ def update_user():
     if user:
         # Validate the card_UUID
         card_UUID = user_data.get("card_UUID", None)
+
         if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
             flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
             return redirect(url_for("edit_user", user_id=user.user_id))

@@ -22,7 +22,7 @@
         </div>
         <div class="mb-3">
             <label for="card_UUID" class="form-label">Card UUID:</label>
-            <input type="text" id="card_UUID" name="card_UUID" class="form-control" />
+            <input type="text" id="card_UUID" name="card_UUID" class="form-control" pattern="[0-9A-Fa-f]{0}|[0-9A-Fa-f]{8}" />
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" id="disabled" name="disabled" class="form-check-input" />

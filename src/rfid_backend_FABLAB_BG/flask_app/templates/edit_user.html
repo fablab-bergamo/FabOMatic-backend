@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             <label for="card_UUID">Card UUID:</label>
-            <input type="text" id="card_UUID" name="card_UUID" value="{{ user.card_UUID }}" pattern="[0-9A-Fa-f]{0}|[0-9A-Fa-f]{8}" class="form-control" />
+            <input type="text" id="card_UUID" name="card_UUID" value="{% if user.card_UUID is not none %}{{user.card_UUID}}{%endif%}" pattern="[0-9A-Fa-f]{0}|[0-9A-Fa-f]{8}" class="form-control" />
             <small class="form-text text-muted">Please enter either 8 hexadecimal characters or leave it empty.</small>
         </div>
         <input type="submit" value="Update User" class="btn btn-primary" />
