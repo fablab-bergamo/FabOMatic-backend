@@ -3,7 +3,7 @@
 import sqlite3
 import os
 
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy import event, Engine, Index
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
@@ -110,6 +110,8 @@ class Authorization(Base):
 
     user = relationship("User", back_populates="authorizations")
     machine = relationship("Machine", back_populates="authorizations")
+
+    __table_args__ = (UniqueConstraint("user_id", "machine_id", name="uix_1"),)
 
     def serialize(self):
         """Serialize data and return a Dict."""

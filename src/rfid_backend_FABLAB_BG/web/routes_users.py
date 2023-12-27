@@ -36,6 +36,13 @@ def create_user():
         flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
         return redirect(url_for("view_users"))
 
+    check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+    if check_user:
+        flash(
+            f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
+            "error",
+        )
+        return redirect(url_for("view_users"))
     new_user = User(
         name=user_data["name"],
         surname=user_data["surname"],
@@ -73,6 +80,14 @@ def update_user():
             return redirect(url_for("edit_user", user_id=user.user_id))
         if card_UUID == "":
             card_UUID = None
+
+        check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+        if check_user and check_user.user_id != user.user_id:
+            flash(
+                f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
+                "error",
+            )
+            return redirect(url_for("edit_user", user_id=user.user_id))
         user.name = user_data["name"]
         user.surname = user_data["surname"]
         user.role_id = user_data["role_id"]
