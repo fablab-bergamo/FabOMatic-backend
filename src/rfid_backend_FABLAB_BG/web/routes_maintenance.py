@@ -13,9 +13,21 @@ from .webapplication import DBSession, allowed_file, app, UPLOAD_FOLDER
 
 @app.route("/maintenances")
 def maintenances():
+    machine_filter = request.args.get("machine")
+    description_filter = request.args.get("description")
+
     session = DBSession()
-    maintenance_list = session.query(Maintenance).all()
-    return render_template("view_maintenances.html", maintenances=maintenance_list)
+    query = session.query(Maintenance).join(Maintenance.machine)
+
+    if machine_filter and machine_filter.isdigit():
+        query = query.filter(Machine.machine_id == int(machine_filter))
+    if description_filter:
+        query = query.filter(Maintenance.description.contains(description_filter))
+
+    maintenances = query.all()
+    machines = session.query(Machine).all()
+
+    return render_template("view_maintenances.html", maintenances=maintenances, machines=machines)
 
 
 @app.route("/maintenances/add", methods=["GET", "POST"])
