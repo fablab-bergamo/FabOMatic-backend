@@ -54,11 +54,11 @@ class TestMQTT(unittest.TestCase):
             '{"request_ok": true, "is_valid": true, "name": "user name", "missing_auth": false, "level": 2}',
         )
 
-        response = MachineResponse(True, True, False, True, "Machine", 120)
+        response = MachineResponse(True, True, False, True, "Machine", 1, 120)
         json_response = response.serialize()
         self.assertEqual(
             json_response,
-            '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true, "name": "Machine", "timeout_min": 120}',
+            '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true, "name": "Machine", "logoff": 120, "type": 1}',
         )
 
         response = SimpleResponse(True)

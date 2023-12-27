@@ -54,7 +54,7 @@ class MachineLogic:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
-                    return MachineResponse(True, False, False, False, "?", DEFAULT_TIMEOUT_MINUTES)
+                    return MachineResponse(True, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES)
 
                 return MachineResponse(
                     True,
@@ -62,11 +62,12 @@ class MachineLogic:
                     machine_repo.getMachineMaintenanceNeeded(machine.machine_id)[0],
                     not machine.blocked,
                     machine.machine_name,
+                    machine.machine_type_id,
                     machine.machine_type.type_timeout_min,
                 )
         except Exception as e:
             logging.error("machineStatus exception %s", str(e), exc_info=True)
-            return MachineResponse(False, False, False, False, "?", DEFAULT_TIMEOUT_MINUTES)
+            return MachineResponse(False, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES)
 
     def machineAlive(self):
         """
