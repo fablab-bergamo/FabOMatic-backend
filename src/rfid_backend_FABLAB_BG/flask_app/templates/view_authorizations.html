@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>Authorizations</h1>
-    <a href="{{ url_for('add_authorization') }}" class="btn btn-primary">Add Authorization</a>
+    <a href="{{ url_for('add_authorization') }}" class="btn btn-primary">Add Authorization...</a>
+    <a href="{{ url_for('bulkadd_authorizations') }}" class="btn btn-warning">Add in bulk...</a>
+    <form method="GET" action="{{ url_for('view_authorizations') }}">
+        <div class="form-group">
+            <label for="userFilter">Filter Users:</label>
+            <select id="userFilter" name="user" class="form-control">
+                <option value="">--Select User--</option>
+                {% for user in users %}
+                <option value="{{ user.user_id }}" {% if request.args.get('user')|int == user.user_id %}selected{% endif %}>{{ user.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="machineFilter">Filter Machines:</label>
+            <select id="machineFilter" name="machine" class="form-control">
+                <option value="">--Select Machine--</option>
+                {% for machine in machines %}
+                <option value="{{ machine.machine_id }}" {% if request.args.get('machine')|int == machine.machine_id %}selected{% endif %}>{{ machine.machine_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-secondary">Apply Filters</button>
+    </form>
     <table class="table table-striped">
         <thead>
             <tr>
