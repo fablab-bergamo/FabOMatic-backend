@@ -9,14 +9,14 @@ from .webapplication import DBSession, app
 @app.route("/authorizations", methods=["GET"])
 def view_authorizations():
     session = DBSession()
-    authorizations = session.query(Authorization).all()
+    authorizations = session.query(Authorization).join(Authorization.user).filter_by(deleted=False).all()
     return render_template("view_authorizations.html", authorizations=authorizations)
 
 
 @app.route("/authorizations/add", methods=["GET"])
 def add_authorization():
     session = DBSession()
-    users = session.query(User).all()
+    users = session.query(User).filter_by(deleted=False).all()
     machines = session.query(Machine).all()
     return render_template("add_authorization.html", users=users, machines=machines)
 
@@ -38,7 +38,7 @@ def create_authorization():
 def edit_authorization(authorization_id):
     session = DBSession()
     authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
-    users = session.query(User).all()
+    users = session.query(User).filter_by(deleted=False).all()
     machines = session.query(Machine).all()
     if authorization:
         return render_template("edit_authorization.html", authorization=authorization, users=users, machines=machines)

@@ -15,7 +15,7 @@
             {% for authorization in authorizations %}
             <tr>
                 <td>{{ authorization.authorization_id }}</td>
-                <td>{{ authorization.user.name }}</td>
+                <td>{{ authorization.user.name }} {{ authorization.user.surname }}</td>
                 <td>{{ authorization.machine.machine_name }}</td>
                 <td>
                     <a href="{{ url_for('edit_authorization', authorization_id=authorization.authorization_id) }}" class="btn btn-info">Edit</a>

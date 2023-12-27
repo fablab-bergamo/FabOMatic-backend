@@ -58,7 +58,7 @@ def view_uses():
     uses = uses.order_by(Use.start_timestamp.desc()).all()
 
     # Query the database to get all users and machines for the filter dropdowns
-    all_users = session.query(User).all()
+    all_users = session.query(User).filter_by(deleted=False).all()
     all_machines = session.query(Machine).all()
 
     return render_template(

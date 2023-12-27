@@ -64,8 +64,8 @@ def update_machine():
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])
 def delete_machine(machine_id):
-    machine = Machine.query.get(machine_id)
     session = DBSession()
+    machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if not machine:
         return "Machine not found", 404
 

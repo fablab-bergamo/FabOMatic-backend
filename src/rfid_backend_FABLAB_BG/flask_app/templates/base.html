@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>FABLAB backend - {% block title %} {% endblock %}</title>
@@ -10,14 +11,16 @@
     <!-- Include Font Awesome Solid CSS -->
     <link href="{{ url_for('static', filename='css/solid.css') }}" rel="stylesheet">
     <!-- Include Font Awesome Solid CSS -->
-    <link href="{{ url_for('static', filename='css/brands.css') }}" rel="stylesheet"
+    <link href="{{ url_for('static', filename='css/brands.css') }}" rel="stylesheet">
 </head>
+
 <body>
     <!-- Begin Bootstrap Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">FABLAB</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -55,10 +58,12 @@
     </nav>
     <!-- End Bootstrap Navbar -->
     <hr>
-    <div class="content">
-        {% block content %} {% endblock %}
+    {% for mesg in get_flashed_messages() %}
+    <div class="alert alert-warning" role="alert">{{mesg}}</div {% endfor %} <div class="content">
+    {% block content %} {% endblock %}
     </div>
     <!-- Include Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
+
 </html>
