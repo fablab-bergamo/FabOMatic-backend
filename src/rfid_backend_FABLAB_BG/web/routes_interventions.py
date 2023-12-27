@@ -45,7 +45,7 @@ def edit_intervention(intervention_id):
     session = DBSession()
     intervention = session.query(Intervention).get(intervention_id)
     machines = session.query(Machine).order_by(Machine.machine_id).all()
-    users = session.query(User).order_by(User.user_id).all()
+    users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
     maintenances = session.query(Maintenance).order_by(Maintenance.maintenance_id).all()
 
     if request.method == "POST":
