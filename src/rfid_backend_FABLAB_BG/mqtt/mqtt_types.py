@@ -126,14 +126,22 @@ class UserResponse:
 
 class MachineResponse:
     def __init__(
-        self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool, name: str, timeout_min: int = 0
+        self,
+        request_ok: bool,
+        is_valid: bool,
+        needs_maintenance: bool,
+        allowed: bool,
+        name: str,
+        type_id: int,
+        timeout_min: int = 0,
     ):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.maintenance = needs_maintenance
         self.allowed = allowed
         self.name = name
-        self.timeout_min = timeout_min
+        self.logoff = timeout_min
+        self.type = type_id
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
