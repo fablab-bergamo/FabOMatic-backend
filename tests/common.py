@@ -3,6 +3,7 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+import random
 from time import time
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
@@ -124,17 +125,41 @@ def get_simple_db() -> DatabaseBackend:
         u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id)
         empty_db.getUserRepository(session).create(u2)
 
+        for i in range(1, 10):
+            temp_user = User(
+                name="User" + str(i),
+                surname="Surname" + str(i),
+                role_id=r2.role_id,
+                card_UUID=(str(i) * 8)[:8],
+                disabled=random.choice([True, False]),
+            )
+            empty_db.getUserRepository(session).create(temp_user)
+
         m1 = Machine(machine_name="LASER 1", machine_type_id=mt1.type_id)
         empty_db.getMachineRepository(session).create(m1)
 
         m2 = Machine(machine_name="PRINTER 1", machine_type_id=mt2.type_id)
         empty_db.getMachineRepository(session).create(m2)
 
+        temp_machines = []
+        for i in range(1, 10):
+            temp_machine = Machine(machine_name="Machine" + str(i), machine_type_id=mt3.type_id)
+            temp_machines.append(temp_machine)
+            empty_db.getMachineRepository(session).create(temp_machine)
+
         maint1 = Maintenance(hours_between=10, description="replace engine", machine_id=m1.machine_id)
         empty_db.getMaintenanceRepository(session).create(maint1)
 
         maint2 = Maintenance(hours_between=10, description="replace brushes", machine_id=m2.machine_id)
         empty_db.getMaintenanceRepository(session).create(maint2)
+
+        for i in range(1, 10):
+            temp_maint = Maintenance(
+                hours_between=random.choice(range(1, 30)),
+                description="Maintenance" + str(i),
+                machine_id=random.choice(temp_machines).machine_id,
+            )
+            empty_db.getMaintenanceRepository(session).create(temp_maint)
 
         timestamp = time() - 1000
         inter = Intervention(
