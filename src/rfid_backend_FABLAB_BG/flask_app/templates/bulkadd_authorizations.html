@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Bulk Authorization</h1>
+<div>
+    Only the checked users will be authorized for the chosen machines. Unselected users will keep their current authorizations.
+</div>
+<div class="container mt-4">
+    <form method="POST" action="{{ url_for('bulkadd_authorizations') }}">
+        <div class="form-group">
+            <label for="machine">Select Machine:</label>
+            <select class="form-control" id="machine" name="machine_id">
+                {% for machine in machines %}
+                <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="users">Select Users:</label>
+            <div class="checkbox">
+                <label><input type="checkbox" id="checkAll">Add All users...</label>
+            </div>
+            <div class="users-list">
+                {% for user in users %}
+                <div class="user-item">
+                    <label>
+                        <input type="checkbox" name="user_ids" value="{{ user.user_id }}"> {{ user.name }} {{ user.surname}}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" value="Bulk">Bulk add authorizations</button>
+    </form>
+    <script>
+        document.getElementById('checkAll').addEventListener('click', function (e) {
+            var checkboxes = document.getElementsByName('user_ids');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = e.target.checked;
+            }
+        });
+    </script>
+</div>
+{% endblock %}
+{% block extra_css %}
+<style>
+    .users-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .user-item {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}

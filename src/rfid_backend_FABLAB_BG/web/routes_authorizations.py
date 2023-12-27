@@ -1,16 +1,28 @@
 """ This module contains the routes for the authorizations. """
 # pylint: disable=C0116
 
-from flask import render_template, request, redirect, url_for
+from flask import flash, render_template, request, redirect, url_for
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app
 
 
 @app.route("/authorizations", methods=["GET"])
 def view_authorizations():
+    user_filter = request.args.get("user")
+    machine_filter = request.args.get("machine")
+
     session = DBSession()
-    authorizations = session.query(Authorization).join(Authorization.user).filter_by(deleted=False).all()
-    return render_template("view_authorizations.html", authorizations=authorizations)
+    query = session.query(Authorization).join(Authorization.user).filter_by(deleted=False).join(Authorization.machine)
+
+    if user_filter and user_filter.isdigit():
+        query = query.filter(User.user_id == int(user_filter))
+    if machine_filter and machine_filter.isdigit():
+        query = query.filter(Machine.machine_id == int(machine_filter))
+
+    authorizations = query.all()
+    users = session.query(User).filter_by(deleted=False).all()
+    machines = session.query(Machine).all()
+    return render_template("view_authorizations.html", authorizations=authorizations, users=users, machines=machines)
 
 
 @app.route("/authorizations/add", methods=["GET"])
@@ -30,7 +42,10 @@ def create_authorization():
         machine_id=authorization_data["machine_id"],
     )
     session.add(new_authorization)
-    session.commit()
+    try:
+        session.commit()
+    except Exception as e:
+        flash(str(e), "danger")
     return redirect(url_for("view_authorizations"))
 
 
@@ -56,7 +71,10 @@ def update_authorization():
     if authorization:
         authorization.user_id = authorization_data["user_id"]
         authorization.machine_id = authorization_data["machine_id"]
-        session.commit()
+        try:
+            session.commit()
+        except Exception as e:
+            flash(str(e), "danger")
         return redirect(url_for("view_authorizations"))
     else:
         return "Authorization not found", 404
@@ -75,3 +93,25 @@ def delete_authorization(authorization_id):
         return redirect(url_for("view_authorizations"))
 
     return render_template("delete_authorization.html", authorization=authorization)
+
+
+@app.route("/authorizations/bulkadd", methods=["GET", "POST"])
+def bulkadd_authorizations():
+    session = DBSession()
+    machines = session.query(Machine).all()
+    users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
+
+    if request.method == "POST":
+        authorization_data = request.form
+        machine = session.query(Machine).filter_by(machine_id=authorization_data["machine_id"]).one()
+        for user_id in authorization_data.getlist("user_ids"):
+            existing = session.query(Authorization).filter_by(user_id=user_id, machine_id=machine.machine_id).first()
+            if existing:
+                continue
+            authorization = Authorization(user_id=user_id, machine_id=machine.machine_id)
+            session.add(authorization)
+        session.commit()
+        flash("Authorizations added successfully", "success")
+        return redirect(url_for("view_authorizations"))
+
+    return render_template("bulkadd_authorizations.html", machines=machines, users=users)
