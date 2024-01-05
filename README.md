@@ -51,7 +51,7 @@ pytest -v
 
 ```shell
 pip install -e . 
-python .\run.py
+python ./run.py
 ```
 
 * Package requirements / How to package (see [Python docs(https://packaging.python.org/en/latest/tutorials/packaging-projects/)])
