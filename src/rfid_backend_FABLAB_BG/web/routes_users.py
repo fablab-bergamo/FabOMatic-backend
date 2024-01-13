@@ -4,12 +4,15 @@
 import re
 
 from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import User, Role
+from .authentication import login_manager
 
 from .webapplication import DBSession, app
 
 
 @app.route("/users", methods=["GET"])
+@login_required
 def view_users():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
@@ -17,6 +20,7 @@ def view_users():
 
 
 @app.route("/users/add", methods=["GET"])
+@login_required
 def add_user():
     session = DBSession()
     roles = session.query(Role).order_by(Role.role_id).all()
@@ -24,6 +28,7 @@ def add_user():
 
 
 @app.route("/users/create", methods=["POST"])
+@login_required
 def create_user():
     session = DBSession()
     user_data = request.form
@@ -49,6 +54,7 @@ def create_user():
         role_id=user_data["role_id"],
         disabled=user_data.get("disabled", "off") == "on",
         card_UUID=card_UUID,
+        email=user_data["email"],
     )
     session.add(new_user)
     session.commit()
@@ -56,6 +62,7 @@ def create_user():
 
 
 @app.route("/users/edit/<int:user_id>", methods=["GET"])
+@login_required
 def edit_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
@@ -67,6 +74,7 @@ def edit_user(user_id):
 
 
 @app.route("/users/update", methods=["POST"])
+@login_required
 def update_user():
     session = DBSession()
     user_data = request.form
@@ -93,6 +101,7 @@ def update_user():
         user.role_id = user_data["role_id"]
         user.card_UUID = card_UUID
         user.disabled = user_data.get("disabled", "off") == "on"
+        user.email = user_data["email"]
         session.commit()
         return redirect(url_for("view_users"))
     else:
@@ -100,6 +109,7 @@ def update_user():
 
 
 @app.route("/users/delete/<int:user_id>", methods=["GET", "POST"])
+@login_required
 def delete_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()

@@ -54,7 +54,11 @@ class TestDB(unittest.TestCase):
         with empty_db.getSession() as session:
             role_repo = empty_db.getRoleRepository(session)
             for i, r in enumerate(role_names):
-                role_repo.create(Role(role_id=i, role_name=r, reserved=True, authorize_all=True, maintenance=True))
+                role_repo.create(
+                    Role(
+                        role_id=i, role_name=r, reserved=True, authorize_all=True, maintenance=True, backend_admin=True
+                    )
+                )
 
             # check if roles were added
             self.assertEqual(len(role_names), len(role_repo.get_all()))
@@ -63,19 +67,29 @@ class TestDB(unittest.TestCase):
             for i, r in enumerate(role_repo.get_all()):
                 self.assertEqual(r.role_id, i)
                 self.assertEqual(r.role_name, role_names[i])
+                self.assertTrue(r.reserved)
+                self.assertTrue(r.maintenance)
+                self.assertTrue(r.authorize_all)
+                self.assertTrue(r.backend_admin)
 
             # edit a role name
             new_name = "TEST ROLE WOW"
             role = role_repo.get_by_id(0)
             role.role_name = new_name
+            role.maintenance = False
             role_repo.update(role)
             self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
+            self.assertFalse(role_repo.get_by_id(0).maintenance)
             self.assertEqual(len(role_repo.get_all()), len(role_names))
 
             # create a new role
             new_role = "ÜBER ADMIN"
-            role_repo.create(Role(role_name=new_role))
+            role_repo.create(Role(role_name=new_role, backend_admin=True))
             self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
+            self.assertTrue(role_repo.get_by_role_name(new_role).backend_admin)
+            self.assertFalse(role_repo.get_by_role_name(new_role).maintenance)
+            self.assertFalse(role_repo.get_by_role_name(new_role).authorize_all)
+            self.assertFalse(role_repo.get_by_role_name(new_role).reserved)
 
             # Check autoincrement
             self.assertEqual(role_repo.get_by_id(len(role_names)).role_name, new_role)

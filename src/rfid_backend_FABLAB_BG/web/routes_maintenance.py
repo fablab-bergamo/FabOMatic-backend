@@ -5,6 +5,7 @@ import logging
 import os
 
 from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 
 from rfid_backend_FABLAB_BG.database.models import Machine, Maintenance
@@ -12,6 +13,7 @@ from .webapplication import DBSession, allowed_file, app, UPLOAD_FOLDER
 
 
 @app.route("/maintenances")
+@login_required
 def maintenances():
     machine_filter = request.args.get("machine")
     description_filter = request.args.get("description")
@@ -31,6 +33,7 @@ def maintenances():
 
 
 @app.route("/maintenances/add", methods=["GET", "POST"])
+@login_required
 def add_maintenance():
     session = DBSession()
     logging.debug("Processing add_maintenance %s", request)
@@ -61,6 +64,7 @@ def add_maintenance():
 
 
 @app.route("/maintenances/edit/<int:maintenance_id>", methods=["GET", "POST"])
+@login_required
 def edit_maintenance(maintenance_id):
     session = DBSession()
     maintenance = session.query(Maintenance).filter_by(maintenance_id=maintenance_id).one()

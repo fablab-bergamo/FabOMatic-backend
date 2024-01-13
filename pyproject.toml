@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog", "flask", "pyopenssl"]
+requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog", "flask", "pyopenssl", "flask-login", "flask-mail", "itsdangerous"]
 build-backend = "hatchling.build"
 
 [project]
 name = "rfid_backend_FABLAB_BG"
-version = "0.0.11"
+version = "0.0.12"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -22,7 +22,12 @@ dependencies = [
     "SQLAlchemy",
     "toml",
     "paho-mqtt",
-    "colorlog"
+    "colorlog",
+    "flask",
+    "flask-login",
+    "pyopenssl",
+    "flask-mail",
+    "itsdangerous"
 ]
 
 [project.optional-dependencies]

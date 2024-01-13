@@ -119,10 +119,12 @@ def get_simple_db() -> DatabaseBackend:
         r2 = Role(role_name="fab users", authorize_all=False, reserved=False, maintenance=False)
         empty_db.getRoleRepository(session).create(r2)
 
-        u1 = User(name="Mario", surname="Rossi", role_id=r1.role_id)
+        u1 = User(name="Mario", surname="Rossi", role_id=r1.role_id, email="marco.rossi@fablab.org")
+        u1.set_password("password1")
         empty_db.getUserRepository(session).create(u1)
 
-        u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id)
+        u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id, email="andrea.bianchi@fablab.org")
+        u2.set_password("password2")
         empty_db.getUserRepository(session).create(u2)
 
         for i in range(1, 10):
@@ -133,6 +135,8 @@ def get_simple_db() -> DatabaseBackend:
                 card_UUID=(str(i) * 8)[:8],
                 disabled=random.choice([True, False]),
             )
+            temp_user.set_password("")
+            temp_user.email = f"{temp_user.name}.{temp_user.surname}@fablab.org"
             empty_db.getUserRepository(session).create(temp_user)
 
         m1 = Machine(machine_name="LASER 1", machine_type_id=mt1.type_id)

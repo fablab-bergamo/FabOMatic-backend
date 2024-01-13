@@ -2,12 +2,14 @@
 # pylint: disable=C0116
 
 from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Role
 from rfid_backend_FABLAB_BG.database.repositories import RoleRepository
 from .webapplication import DBSession, app
 
 
 @app.route("/roles")
+@login_required
 def roles():
     session = DBSession()
     roles_list = session.query(Role).all()
@@ -15,13 +17,21 @@ def roles():
 
 
 @app.route("/roles/add", methods=["GET", "POST"])
+@login_required
 def add_role():
     if request.method == "POST":
         session = DBSession()
         role_name = request.form["role_name"]
         authorize_all = request.form.get("authorize_all", "off") == "on"
         maintenance = request.form.get("maintenance", "off") == "on"
-        role = Role(role_name=role_name, authorize_all=authorize_all, maintenance=maintenance, reserved=False)
+        backend_admin = request.form.get("backend_admin", "off") == "on"
+        role = Role(
+            role_name=role_name,
+            authorize_all=authorize_all,
+            maintenance=maintenance,
+            reserved=False,
+            backend_admin=backend_admin,
+        )
         session.add(role)
         session.commit()
         return redirect(url_for("roles"))
@@ -30,6 +40,7 @@ def add_role():
 
 
 @app.route("/roles/edit/<int:role_id>", methods=["GET", "POST"])
+@login_required
 def edit_role(role_id):
     session = DBSession()
     role = session.query(Role).filter_by(role_id=role_id).one()
@@ -45,6 +56,7 @@ def edit_role(role_id):
         role.role_name = request.form["role_name"]
         role.authorize_all = request.form.get("authorize_all", "off") == "on"
         role.maintenance = request.form.get("maintenance", "off") == "on"
+        role.backend_admin = request.form.get("backend_admin", "off") == "on"
         session.add(role)
         session.commit()
         return redirect(url_for("roles"))

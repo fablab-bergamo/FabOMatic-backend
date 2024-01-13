@@ -4,11 +4,13 @@
 from time import time
 
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Intervention, Machine, Maintenance, User
 from .webapplication import DBSession, app
 
 
 @app.route("/interventions")
+@login_required
 def view_interventions():
     session = DBSession()
     interventions = session.query(Intervention).all()
@@ -16,6 +18,7 @@ def view_interventions():
 
 
 @app.route("/interventions/add", methods=["GET", "POST"])
+@login_required
 def add_intervention():
     session = DBSession()
     machines = session.query(Machine).order_by(Machine.machine_id).all()
@@ -41,6 +44,7 @@ def add_intervention():
 
 
 @app.route("/interventions/edit/<int:intervention_id>", methods=["GET", "POST"])
+@login_required
 def edit_intervention(intervention_id):
     session = DBSession()
     intervention = session.query(Intervention).get(intervention_id)
@@ -69,6 +73,7 @@ def edit_intervention(intervention_id):
 
 
 @app.route("/interventions/delete/<int:intervention_id>", methods=["GET", "POST"])
+@login_required
 def delete_intervention(intervention_id):
     session = DBSession()
     intervention = session.query(Intervention).get(intervention_id)
