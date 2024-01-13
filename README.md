@@ -20,7 +20,7 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## Configuration file
 
-* See file conf\settings.toml to setup MQTT server, database connections. Example below
+* See file conf\settings.toml to setup MQTT server, database connections, SMTP for "forgot password" email. Example below
 
 ```text
 [database]
@@ -34,6 +34,14 @@ client_id = "backend"
 topic = "machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
 reply_subtopic = "/reply"  # appended to the machine topics for replies by backend. E.g. machine/1/reply
 stats_topic = "stats/"
+
+[email]
+server = "smtp.google.com"
+port = 587
+use_tls = true
+username = ""
+password = ""
+
 ```
 
 ## Dev environment settings

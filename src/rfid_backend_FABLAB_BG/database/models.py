@@ -2,11 +2,13 @@
 
 import sqlite3
 import os
-
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy import event, Engine, Index
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 from .constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
@@ -32,6 +34,7 @@ class Role(Base):
     authorize_all = Column(Boolean, default=False, nullable=False)
     reserved = Column(Boolean, default=False, nullable=False)
     maintenance = Column(Boolean, default=False, nullable=False)
+    backend_admin = Column(Boolean, default=False, nullable=False)
 
     users = relationship("User", back_populates="role")
     __table_args__ = (Index("idx_roles_role_name_unique", "role_name", unique=True),)
@@ -52,7 +55,7 @@ class Role(Base):
         return cls(**dict_data)
 
 
-class User(Base):
+class User(UserMixin, Base):
     """Dataclass handling a user."""
 
     __tablename__ = "users"
@@ -64,6 +67,8 @@ class User(Base):
     card_UUID = Column(String, unique=True, nullable=True)
     disabled = Column(Boolean, unique=False, nullable=False, default=False)
     deleted = Column(Boolean, unique=False, nullable=False, default=False)
+    password_hash = Column(String(128), nullable=True)
+    email = Column(String, nullable=True)
 
     authorizations = relationship("Authorization", back_populates="user")
     interventions = relationship("Intervention", back_populates="user")
@@ -72,6 +77,38 @@ class User(Base):
 
     __table_args__ = (Index("idx_users_card_UUID_unique", "card_UUID", unique=True),)
 
+    """ Methods required by Flask-Login """
+
+    def set_password(self, password) -> None:
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+    def get_id(self) -> str:
+        return str(self.user_id)
+
+    """ Email reset """
+
+    def get_reset_token(self, key: bytes, salt: bytes) -> str:
+        s = Serializer(secret_key=key, salt=salt)
+        return s.dumps({"user_id": self.user_id})
+
+    """ Static method to verify a token"""
+    """ Returns the user_id if the token is valid, None otherwise """
+    """ max_age is in seconds"""
+    """ key and salt must be the same used to generate the token """
+
+    @staticmethod
+    def verify_reset_token(token: str, key: bytes, salt: bytes, max_age=1800) -> int | None:
+        s = Serializer(secret_key=key, salt=salt)
+        try:
+            user_id = s.loads(s=token, max_age=max_age)["user_id"]
+        except:
+            return None
+
+        return int(user_id)
+
     def serialize(self):
         """Serialize data and return a Dict."""
         return {
@@ -79,10 +116,14 @@ class User(Base):
             "name": self.name,
             "surname": self.surname,
             "role_id": self.role_id,
-            "authorization_ids": [auth.authorization_id for auth in self.authorizations],
+            "authorization_ids": [l.authorization_id for l in self.authorizations],
+            "intervention_ids": [l.intervention_id for l in self.interventions],
+            "use_ids": [l.use_id for l in self.uses],
             "card_UUID": self.card_UUID,
             "disabled": self.disabled,
             "deleted": self.deleted,
+            "email": self.email,
+            "password_hash": self.password_hash,
         }
 
     @classmethod

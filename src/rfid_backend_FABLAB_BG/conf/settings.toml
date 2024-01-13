@@ -13,3 +13,10 @@ user = "backend"
 
 [web]
 secret_key = "lkgsjòlgjsd"
+
+[email]
+server = "smtp.google.com"
+port = 587
+use_tls = true
+username = ""
+password = ""

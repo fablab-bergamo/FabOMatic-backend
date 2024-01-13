@@ -2,11 +2,13 @@
 # pylint: disable=C0116
 
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType
 from .webapplication import DBSession, app
 
 
 @app.route("/machines", methods=["GET"])
+@login_required
 def view_machines():
     session = DBSession()
     machines = session.query(Machine).order_by(Machine.machine_id).all()
@@ -14,6 +16,7 @@ def view_machines():
 
 
 @app.route("/machines/add", methods=["GET"])
+@login_required
 def add_machine():
     session = DBSession()
     machine_types = session.query(MachineType).order_by(MachineType.type_id).all()
@@ -21,6 +24,7 @@ def add_machine():
 
 
 @app.route("/machines/create", methods=["POST"])
+@login_required
 def create_machine():
     session = DBSession()
     machine_data = request.form
@@ -36,6 +40,7 @@ def create_machine():
 
 
 @app.route("/machines/edit/<int:machine_id>", methods=["GET"])
+@login_required
 def edit_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
@@ -47,6 +52,7 @@ def edit_machine(machine_id):
 
 
 @app.route("/machines/update", methods=["POST"])
+@login_required
 def update_machine():
     session = DBSession()
     machine_data = request.form
@@ -63,6 +69,7 @@ def update_machine():
 
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])
+@login_required
 def delete_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()

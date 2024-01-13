@@ -4,11 +4,13 @@
 from datetime import datetime
 
 from flask import render_template, request, redirect, url_for, flash
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Machine, Use, User
 from .webapplication import DBSession, app
 
 
 @app.route("/machines/history/<int:machine_id>", methods=["GET"])
+@login_required
 def view_machine_use_history(machine_id):
     session = DBSession()
     uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).all()
@@ -20,6 +22,7 @@ def view_machine_use_history(machine_id):
 
 
 @app.route("/delete_use/<int:use_id>", methods=["POST"])
+@login_required
 def delete_use(use_id):
     session = DBSession()
     use = session.query(Use).filter_by(use_id=use_id).one()
@@ -33,6 +36,7 @@ def delete_use(use_id):
 
 
 @app.route("/view_uses", methods=["GET"])
+@login_required
 def view_uses():
     session = DBSession()
     user_id = request.args.get("user_id")

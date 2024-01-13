@@ -2,11 +2,13 @@
 # pylint: disable=C0116
 
 from flask import flash, render_template, request, redirect, url_for
+from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app
 
 
 @app.route("/authorizations", methods=["GET"])
+@login_required
 def view_authorizations():
     user_filter = request.args.get("user")
     machine_filter = request.args.get("machine")
@@ -26,6 +28,7 @@ def view_authorizations():
 
 
 @app.route("/authorizations/add", methods=["GET"])
+@login_required
 def add_authorization():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).all()
@@ -34,6 +37,7 @@ def add_authorization():
 
 
 @app.route("/authorizations/create", methods=["POST"])
+@login_required
 def create_authorization():
     session = DBSession()
     authorization_data = request.form
@@ -50,6 +54,7 @@ def create_authorization():
 
 
 @app.route("/authorizations/edit/<int:authorization_id>", methods=["GET"])
+@login_required
 def edit_authorization(authorization_id):
     session = DBSession()
     authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
@@ -62,6 +67,7 @@ def edit_authorization(authorization_id):
 
 
 @app.route("/authorizations/update", methods=["POST"])
+@login_required
 def update_authorization():
     session = DBSession()
     authorization_data = request.form
@@ -81,6 +87,7 @@ def update_authorization():
 
 
 @app.route("/authorizations/delete/<int:authorization_id>", methods=["GET", "POST"])
+@login_required
 def delete_authorization(authorization_id):
     session = DBSession()
     authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
@@ -96,6 +103,7 @@ def delete_authorization(authorization_id):
 
 
 @app.route("/authorizations/bulkadd", methods=["GET", "POST"])
+@login_required
 def bulkadd_authorizations():
     session = DBSession()
     machines = session.query(Machine).all()

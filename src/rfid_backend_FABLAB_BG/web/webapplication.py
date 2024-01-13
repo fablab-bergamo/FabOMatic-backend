@@ -63,13 +63,6 @@ def download_attachment(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-@app.route("/logout")
-def logout():
-    # here you would add your logout logic, like clearing session, etc.
-    # then redirect to the login page (or wherever you want)
-    return redirect(url_for("login"))
-
-
 @app.route("/about")
 def about():
     return render_template("about.html")
