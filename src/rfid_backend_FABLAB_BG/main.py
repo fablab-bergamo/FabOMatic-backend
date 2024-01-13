@@ -24,6 +24,7 @@ class Backend:
         """Connect to the MQTT broker and the database."""
         try:
             session = self._db.getSession()
+            logging.info(f"Session info: {session.info}")
             self.createDatabase()
             self._mqtt.connect()
             return True
