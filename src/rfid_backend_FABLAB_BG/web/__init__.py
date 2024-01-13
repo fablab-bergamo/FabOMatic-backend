@@ -1,5 +1,6 @@
 from . import (
     webapplication,
+    authentication,
     routes_authorizations,
     routes_interventions,
     routes_machines,

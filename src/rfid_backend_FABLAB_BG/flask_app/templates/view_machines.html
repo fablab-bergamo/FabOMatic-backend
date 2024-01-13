@@ -23,7 +23,7 @@
             <tr>
                 <td>{{ machine.machine_id }}</td>
                 <td>{{ machine.machine_name }}</td>
-                <td>{{ machine.machine_type.type_name }}</td>
+                <td><span class="badge bg-info">{{ machine.machine_type.type_name }}</span></td>
                 <td>{{ machine.machine_hours | format_hours }}</td>
                 <td>
                     {% if machine.blocked %}

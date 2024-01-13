@@ -6,7 +6,7 @@ import re
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import User, Role
-
+from rfid_backend_FABLAB_BG.web.authentication import send_reset_email
 from .webapplication import DBSession, app
 
 
@@ -24,6 +24,22 @@ def add_user():
     session = DBSession()
     roles = session.query(Role).order_by(Role.role_id).all()
     return render_template("add_user.html", roles=roles)
+
+
+@app.route("/users/reset/<int:user_id>", methods=["GET", "POST"])
+@login_required
+def reset_user(user_id):
+    session = DBSession()
+    user = session.query(User).filter_by(user_id=user_id).one()
+    if not user:
+        return "User not found", 404
+
+    if request.method == "POST":
+        send_reset_email(user)
+        flash("An email has been sent with instructions to reset password.", "info")
+        return redirect(url_for("view_users"))
+
+    return render_template("delete_user.html", user=user)
 
 
 @app.route("/users/create", methods=["POST"])

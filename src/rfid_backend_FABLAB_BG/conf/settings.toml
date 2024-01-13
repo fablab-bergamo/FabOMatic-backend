@@ -13,6 +13,7 @@ user = "backend"
 
 [web]
 secret_key = "lkgsjòlgjsd"
+default_admin_email = "admin@fablag.org"
 
 [email]
 server = "smtp.google.com"

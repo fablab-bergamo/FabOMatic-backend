@@ -16,7 +16,16 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## Installation instructions
 
-* Missing
+* Install prerequisites (python 3.10+, mosquitto, pip)
+* Install from test pypi repository
+
+```shell
+pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/simple rfid_backend_FABLAB_BG
+```
+
+* Change defaults in conf/settings.toml (see below)
+* After installation login with default admin email in settings file and "admin" password.
+* Setup backup strategy for SQLDB file.
 
 ## Configuration file
 
@@ -34,6 +43,10 @@ client_id = "backend"
 topic = "machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
 reply_subtopic = "/reply"  # appended to the machine topics for replies by backend. E.g. machine/1/reply
 stats_topic = "stats/"
+
+[web]
+secret_key = "some_long_hex_string_1234gs"  # Used for encryption
+default_admin_email = "admin@fablag.org"    # Used for initial login
 
 [email]
 server = "smtp.google.com"
@@ -69,7 +82,7 @@ pip install --upgrade build
 pip install --upgrade twine
 ```
 
-To update
+To update distribution
 
 ```shell
 py -m build

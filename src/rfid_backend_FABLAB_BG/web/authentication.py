@@ -49,20 +49,25 @@ def logout():
     return redirect(url_for("login"))
 
 
+def send_reset_email(user: User) -> bool:
+    token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
+    msg = Message("Password Reset Request", sender="noreply@demo.com", recipients=[user.email])
+    msg.body = f"""To reset your password, visit the following link:
+                {url_for('reset_token', token=token, _external=True)}
+
+                If you did not make this request then simply ignore this email and no changes will be made.
+                """
+    mail.send(msg)
+    return True
+
+
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
         session = DBSession()
         user = session.query(User).filter_by(email=request.form["email"]).first()
         if user:
-            token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
-            msg = Message("Password Reset Request", sender="noreply@demo.com", recipients=[user.email])
-            msg.body = f"""To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-
-If you did not make this request then simply ignore this email and no changes will be made.
-"""
-            mail.send(msg)
+            send_reset_email(user)
             flash("Email sent with instructions to reset your password.", "info")
             return redirect(url_for("login"))
         else:

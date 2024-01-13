@@ -59,6 +59,7 @@ class User(UserMixin, Base):
     """Dataclass handling a user."""
 
     __tablename__ = "users"
+    DEFAULT_ADMIN_PASSWORD = "admin"
 
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
