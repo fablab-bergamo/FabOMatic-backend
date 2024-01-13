@@ -1,13 +1,22 @@
 """ Test the MQTT interface and the message mapper """
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-import os
 import unittest
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+    MachineQuery,
+    MachineResponse,
+    SimpleResponse,
+    StartUseQuery,
+    UserQuery,
+    UserResponse,
+    EndUseQuery,
+    RegisterMaintenanceQuery,
+    AliveQuery,
+)
 from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
 from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
-from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
+from tests.common import TEST_SETTINGS_PATH, get_simple_db
 
 
 class TestMQTT(unittest.TestCase):
@@ -58,7 +67,8 @@ class TestMQTT(unittest.TestCase):
         json_response = response.serialize()
         self.assertEqual(
             json_response,
-            '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true, "name": "Machine", "logoff": 120, "type": 1}',
+            '{"request_ok": true, "is_valid": true, "maintenance": false, '
+            + '"allowed": true, "name": "Machine", "logoff": 120, "type": 1}',
         )
 
         response = SimpleResponse(True)

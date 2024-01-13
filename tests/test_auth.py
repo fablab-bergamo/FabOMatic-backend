@@ -2,14 +2,10 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 import unittest
-from random import randint
-from time import time
-
-from sqlalchemy.exc import IntegrityError
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
 from rfid_backend_FABLAB_BG.database.models import User, Role
-from tests.common import TEST_SETTINGS_PATH, get_empty_db, get_simple_db, configure_logger
+from tests.common import TEST_SETTINGS_PATH, get_empty_db, configure_logger
 
 
 class TestAuth(unittest.TestCase):

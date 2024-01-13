@@ -6,7 +6,6 @@ import re
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import User, Role
-from .authentication import login_manager
 
 from .webapplication import DBSession, app
 

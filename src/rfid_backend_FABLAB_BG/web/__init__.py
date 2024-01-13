@@ -7,6 +7,5 @@ from . import (
     routes_maintenance,
     routes_roles,
     routes_users,
-    routes_usertypes,
     routes_uses,
 )

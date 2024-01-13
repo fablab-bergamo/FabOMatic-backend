@@ -1,7 +1,14 @@
-import os
 import unittest
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+    UserQuery,
+    AliveQuery,
+    MachineQuery,
+    StartUseQuery,
+    EndUseQuery,
+    RegisterMaintenanceQuery,
+)
+
 from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
 from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
 from rfid_backend_FABLAB_BG.logic.MachineLogic import MachineLogic
@@ -53,21 +60,21 @@ class TestLogic(unittest.TestCase):
 
     def test_msg_mapper(self):
         db = get_simple_db()
-        with db.getSession() as session:
-            mqtt = MQTTInterface(TEST_SETTINGS_PATH)
-            mapper = MsgMapper(mqtt, db)
-            mapper.registerHandlers()
 
-            # Try all messagges
-            query = UserQuery("1234")
-            mapper.messageReceived("1", query)
-            query = AliveQuery()
-            mapper.messageReceived("1", query)
-            query = MachineQuery()
-            mapper.messageReceived("1", query)
-            query = StartUseQuery("1234")
-            mapper.messageReceived("1", query)
-            query = EndUseQuery("1234", 123)
-            mapper.messageReceived("1", query)
-            query = RegisterMaintenanceQuery("1234")
-            mapper.messageReceived("1", query)
+        mqtt = MQTTInterface(TEST_SETTINGS_PATH)
+        mapper = MsgMapper(mqtt, db)
+        mapper.registerHandlers()
+
+        # Try all messagges
+        query = UserQuery("1234")
+        mapper.messageReceived("1", query)
+        query = AliveQuery()
+        mapper.messageReceived("1", query)
+        query = MachineQuery()
+        mapper.messageReceived("1", query)
+        query = StartUseQuery("1234")
+        mapper.messageReceived("1", query)
+        query = EndUseQuery("1234", 123)
+        mapper.messageReceived("1", query)
+        query = RegisterMaintenanceQuery("1234")
+        mapper.messageReceived("1", query)

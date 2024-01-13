@@ -4,7 +4,7 @@
 from datetime import datetime
 import os
 
-from flask import Flask, render_template, redirect, url_for, send_from_directory
+from flask import Flask, render_template, send_from_directory
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base
