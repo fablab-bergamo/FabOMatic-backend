@@ -6,7 +6,7 @@ from logging.handlers import RotatingFileHandler
 import random
 from time import time
 
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
+from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getSetting
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, User, Intervention
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -66,16 +66,25 @@ def seed_db() -> DatabaseBackend:
         mt1 = MachineType(type_id=1, type_name="Default type")
         empty_db.getMachineTypeRepository(session).create(mt1)
 
-        r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True)
+        r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True, backend_admin=True)
         empty_db.getRoleRepository(session).create(r1)
 
-        r3 = Role(role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True)
+        r3 = Role(role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True, backend_admin=False)
         empty_db.getRoleRepository(session).create(r3)
 
-        r2 = Role(role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False)
+        r2 = Role(role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False, backend_admin=False)
         empty_db.getRoleRepository(session).create(r2)
 
-        u1 = User(name="admin", surname="admin", role_id=r1.role_id, card_UUID="12345678")
+        u1 = User(
+            name="admin",
+            surname="admin",
+            role_id=r1.role_id,
+            card_UUID="12345678",
+            email=getSetting("web", "default_admin_email"),
+        )
+
+        u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
+
         empty_db.getUserRepository(session).create(u1)
 
         m1 = Machine(machine_name="Sample machine", machine_type_id=mt1.type_id)
