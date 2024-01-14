@@ -168,7 +168,7 @@ class MQTTInterface:
             *args: Variable length argument list.
         """
         if not self._connected:
-            logging.info("Connected to MQTT broker %s:%s", self._broker, self._port)
+            logging.info("Connected to MQTT broker [%s:%s] as %s", self._broker, self._port, self._client_id)
         self._connected = True
 
     def connect(self):
@@ -181,16 +181,16 @@ class MQTTInterface:
         self._client.on_connect = self._onConnect
         self._client.username_pw_set("backend", None)
 
-        logging.debug("Connecting to MQTT broker %s:%s...", self._broker, self._port)
+        logging.debug("Connecting to MQTT broker [%s:%s] as %s...", self._broker, self._port, self._client_id)
 
         self._client.connect(self._broker, port=self._port)
         # Subscribe to all first-level subtopics of machine
         topic = self._topic + "+"
         result = self._client.subscribe(topic, qos=1)
         if result[0] != mqtt.MQTT_ERR_SUCCESS:
-            logging.error("Failure to subscribe %s : error %d", topic, result[0])
+            logging.error("Failure to subscribe topic [%s] : error %d", topic, result[0])
         else:
-            logging.debug("Subscribed to %s", topic)
+            logging.debug("Subscribed to topic [%s]", topic)
 
         self._client.loop_start()
         sleep(0.5)

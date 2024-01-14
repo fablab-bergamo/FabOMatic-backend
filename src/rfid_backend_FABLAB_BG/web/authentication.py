@@ -22,23 +22,23 @@ SALT = b"fablab-bg"
 
 @login_manager.user_loader
 def load_user(user_id):
-    session = DBSession()
-    return session.query(User).get(int(user_id))
+    with DBSession() as session:
+        return session.query(User).get(int(user_id))
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        session = DBSession()
-        user = session.query(User).filter_by(email=request.form["email"]).first()
-        if user and user.check_password(request.form["password"]):
-            # Now check the user role
-            if user.role.backend_admin or user.role.authorize_all:
-                login_user(user)
-                return redirect(url_for("about"))
-            else:
-                flash("Your user does not have a role with backend administration permission.", "danger")
-                return redirect(url_for("login"))
+        with DBSession() as session:
+            user = session.query(User).filter_by(email=request.form["email"]).first()
+            if user and user.check_password(request.form["password"]):
+                # Now check the user role
+                if user.role.backend_admin or user.role.authorize_all:
+                    login_user(user)
+                    return redirect(url_for("about"))
+                else:
+                    flash("Your user does not have a role with backend administration permission.", "danger")
+                    return redirect(url_for("login"))
     return render_template("login.html")
 
 
@@ -64,15 +64,15 @@ def send_reset_email(user: User) -> bool:
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
-        session = DBSession()
-        user = session.query(User).filter_by(email=request.form["email"]).first()
-        if user:
-            send_reset_email(user)
-            flash("Email sent with instructions to reset your password.", "info")
-            return redirect(url_for("login"))
-        else:
-            flash("No user found with this email.", "danger")
-            return redirect(url_for("login"))
+        with DBSession() as session:
+            user = session.query(User).filter_by(email=request.form["email"]).first()
+            if user:
+                send_reset_email(user)
+                flash("Email sent with instructions to reset your password.", "info")
+                return redirect(url_for("login"))
+            else:
+                flash("No user found with this email.", "danger")
+                return redirect(url_for("login"))
     return render_template("forgot_password.html")
 
 
@@ -83,10 +83,10 @@ def reset_token(token):
         flash("That is an invalid or expired token", "warning")
         return redirect(url_for("forgot_password"))
     if request.method == "POST":
-        session = DBSession()
-        user = session.query(User).get(user_id)
-        user.set_password(request.form["password"])
-        session.commit()
-        flash("Your password has been updated! You are now able to log in", "success")
-        return redirect(url_for("login"))
+        with DBSession() as session:
+            user = session.query(User).get(user_id)
+            user.set_password(request.form["password"])
+            session.commit()
+            flash("Your password has been updated! You are now able to log in", "success")
+            return redirect(url_for("login"))
     return render_template("reset_token.html", title="Reset Password")

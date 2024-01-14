@@ -29,7 +29,7 @@ class MsgMapper:
         self._machines = {}
         self._handlers = {}
 
-    def getMachineLogic(self, machineId: str) -> MachineLogic | None:
+    def getMachineLogic(self, mid: str) -> MachineLogic | None:
         """
         Retrieves the MachineLogic object associated with the given machine ID.
 
@@ -39,13 +39,16 @@ class MsgMapper:
         Returns:
             MachineLogic | None: The MachineLogic object if found, None otherwise.
         """
-        if machineId not in self._machines:
+        if mid not in self._machines:
             try:
-                self._machines[machineId] = MachineLogic(machineId)
+                self._machines[mid] = MachineLogic(mid)
+                logging.info(
+                    "Created MachineLogic instance for machine %s, %d machines total.", mid, len(self._machines)
+                )
             except Exception as e:
                 logging.error("MachineLogic creation exception %s", str(e))
                 return None
-        return self._machines[machineId]
+        return self._machines[mid]
 
     def handleUserQuery(self, machine_logic: MachineLogic, userquery: UserQuery) -> str:
         response = machine_logic.isAuthorized(userquery.uid)

@@ -6,6 +6,8 @@ import toml
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 
+from rfid_backend_FABLAB_BG.database.models import MachineType, Role, User, Machine, Maintenance
+
 from .repositories import (
     UseRepository,
     UserRepository,
@@ -192,8 +194,45 @@ class DatabaseBackend:
 
     def createDatabase(self) -> None:
         """Create the database."""
-        logging.debug("Creating database %s", self._url)
         Base.metadata.create_all(self._engine, checkfirst=True)
+        with self._session() as session:
+            if len(self.getUserRepository(session).get_all()) == 0:
+                self.seedDatabase()
+
+    def seedDatabase(self) -> None:
+        """Seed the database with initial data."""
+        logging.warning("Seeding empty database %s", self._url)
+        with self._session() as session:
+            mt1 = MachineType(type_name="Default type", type_timeout_min=8 * 60)
+            self.getMachineTypeRepository(session).create(mt1)
+
+            r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True, backend_admin=True)
+            self.getRoleRepository(session).create(r1)
+
+            r3 = Role(
+                role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True, backend_admin=False
+            )
+            self.getRoleRepository(session).create(r3)
+
+            r2 = Role(
+                role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False, backend_admin=False
+            )
+            self.getRoleRepository(session).create(r2)
+
+            u1 = User(
+                name="admin",
+                surname="admin",
+                role_id=r1.role_id,
+                card_UUID="12345678",
+                email=getSetting("web", "default_admin_email"),
+            )
+
+            u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
+
+            self.getUserRepository(session).create(u1)
+
+            m1 = Machine(machine_name="MACHINE1", machine_type_id=mt1.type_id)
+            self.getMachineRepository(session).create(m1)
 
     def dropContents(self) -> None:
         """Drop all contents of the database."""
