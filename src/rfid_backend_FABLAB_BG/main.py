@@ -12,10 +12,14 @@ from rfid_backend_FABLAB_BG.logger import configure_logger
 class Backend:
     """Backend class."""
 
-    def __init__(self):
-        self._db = DatabaseBackend()
+    def __init__(self, config_file: str = None):
+        if config_file is None:
+            self._db = DatabaseBackend()
+            self._mqtt = MQTTInterface()
+        else:
+            self._db = DatabaseBackend(config_file)
+            self._mqtt = MQTTInterface(config_file)
 
-        self._mqtt = MQTTInterface()
         self._mapper = MsgMapper(self._mqtt, self._db)
         self._mapper.registerHandlers()
         self._flaskThread = None
