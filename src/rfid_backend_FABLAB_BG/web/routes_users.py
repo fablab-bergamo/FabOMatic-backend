@@ -39,7 +39,7 @@ def reset_user(user_id):
         flash("An email has been sent with instructions to reset password.", "info")
         return redirect(url_for("view_users"))
 
-    return render_template("delete_user.html", user=user)
+    return render_template("reset_user.html", user=user)
 
 
 @app.route("/users/create", methods=["POST"])
