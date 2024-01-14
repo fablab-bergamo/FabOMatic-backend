@@ -69,10 +69,13 @@ class MQTTInterface:
         Returns:
             str: The machine name extracted from the topic.
         """
-        if not topic.startswith(self._topic[:-1]):
+        elems = topic.split("/")
+        if len(elems) < 2:
+            return None
+        if elems[0].capitalize() != self._topic.capitalize():
             return None
 
-        return topic.split("/")[-1:][0]
+        return elems[1]
 
     def _onMessage(self, *args):
         """
@@ -87,6 +90,7 @@ class MQTTInterface:
 
         machine = self._extractMachineFromTopic(topic)
         if not machine:
+            logging.warning("Could not extract machine from topic : %s", topic)
             return
 
         if self._messageCallback is None:
@@ -126,7 +130,7 @@ class MQTTInterface:
             bool: True if the message was published successfully, False otherwise.
         """
         self._msg_send_count += 1
-        return self._publish(f"{self._topic}{machine}/reply", message)
+        return self._publish(f"{self._topic}/{machine}/reply", message)
 
     def _publish(self, topic: str, message: str) -> bool:
         """
@@ -185,7 +189,7 @@ class MQTTInterface:
 
         self._client.connect(self._broker, port=self._port)
         # Subscribe to all first-level subtopics of machine
-        topic = self._topic + "+"
+        topic = self._topic + "/+"
         result = self._client.subscribe(topic, qos=1)
         if result[0] != mqtt.MQTT_ERR_SUCCESS:
             logging.error("Failure to subscribe topic [%s] : error %d", topic, result[0])
