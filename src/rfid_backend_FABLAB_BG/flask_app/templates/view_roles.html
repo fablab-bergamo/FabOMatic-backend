@@ -22,10 +22,34 @@
             <tr>
                 <td>{{ role.role_id }}</td>
                 <td>{{ role.role_name }}</td>
-                <td>{{ role.reserved }}</td>
-                <td>{{ role.backend_admin }}</td>
-                <td>{{ role.maintenance }}</td>
-                <td>{{ role.authorize_all }}</td>
+                <td>
+                    {% if role.reserved %}
+                    <i class="fa-solid fa-lock"></i> <!-- Locked Icon -->
+                    {% else %}
+                    <i class="fa-solid fa-lock-open"></i> <!-- Unlocked Icon -->
+                    {% endif %}
+                </td>
+                <td>
+                    {% if role.backend_admin %}
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if role.maintenance %}
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if role.authorize_all %}
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ url_for('edit_role', role_id=role.role_id) }}" class="btn btn-warning">Edit</a>
                     <a href="{{ url_for('delete_role', role_id=role.role_id) }}" class="btn btn-danger">Delete</a>
