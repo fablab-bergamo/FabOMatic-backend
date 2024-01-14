@@ -47,10 +47,12 @@ def edit_role(role_id):
 
     # Block editing of reserved roles
     if not role:
-        return "Role not found", 404
+        flash("Role not found.", "error")
+        return redirect(url_for("roles"))
 
     if role.reserved:
-        return "Cannot edit reserved role", 403
+        flash("Cannot edit reserved role.", "error")
+        return redirect(url_for("roles"))
 
     if request.method == "POST":
         role.role_name = request.form["role_name"]
@@ -70,9 +72,12 @@ def delete_role(role_id):
     role_repo = RoleRepository(session)
     role = role_repo.get_by_id(role_id)
     if not role:
-        return "Role not found", 404
+        flash("Role not found.", "error")
+        return redirect(url_for("roles"))
+
     if role.reserved:
-        return "Cannot delete reserved role", 403
+        flash("Cannot edit reserved role.", "error")
+        return redirect(url_for("roles"))
 
     if request.method == "POST":
         role_repo.delete(role)
