@@ -1,4 +1,5 @@
 """ Database repositories for the rfid_backend_FABLAB_BG application."""
+import logging
 
 from time import time
 from typing import List, Optional, Tuple
@@ -533,7 +534,21 @@ class UseRepository(BaseRepository):
             record = Use(
                 machine_id=machine_id, user_id=user.user_id, start_timestamp=(end - duration_s), end_timestamp=end
             )
-            self.create(record)
+            # Check that there is no duplicate (could happen if a client sends several identical stopUse requests)
+            existing_record = (
+                self.db_session.query(Use)
+                .filter(
+                    Use.machine_id == record.machine_id,
+                    Use.user_id == record.user_id,
+                    Use.start_timestamp == record.start_timestamp,
+                    Use.end_timestamp == record.end_timestamp,
+                )
+                .first()
+            )
+            if existing_record is None:
+                self.create(record)
+            else:
+                logging.warning("Duplicate stopUse detected, ignoring client request")
         else:
             # Update existing record
             record.end_timestamp = record.start_timestamp + duration_s
