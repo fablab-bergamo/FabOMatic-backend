@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} About {% endblock %}</h1>
-    <h3>FlaskApp is a Flask web application written in Python.</h3>
+    {% if current_user.is_authenticated %}
+        <h2>Hello {{ current_user.name }}!</h2>
+    {% else %}
+        <h2>About RFID-BACKEND</h2>
+    {% endif %}
+    <h5>Rfid-backend is a Flask web application written in Python.</h5>
 {% endblock %}

@@ -209,13 +209,11 @@ class DatabaseBackend:
             r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True, backend_admin=True)
             self.getRoleRepository(session).create(r1)
 
-            r3 = Role(
-                role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True, backend_admin=False
-            )
+            r3 = Role(role_name="Fab Staff", authorize_all=True, reserved=False, maintenance=True, backend_admin=False)
             self.getRoleRepository(session).create(r3)
 
             r2 = Role(
-                role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False, backend_admin=False
+                role_name="Fab Users", authorize_all=True, reserved=False, maintenance=False, backend_admin=False
             )
             self.getRoleRepository(session).create(r2)
 
