@@ -39,6 +39,9 @@ def login():
                 else:
                     flash("Your user does not have a role with backend administration permission.", "danger")
                     return redirect(url_for("login"))
+            else:
+                flash("Wrong username or password.", "danger")
+                return redirect(url_for("login"))
     return render_template("login.html")
 
 
@@ -46,12 +49,13 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("You have been logged out.", "success")
     return redirect(url_for("login"))
 
 
 def send_reset_email(user: User) -> bool:
     token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
-    msg = Message("Password Reset Request", sender="noreply@demo.com", recipients=[user.email])
+    msg = Message("Password Reset Request", sender="admin@fablab.org", recipients=[user.email])
     msg.body = f"""To reset your password, visit the following link:
                 {url_for('reset_token', token=token, _external=True)}
 
