@@ -3,7 +3,7 @@ url = "sqlite:///test-database.sqldb"
 name = "fablab-test"
 
 [MQTT]
-broker = "fabpi"            # Name / IP of the MQTT broker
+broker = "127.0.0.1"            # Name / IP of the MQTT broker
 port = 1883                 # MQTT broker port
 client_id = "backend-2"     # Client name
 topic = "machine"           # Machine topic to be monitored. All subtopics with <topic>/<ID> will be subscribed. Do not include leading or trailing slashes.
