@@ -16,7 +16,14 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## Installation instructions
 
-* Install prerequisites (python 3.10+, mosquitto, pip)
+* Install prerequisites (python 3.10+, rustc for cryptography, mosquitto, pip). It takes horus on Raspberry Pi Zero.
+```shell
+wget -qO - https://raw.githubusercontent.com/tvdsluijs/sh-python-installer/main/python.sh | sudo bash -s 3.10.9
+sudo apt remove python3-apt
+sudo apt install python3-apt
+sudo curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+sudo apt install mosquitto
+```
 * Install from test pypi repository
 
 ```shell
@@ -24,6 +31,11 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 ```
 
 * Change defaults in conf/settings.toml (see below)
+* Run it with
+
+```shell
+python -m rfid_backend_FABLAB_BG
+```
 * After installation login with default admin email in settings file and "admin" password.
 * Setup backup strategy for SQLDB file.
 
