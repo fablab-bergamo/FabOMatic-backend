@@ -16,7 +16,8 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## Installation instructions
 
-* Install prerequisites (python 3.10+, rustc for cryptography, mosquitto, pip). It takes horus on Raspberry Pi Zero.
+* Install prerequisites (python 3.10+, rustc for cryptography, mosquitto, pip). It takes 3-4 hours on Raspberry Pi Zero to complete installation.
+
 ```shell
 wget -qO - https://raw.githubusercontent.com/tvdsluijs/sh-python-installer/main/python.sh | sudo bash -s 3.10.9
 sudo apt remove python3-apt
@@ -31,13 +32,30 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 ```
 
 * Change defaults in conf/settings.toml (see below)
+
 * Run it with
 
 ```shell
 python -m rfid_backend_FABLAB_BG
 ```
+
 * After installation login with default admin email in settings file and "admin" password.
+
+> Default URL is https://HOSTNAME:23336/
+
 * Setup backup strategy for SQLDB file.
+
+## How to upgrade release
+
+* Use pip --upgrade :
+
+```shell
+pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/simple rfid_backend_FABLAB_BG --upgrade
+```
+
+* Review settings.toml file after installation.
+
+* TODO : database schema upgrade instructions
 
 ## Configuration file
 
