@@ -3,7 +3,7 @@
 
 import unittest
 
-from rfid_backend_FABLAB_BG.main import Backend
+from rfid_backend_FABLAB_BG.__main__ import Backend
 from tests.common import TEST_SETTINGS_PATH
 
 
