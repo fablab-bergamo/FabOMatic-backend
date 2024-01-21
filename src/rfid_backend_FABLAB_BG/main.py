@@ -82,3 +82,7 @@ def start(loglevel):
         else:
             back.publishStats()
         sleep(5)
+
+
+if __name__ == "__main__":
+    start(10)
