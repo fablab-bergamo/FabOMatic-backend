@@ -42,6 +42,20 @@ class MachineLogic:
 
         logging.info(f"Machine logic instance for ID:{machine_id} initialized")
 
+    def updateMachineLastSeen(self):
+        """
+        Updates the last seen timestamp of the machine.
+        """
+        self._last_alive = time()
+        try:
+            with MachineLogic.database.getSession() as session:
+                machine_repo = MachineLogic.database.getMachineRepository(session)
+                machine = machine_repo.get_by_id(self._machine_id)
+                machine.last_seen = time()
+                machine_repo.update(machine)
+        except Exception as e:
+            logging.error("updateMachineLastSeen exception %s", str(e), exc_info=True)
+
     def machineStatus(self):
         """
         Gets the status of the machine.
@@ -55,7 +69,7 @@ class MachineLogic:
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
                     return MachineResponse(True, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES)
-
+                self.updateMachineLastSeen()
                 return MachineResponse(
                     True,
                     True,
@@ -74,15 +88,7 @@ class MachineLogic:
         Called when a machine sends an alive message.
         """
         logging.debug(f"Machine {self._machine_id} alive")
-        try:
-            self._last_alive = time()
-            with MachineLogic.database.getSession() as session:
-                machine_repo = MachineLogic.database.getMachineRepository(session)
-                machine = machine_repo.get_by_id(self._machine_id)
-                machine.last_seen = time()
-                machine_repo.update(machine)
-        except Exception as e:
-            logging.error("machineAlive exception %s", str(e), exc_info=True)
+        self.updateMachineLastSeen()
 
     def isAuthorized(self, card_uuid: str) -> UserResponse:
         """
@@ -95,6 +101,7 @@ class MachineLogic:
             UserResponse: The user response object containing the authorization information.
         """
         try:
+            self.updateMachineLastSeen()
             with MachineLogic.database.getSession() as session:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
                 user_repo = MachineLogic.database.getUserRepository(session)
@@ -102,7 +109,6 @@ class MachineLogic:
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None or user is None:
                     return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID, False)
-
                 if user_repo.IsUserAuthorizedForMachine(machine, user):
                     return UserResponse(True, True, user.name, user.user_level(), False)
                 else:
@@ -123,6 +129,7 @@ class MachineLogic:
             SimpleResponse: The simple response object indicating the success or failure of the operation.
         """
         try:
+            self.updateMachineLastSeen()
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
@@ -149,6 +156,7 @@ class MachineLogic:
             SimpleResponse: The simple response object indicating the success or failure of the operation.
         """
         try:
+            self.updateMachineLastSeen()
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
@@ -175,6 +183,7 @@ class MachineLogic:
             SimpleResponse: The simple response object indicating the success or failure of the operation.
         """
         try:
+            self.updateMachineLastSeen()
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
@@ -200,6 +209,7 @@ class MachineLogic:
             SimpleResponse: The simple response object indicating the success or failure of the operation.
         """
         try:
+            self.updateMachineLastSeen()
             with MachineLogic.database.getSession() as session:
                 user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
