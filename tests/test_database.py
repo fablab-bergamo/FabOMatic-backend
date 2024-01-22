@@ -632,6 +632,7 @@ class TestDB(unittest.TestCase):
             # invalid cases
             for _ in range(100):
                 self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
+                self.assertTrue(use_repo.inUse(machine_id=machine.machine_id, user=userID1, duration_s=1))
 
             self.assertEqual(
                 1, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "Only one open use should exist"

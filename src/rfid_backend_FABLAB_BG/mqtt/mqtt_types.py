@@ -27,6 +27,8 @@ class Parser:
                     return MachineQuery.deserialize(json_data)
                 case "startuse":
                     return StartUseQuery.deserialize(json_data)
+                case "inuse":
+                    return InUseQuery.deserialize(json_data)
                 case "stopuse":
                     return EndUseQuery.deserialize(json_data)
                 case "maintenance":
@@ -96,6 +98,18 @@ class EndUseQuery(BaseJson):
         return EndUseQuery(data["uid"], data["duration"])
 
 
+class InUseQuery(BaseJson):
+    def __init__(self, card_uid: str, duration_s: int):
+        self.uid = card_uid
+        self.duration = duration_s
+        self.action = "inuse"
+
+    @staticmethod
+    def deserialize(json_data: str):
+        data = json.loads(json_data)
+        return InUseQuery(data["uid"], data["duration"])
+
+
 class RegisterMaintenanceQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
@@ -154,3 +168,6 @@ class SimpleResponse:
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
+
+    def __str__(self):
+        return self.serialize()

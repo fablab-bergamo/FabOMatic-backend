@@ -499,13 +499,50 @@ class UseRepository(BaseRepository):
         if machine is None or user is None:
             return False
 
-        # Close eventual previous uses which were not closed with 0 duration
+        # Close eventual previous uses which were not closed with duration == (last_seen - start_timestamp)
         self.db_session.query(Use).filter(Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)).update(
-            {Use.end_timestamp: Use.start_timestamp}
+            {Use.end_timestamp: Use.last_seen}
         )
 
         # Register start of new use
-        self.db_session.add(Use(user_id=user.user_id, machine_id=machine.machine_id, start_timestamp=timestamp))
+        self.db_session.add(
+            Use(user_id=user.user_id, machine_id=machine.machine_id, start_timestamp=timestamp, last_seen=timestamp)
+        )
+        self.db_session.commit()
+
+        return True
+
+    def inUse(self, machine_id: int, user: User, duration_s: int) -> bool:
+        """Register current usage of the machine by a user.
+
+        Args:
+            machine_id (int): id of the Machine
+            user (User): User that is using the Machine.
+            duration_s (int): duration of the Use.
+
+        Returns:
+            bool: if the inUse was registered successfully.
+        """
+        machine_repo = MachineRepository(self.db_session)
+        machine = machine_repo.get_by_id(machine_id)
+        if machine is None or user is None:
+            return False
+
+        record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
+        end = time()
+
+        if record is None:
+            # InUse received but no startUse was received before
+            record = Use(
+                machine_id=machine_id, user_id=user.user_id, start_timestamp=(end - duration_s), last_seen=end
+            )
+            logging.warning("Missed startUse event, using inUse data.")
+            self.create(record)
+        else:
+            # Update existing record
+            record.last_seen = end
+            self.update(record)
+
         self.db_session.commit()
 
         return True
@@ -527,13 +564,17 @@ class UseRepository(BaseRepository):
             return 0
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
-
+        end = time()
         if record is None:
-            end = time()
             # Create missing record on the fly since we have all required information
             record = Use(
-                machine_id=machine_id, user_id=user.user_id, start_timestamp=(end - duration_s), end_timestamp=end
+                machine_id=machine_id,
+                user_id=user.user_id,
+                start_timestamp=(end - duration_s),
+                last_seen=end,
+                end_timestamp=end,
             )
+
             # Check that there is no duplicate (could happen if a client sends several identical stopUse requests)
             existing_record = (
                 self.db_session.query(Use)
@@ -552,11 +593,12 @@ class UseRepository(BaseRepository):
         else:
             # Update existing record
             record.end_timestamp = record.start_timestamp + duration_s
+            record.last_seen = end
             self.update(record)
 
             # Close eventual previous uses which were not closed
             self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).update(
-                {Use.end_timestamp: Use.start_timestamp}
+                {Use.end_timestamp: Use.last_seen}
             )
 
         self.db_session.commit()

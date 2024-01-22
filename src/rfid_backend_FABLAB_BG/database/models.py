@@ -294,6 +294,7 @@ class Use(Base):
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
     start_timestamp = Column(Float, nullable=False)
+    last_seen = Column(Float, nullable=False)
     end_timestamp = Column(Float, nullable=True)
 
     machine = relationship("Machine", back_populates="uses")
@@ -307,4 +308,5 @@ class Use(Base):
             "machine_id": self.machine_id,
             "start_timestamp": self.start_timestamp,
             "end_timestamp": self.end_timestamp,
+            "last_seen": self.last_seen,
         }
