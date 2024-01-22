@@ -137,6 +137,32 @@ class MachineLogic:
             logging.error("startUse exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")
 
+    def inUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
+        """
+        Update current usage of the machine by a user.
+
+        Args:
+            card_uuid (str): The UUID of the user's card.
+            duration_s (int): The duration of the machine use in seconds.
+
+        Returns:
+            SimpleResponse: The simple response object indicating the success or failure of the operation.
+        """
+        try:
+            with MachineLogic.database.getSession() as session:
+                user_repo = MachineLogic.database.getUserRepository(session)
+                user = user_repo.getUserByCardUUID(card_uuid)
+                if user is None:
+                    return SimpleResponse(False, "Invalid card")
+
+                use_repo = MachineLogic.database.getUseRepository(session)
+                result = use_repo.inUse(self._machine_id, user, duration_s)
+
+                return SimpleResponse(result, "inUse")
+        except Exception as e:
+            logging.error("inuse exception %s", str(e), exc_info=True)
+            return SimpleResponse(False, "BACKEND EXCEPTION")
+
     def endUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
         """
         Ends the use of the machine by a user.
