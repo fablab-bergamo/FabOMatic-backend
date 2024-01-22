@@ -49,6 +49,7 @@
         <th>Machine</th>
         <th>Start Time</th>
         <th>End Time</th>
+        <th>Last update</th>
         <th>Duration (minutes)</th>
         <th>Action</th>
       </tr>
@@ -66,6 +67,7 @@
         </td>
         <td>{{ use.machine.machine_name }}</td>
         <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
+        <td>{{ use.last_seen|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
         <td>
           {% if use.end_timestamp is none %}
           Still in use
