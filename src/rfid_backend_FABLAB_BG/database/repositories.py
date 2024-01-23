@@ -500,9 +500,11 @@ class UseRepository(BaseRepository):
             return False
 
         # Close eventual previous uses which were not closed with duration == (last_seen - start_timestamp)
-        self.db_session.query(Use).filter(Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)).update(
-            {Use.end_timestamp: Use.last_seen}
-        )
+        for rec in self.db_session.query(Use).filter(
+            Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)
+        ):
+            rec.end_timestamp = rec.last_seen
+            self.update(rec)
 
         # Register start of new use
         self.db_session.add(
@@ -597,9 +599,9 @@ class UseRepository(BaseRepository):
             self.update(record)
 
             # Close eventual previous uses which were not closed
-            self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).update(
-                {Use.end_timestamp: Use.last_seen}
-            )
+            for rec in self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)):
+                rec.end_timestamp = rec.last_seen
+                self.update(rec)
 
         self.db_session.commit()
 
