@@ -1,12 +1,25 @@
+""" Test the database backend. """
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import random
 import unittest
+from random import randint
 from string import ascii_uppercase
 from time import time
 
 from sqlalchemy.exc import IntegrityError
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import *
+from rfid_backend_FABLAB_BG.database.models import (
+    Role,
+    MachineType,
+    User,
+    Machine,
+    Maintenance,
+    Authorization,
+    Use,
+    Intervention,
+)
 from tests.common import TEST_SETTINGS_PATH, get_empty_db, get_simple_db, configure_logger
 
 
@@ -41,7 +54,11 @@ class TestDB(unittest.TestCase):
         with empty_db.getSession() as session:
             role_repo = empty_db.getRoleRepository(session)
             for i, r in enumerate(role_names):
-                role_repo.create(Role(role_id=i, role_name=r, reserved=True, authorize_all=True, maintenance=True))
+                role_repo.create(
+                    Role(
+                        role_id=i, role_name=r, reserved=True, authorize_all=True, maintenance=True, backend_admin=True
+                    )
+                )
 
             # check if roles were added
             self.assertEqual(len(role_names), len(role_repo.get_all()))
@@ -50,19 +67,29 @@ class TestDB(unittest.TestCase):
             for i, r in enumerate(role_repo.get_all()):
                 self.assertEqual(r.role_id, i)
                 self.assertEqual(r.role_name, role_names[i])
+                self.assertTrue(r.reserved)
+                self.assertTrue(r.maintenance)
+                self.assertTrue(r.authorize_all)
+                self.assertTrue(r.backend_admin)
 
             # edit a role name
             new_name = "TEST ROLE WOW"
             role = role_repo.get_by_id(0)
             role.role_name = new_name
+            role.maintenance = False
             role_repo.update(role)
             self.assertEqual(role_repo.get_by_id(0).role_name, new_name)
+            self.assertFalse(role_repo.get_by_id(0).maintenance)
             self.assertEqual(len(role_repo.get_all()), len(role_names))
 
             # create a new role
             new_role = "ÜBER ADMIN"
-            role_repo.create(Role(role_name=new_role))
+            role_repo.create(Role(role_name=new_role, backend_admin=True))
             self.assertEqual(len(role_repo.get_all()), len(role_names) + 1)
+            self.assertTrue(role_repo.get_by_role_name(new_role).backend_admin)
+            self.assertFalse(role_repo.get_by_role_name(new_role).maintenance)
+            self.assertFalse(role_repo.get_by_role_name(new_role).authorize_all)
+            self.assertFalse(role_repo.get_by_role_name(new_role).reserved)
 
             # Check autoincrement
             self.assertEqual(role_repo.get_by_id(len(role_names)).role_name, new_role)
@@ -204,7 +231,7 @@ class TestDB(unittest.TestCase):
             role_1 = role_repo.get_by_id(1)
 
             # check if the role is linked to the user
-
+            self.assertIsNotNone(role_1)
             self.assertIsNone(role_repo.get_by_id(10))
             self.assertIsNone(role_repo.get_by_role_name("nonexistent role"))
 
@@ -218,7 +245,7 @@ class TestDB(unittest.TestCase):
             roleRepo = simple_db.getRoleRepository(session)
 
             # add roles
-            role = Role(role_name="normal role", authorize_all=False)
+            role = Role(role_name="normal role", authorize_all=False, maintenance=True)
             roleRepo.create(role)
 
             # add user with UUID
@@ -279,6 +306,33 @@ class TestDB(unittest.TestCase):
                 userRepo.IsUserAuthorizedForMachine(machine3, user), "T3 User should not be authorized for machine3"
             )
 
+            # Check disabled is working
+            user.disabled = True
+            userRepo.update(user)
+            self.assertFalse(
+                userRepo.IsUserAuthorizedForMachine(machine1, user),
+                "T3 User should be disabled and not authorized for machine1",
+            )
+            user.disabled = False
+            userRepo.update(user)
+            self.assertTrue(
+                userRepo.IsUserAuthorizedForMachine(machine1, user), "T3 User should be authorized for machine1"
+            )
+
+            # Check deleted is working
+            user.deleted = True
+            userRepo.update(user)
+            self.assertFalse(
+                userRepo.IsUserAuthorizedForMachine(machine1, user),
+                "T3 User should be deleted and not authorized for machine1",
+            )
+            user.deleted = False
+            userRepo.update(user)
+            self.assertTrue(
+                userRepo.IsUserAuthorizedForMachine(machine1, user), "T3 User should be authorized for machine1"
+            )
+
+            # More auth checks
             auth2 = Authorization(user_id=user.user_id, machine_id=machine3.machine_id)
             authRepo.create(auth2)
 
@@ -312,7 +366,7 @@ class TestDB(unittest.TestCase):
             name = "Mario"
             surname = "Rossi"
 
-            role = Role(role_name="normal role", authorize_all=False)
+            role = Role(role_name="normal role", authorize_all=False, maintenance=False)
             db.getRoleRepository(session).create(role)
             userRepo = db.getUserRepository(session)
 
@@ -368,7 +422,6 @@ class TestDB(unittest.TestCase):
                     machineRepo.get_by_id(current_id).machine_name, NAME, "Machine name not updated correctly"
                 )
                 # test new type
-                from random import randint
 
                 NEW_TYPE = randint(1, TYPES)
                 machine.machine_type_id = NEW_TYPE
@@ -515,10 +568,13 @@ class TestDB(unittest.TestCase):
             machine = machine_repo.get_by_id(1)
 
             # create simple use
+            self.assertEqual(len(userID1.uses), 0, "No previous user records should exist")
             self.assertTrue(use_repo.startUse(machine.machine_id, user=userID1, timestamp=time()))
+            self.assertEqual(len(userID1.uses), 1, "User start of usage is registered correctly")
+
             use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
 
-            self.assertEqual(len(userID1.uses), 1, "User use not added correctly")
+            self.assertEqual(len(userID1.uses), 1, "User usage has been closed correctly")
             self.assertEqual(len(machine.uses), 1, "Machine use not added correctly")
 
             use_repo.delete(userID1.uses[0])
@@ -531,11 +587,11 @@ class TestDB(unittest.TestCase):
                 self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
 
             self.assertEqual(
-                1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
+                1, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "Only one open use should exist"
             )
             self.assertEqual(
                 99,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
 
@@ -544,14 +600,14 @@ class TestDB(unittest.TestCase):
 
             self.assertEqual(
                 199,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
             self.assertEqual(
-                0, len(session.query(Use).filter(Use.end_timestamp == None).all()), "No open uses should exist"
+                0, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "No open uses should exist"
             )
 
-    def test_use_helpers(self):
+    def test_user_helpers(self):
         simple_db = get_simple_db()
         with simple_db.getSession() as session:
             use_repo = simple_db.getUseRepository(session)
@@ -576,13 +632,14 @@ class TestDB(unittest.TestCase):
             # invalid cases
             for _ in range(100):
                 self.assertTrue(use_repo.startUse(machine_id=machine.machine_id, user=userID1, timestamp=time()))
+                self.assertTrue(use_repo.inUse(machine_id=machine.machine_id, user=userID1, duration_s=1))
 
             self.assertEqual(
-                1, len(session.query(Use).filter(Use.end_timestamp == None).all()), "Only one open use should exist"
+                1, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "Only one open use should exist"
             )
             self.assertEqual(
                 99,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
 
@@ -591,11 +648,11 @@ class TestDB(unittest.TestCase):
 
             self.assertEqual(
                 199,
-                len(session.query(Use).filter(Use.end_timestamp != None).all()),
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
                 "Auto-closing orphan uses should have closed 99 uses",
             )
             self.assertEqual(
-                0, len(session.query(Use).filter(Use.end_timestamp == None).all()), "No open uses should exist"
+                0, len(session.query(Use).filter(Use.end_timestamp.is_(None)).all()), "No open uses should exist"
             )
 
     def test_use_helpers(self):

@@ -1,33 +1,50 @@
+""" This module contains common functions used in the tests. """
+
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+import random
 from time import time
 
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import *
+from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getSetting
+from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, User, Intervention
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
 
 
 def configure_logger():
-    # Create a logger object
+    """
+    Configures a logger object with a rotating file handler.
+
+    The logger is named "test_logger" and is set to log messages at the DEBUG level.
+    The logs are formatted with the timestamp, log level, and message.
+    The logs are written to a file named "test-log.txt" in the same directory as this script.
+    The file handler rotates the log file when it reaches a maximum size of 1 MB, keeping 1 backup file.
+    The file is encoded using the "latin-1" encoding.
+
+    Returns:
+        None
+    """
     logger = logging.getLogger("test_logger")
     logger.setLevel(logging.DEBUG)
 
-    # Create a formatter for the logs
     formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
-    # Create a rotating file handler with a maximum size of 1 MB
     log_file = os.path.join(os.path.dirname(__file__), "test-log.txt")
     file_handler = RotatingFileHandler(log_file, maxBytes=1000000, backupCount=1, encoding="latin-1")
     file_handler.setFormatter(formatter)
 
-    # Add the file handler to the logger object
     logger.addHandler(file_handler)
 
 
 def get_empty_db() -> DatabaseBackend:
+    """
+    Returns an instance of DatabaseBackend with an empty database.
+
+    Returns:
+        DatabaseBackend: An instance of DatabaseBackend with an empty database.
+    """
     d = DatabaseBackend(TEST_SETTINGS_PATH)
     d.createDatabase()
     d.dropContents()
@@ -35,6 +52,12 @@ def get_empty_db() -> DatabaseBackend:
 
 
 def seed_db() -> DatabaseBackend:
+    """
+    Seeds the database with initial data for testing purposes.
+
+    Returns:
+        DatabaseBackend: The seeded database instance.
+    """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
     empty_db.createDatabase()
     empty_db.dropContents()
@@ -43,16 +66,25 @@ def seed_db() -> DatabaseBackend:
         mt1 = MachineType(type_id=1, type_name="Default type")
         empty_db.getMachineTypeRepository(session).create(mt1)
 
-        r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True)
+        r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True, backend_admin=True)
         empty_db.getRoleRepository(session).create(r1)
 
-        r3 = Role(role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True)
+        r3 = Role(role_name="Fab Staff", authorize_all=False, reserved=False, maintenance=True, backend_admin=False)
         empty_db.getRoleRepository(session).create(r3)
 
-        r2 = Role(role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False)
+        r2 = Role(role_name="Fab Users", authorize_all=False, reserved=False, maintenance=False, backend_admin=False)
         empty_db.getRoleRepository(session).create(r2)
 
-        u1 = User(name="admin", surname="admin", role_id=r1.role_id, card_UUID="12345678")
+        u1 = User(
+            name="admin",
+            surname="admin",
+            role_id=r1.role_id,
+            card_UUID="12345678",
+            email=getSetting("web", "default_admin_email"),
+        )
+
+        u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
+
         empty_db.getUserRepository(session).create(u1)
 
         m1 = Machine(machine_name="Sample machine", machine_type_id=mt1.type_id)
@@ -67,6 +99,12 @@ def seed_db() -> DatabaseBackend:
 
 
 def get_simple_db() -> DatabaseBackend:
+    """
+    Creates a simple database with predefined data for testing purposes.
+
+    Returns:
+        DatabaseBackend: An instance of the created database.
+    """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
     empty_db.createDatabase()
     empty_db.dropContents()
@@ -90,11 +128,25 @@ def get_simple_db() -> DatabaseBackend:
         r2 = Role(role_name="fab users", authorize_all=False, reserved=False, maintenance=False)
         empty_db.getRoleRepository(session).create(r2)
 
-        u1 = User(name="Mario", surname="Rossi", role_id=r1.role_id)
+        u1 = User(name="Mario", surname="Rossi", role_id=r1.role_id, email="marco.rossi@fablab.org")
+        u1.set_password("password1")
         empty_db.getUserRepository(session).create(u1)
 
-        u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id)
+        u2 = User(name="Andrea", surname="Bianchi", role_id=r2.role_id, email="andrea.bianchi@fablab.org")
+        u2.set_password("password2")
         empty_db.getUserRepository(session).create(u2)
+
+        for i in range(1, 10):
+            temp_user = User(
+                name="User" + str(i),
+                surname="Surname" + str(i),
+                role_id=r2.role_id,
+                card_UUID=(str(i) * 8)[:8],
+                disabled=random.choice([True, False]),
+            )
+            temp_user.set_password("")
+            temp_user.email = f"{temp_user.name}.{temp_user.surname}@fablab.org"
+            empty_db.getUserRepository(session).create(temp_user)
 
         m1 = Machine(machine_name="LASER 1", machine_type_id=mt1.type_id)
         empty_db.getMachineRepository(session).create(m1)
@@ -102,12 +154,25 @@ def get_simple_db() -> DatabaseBackend:
         m2 = Machine(machine_name="PRINTER 1", machine_type_id=mt2.type_id)
         empty_db.getMachineRepository(session).create(m2)
 
-        maint1 = Maintenance(hours_between=10, description="replace engine", machine_id=m1.machine_id)
+        temp_machines = []
+        for i in range(1, 10):
+            temp_machine = Machine(machine_name="Machine" + str(i), machine_type_id=mt3.type_id)
+            temp_machines.append(temp_machine)
+            empty_db.getMachineRepository(session).create(temp_machine)
 
+        maint1 = Maintenance(hours_between=10, description="replace engine", machine_id=m1.machine_id)
         empty_db.getMaintenanceRepository(session).create(maint1)
 
         maint2 = Maintenance(hours_between=10, description="replace brushes", machine_id=m2.machine_id)
         empty_db.getMaintenanceRepository(session).create(maint2)
+
+        for i in range(1, 10):
+            temp_maint = Maintenance(
+                hours_between=random.choice(range(1, 30)),
+                description="Maintenance" + str(i),
+                machine_id=random.choice(temp_machines).machine_id,
+            )
+            empty_db.getMaintenanceRepository(session).create(temp_maint)
 
         timestamp = time() - 1000
         inter = Intervention(

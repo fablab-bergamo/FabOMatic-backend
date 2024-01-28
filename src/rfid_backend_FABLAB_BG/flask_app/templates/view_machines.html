@@ -23,32 +23,30 @@
             <tr>
                 <td>{{ machine.machine_id }}</td>
                 <td>{{ machine.machine_name }}</td>
-                <td>{{ machine.machine_type.type_name }}</td>
+                <td><span class="badge bg-info">{{ machine.machine_type.type_name }}</span></td>
                 <td>{{ machine.machine_hours | format_hours }}</td>
                 <td>
                     {% if machine.blocked %}
-                    <i class="fas fa-lock"></i> <!-- Locked Icon -->
+                    <i class="fa-solid fa-lock"></i> <!-- Locked Icon -->
                     {% else %}
-                    <i class="fas fa-lock-open"></i> <!-- Unlocked Icon -->
+                    <i class="fa-solid fa-lock-open"></i> <!-- Unlocked Icon -->
                     {% endif %}
                 </td>
                 <td>
                     <ul>
-                    {% for maintenance in machine.maintenances %}
+                        {% for maintenance in machine.maintenances %}
                         <li>{{ maintenance.description }} ({{ maintenance.hours_between }} h.)</li>
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                 </td>
                 <td>{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
                 <td>
                     <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
-                    class="btn btn-info">View history</a>
+                        class="btn btn-info">View history</a>
                     <a href="{{ url_for('edit_machine', machine_id=machine.machine_id) }}"
                         class="btn btn-warning">Edit</a>
-                    <form method="POST" action="{{ url_for('delete_machine', machine_id=machine.machine_id) }}"
-                        class="d-inline">
-                        <input type="submit" value="Delete" class="btn btn-danger" />
-                    </form>
+                    <a href="{{ url_for('delete_machine', machine_id=machine.machine_id) }}"
+                        class="btn btn-danger">Delete</a>
                 </td>
             </tr>
             {% endfor %}

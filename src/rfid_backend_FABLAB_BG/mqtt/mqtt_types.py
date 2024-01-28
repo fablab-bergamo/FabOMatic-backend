@@ -1,9 +1,23 @@
 import json
 
+from rfid_backend_FABLAB_BG.database.constants import USER_LEVEL
+
 
 class Parser:
     @staticmethod
     def parse(json_data: str):
+        """
+        Parses the given JSON data and returns the corresponding query object based on the 'action' field.
+
+        Args:
+            json_data (str): The JSON data to parse.
+
+        Returns:
+            object: The deserialized query object based on the 'action' field.
+
+        Raises:
+            ValueError: If the 'action' field is missing or invalid.
+        """
         data = json.loads(json_data)
         if "action" in data:
             match data["action"]:
@@ -13,6 +27,8 @@ class Parser:
                     return MachineQuery.deserialize(json_data)
                 case "startuse":
                     return StartUseQuery.deserialize(json_data)
+                case "inuse":
+                    return InUseQuery.deserialize(json_data)
                 case "stopuse":
                     return EndUseQuery.deserialize(json_data)
                 case "maintenance":
@@ -82,6 +98,18 @@ class EndUseQuery(BaseJson):
         return EndUseQuery(data["uid"], data["duration"])
 
 
+class InUseQuery(BaseJson):
+    def __init__(self, card_uid: str, duration_s: int):
+        self.uid = card_uid
+        self.duration = duration_s
+        self.action = "inuse"
+
+    @staticmethod
+    def deserialize(json_data: str):
+        data = json.loads(json_data)
+        return InUseQuery(data["uid"], data["duration"])
+
+
 class RegisterMaintenanceQuery(BaseJson):
     def __init__(self, card_uid: str):
         self.uid = card_uid
@@ -94,22 +122,40 @@ class RegisterMaintenanceQuery(BaseJson):
 
 
 class UserResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, holder_name: str, user_level: int):
+    def __init__(
+        self, request_ok: bool, is_valid: bool, holder_name: str, user_level: USER_LEVEL | int, missing_auth: bool
+    ):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.name = holder_name
-        self.level = user_level
+        self.missing_auth = missing_auth
+        if isinstance(user_level, USER_LEVEL):
+            self.level = user_level.value
+        else:
+            self.level = user_level
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
 
 
 class MachineResponse:
-    def __init__(self, request_ok: bool, is_valid: bool, needs_maintenance: bool, allowed: bool):
+    def __init__(
+        self,
+        request_ok: bool,
+        is_valid: bool,
+        needs_maintenance: bool,
+        allowed: bool,
+        name: str,
+        type_id: int,
+        timeout_min: int = 0,
+    ):
         self.request_ok = request_ok
         self.is_valid = is_valid
         self.maintenance = needs_maintenance
         self.allowed = allowed
+        self.name = name
+        self.logoff = timeout_min
+        self.type = type_id
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
@@ -122,3 +168,6 @@ class SimpleResponse:
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)
+
+    def __str__(self):
+        return self.serialize()
