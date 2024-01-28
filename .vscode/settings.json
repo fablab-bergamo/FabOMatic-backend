@@ -24,6 +24,12 @@
       "driver": "SQLite",
       "name": "Prod",
       "database": "${workspaceFolder:rfid-backend}/database.sqldb"
+    },
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:rfid-backend}/tests/databases/database-0.0.18.db",
+      "name": "0.0.18"
     }
   ]
 }

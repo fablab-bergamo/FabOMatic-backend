@@ -22,7 +22,6 @@ from rfid_backend_FABLAB_BG.database import models
 
 target_metadata = models.Base.metadata
 
-config.set_main_option("sqlalchemy.url", getDatabaseUrl())
 print("Using database=", config.get_main_option("sqlalchemy.url"))
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
