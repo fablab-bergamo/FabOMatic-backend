@@ -13,17 +13,24 @@
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "sqltools.useNodeRuntime": true,
-  "sqltools.connections": [
-    {
-      "previewLimit": 50,
-      "driver": "SQLite",
-      "database": "${workspaceFolder:rfid-backend}/machines-test.sqldb",
-      "name": "Testdb"
-    },
   "pylint.args": [
     "--max-line-length=120",
     "--variable-naming-style=any",
     "--class-naming-style=any",
     "--method-naming-style=any"
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:rfid-backend}/machines-test.sqldb",
+      "name": "Test"
+    },
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "Pytest",
+      "database": "${workspaceFolder:rfid-backend}/test-database.sqldb"
+    }
   ]
 }

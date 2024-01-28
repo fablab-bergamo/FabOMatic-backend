@@ -17,6 +17,7 @@ from .repositories import (
     AuthorizationRepository,
     MaintenanceRepository,
     InterventionRepository,
+    UnknownCardsRepository,
     Session,
     Base,
 )

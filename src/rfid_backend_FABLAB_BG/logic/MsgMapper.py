@@ -7,6 +7,7 @@ from rfid_backend_FABLAB_BG.mqtt import MQTTInterface
 from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
     UserQuery,
     StartUseQuery,
+    InUseQuery,
     EndUseQuery,
     RegisterMaintenanceQuery,
     AliveQuery,
@@ -60,6 +61,11 @@ class MsgMapper:
         logging.debug("Start use query: %s -> response: %s", startUse.toJSON(), response.serialize())
         return response.serialize()
 
+    def handleInUseQuery(self, machine_logic: MachineLogic, inUse: InUseQuery) -> str:
+        response = machine_logic.startUse(inUse.uid)
+        logging.debug("In use query: %s -> response: %s", inUse.toJSON(), response.serialize())
+        return response.serialize()
+
     def handleEndUseQuery(self, machine_logic: MachineLogic, stopUse: EndUseQuery) -> str:
         response = machine_logic.endUse(stopUse.uid, stopUse.duration)
         logging.debug("End use query: %s -> response: %s", stopUse.toJSON(), response.serialize())
@@ -100,13 +106,13 @@ class MsgMapper:
         logging.debug("Machine query: %s -> response: %s", machineQuery.toJSON(), status.serialize())
         return status.serialize()
 
-    def messageReceived(self, machine: str, query: BaseJson) -> None:
+    def messageReceived(self, machine: str, query: BaseJson) -> bool:
         """This function is called when a message is received from the MQTT broker.
         It calls the appropriate handler for the message type."""
 
         if type(query) not in self._handlers:
             logging.warning(f"No handler for query {query} on machine {machine}")
-            return
+            return False
 
         machine_logic = self.getMachineLogic(machine)
         if machine_logic is None:
@@ -114,7 +120,7 @@ class MsgMapper:
             response = SimpleResponse(False, "Invalid machine ID").serialize()
             if not self._mqtt.publishReply(machine, response):
                 logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
-            return
+            return False
 
         response = self._handlers[type(query)](machine_logic, query)
 
@@ -122,8 +128,12 @@ class MsgMapper:
             logging.info("Machine %s query: %s -> response: %s", machine, query.toJSON(), response)
             if not self._mqtt.publishReply(machine, response):
                 logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
+                return False
         else:
             logging.warning("Machine %s query: %s -> no response", machine, query.toJSON())
+            return False
+
+        return True
 
     def registerHandlers(self):
         """This function registers the handlers for the different message types from the boards."""
@@ -131,6 +141,7 @@ class MsgMapper:
         self._setHandler(MachineQuery, self.handleMachineQuery)
         self._setHandler(UserQuery, self.handleUserQuery)
         self._setHandler(StartUseQuery, self.handleStartUseQuery)
+        self._setHandler(InUseQuery, self.handleInUseQuery)
         self._setHandler(EndUseQuery, self.handleEndUseQuery)
         self._setHandler(RegisterMaintenanceQuery, self.handleMaintenanceQuery)
         self._mqtt.setMessageCallback(self.messageReceived)
