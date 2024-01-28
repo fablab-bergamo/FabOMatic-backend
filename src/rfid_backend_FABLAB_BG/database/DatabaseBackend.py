@@ -92,6 +92,9 @@ class DatabaseBackend:
     def getInterventionRepository(self, session: Session) -> InterventionRepository:
         return InterventionRepository(session)
 
+    def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
+        return UnknownCardsRepository(session)
+
     def createDatabase(self) -> None:
         logging.debug("Creating database %s", self._url)
         Base.metadata.create_all(self._engine, checkfirst=True)
