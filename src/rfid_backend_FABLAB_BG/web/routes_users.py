@@ -5,7 +5,7 @@ import re
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from rfid_backend_FABLAB_BG.database.models import User, Role
+from rfid_backend_FABLAB_BG.database.models import User, Role, UnknownCard
 from rfid_backend_FABLAB_BG.web.authentication import send_reset_email
 from .webapplication import DBSession, app
 
@@ -15,7 +15,8 @@ from .webapplication import DBSession, app
 def view_users():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
-    return render_template("view_users.html", users=users)
+    cards = session.query(UnknownCard).order_by(UnknownCard.timestamp.desc()).all()
+    return render_template("view_users.html", users=users, cards=cards)
 
 
 @app.route("/users/add", methods=["GET"])
@@ -23,7 +24,8 @@ def view_users():
 def add_user():
     session = DBSession()
     roles = session.query(Role).order_by(Role.role_id).all()
-    return render_template("add_user.html", roles=roles)
+    uuid = request.args.get("card_uuid", None)
+    return render_template("add_user.html", roles=roles, card_UUID=uuid)
 
 
 @app.route("/users/reset/<int:user_id>", methods=["GET", "POST"])
@@ -72,7 +74,18 @@ def create_user():
         email=user_data["email"],
     )
     session.add(new_user)
+
+    # Delete the card from the unknown cards table if it exists
+    for card in session.query(UnknownCard).filter_by(card_UUID=card_UUID).all():
+        session.delete(card)
+
     session.commit()
+
+    if new_user.role.backend_admin and len(new_user.email) == 0:
+        flash(
+            "You have created a backend admin user without an email address. User will not be able to log on.",
+            "warning",
+        )
     return redirect(url_for("view_users"))
 
 
