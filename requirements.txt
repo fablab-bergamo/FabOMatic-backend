@@ -1,10 +1,11 @@
 paho-mqtt==1.6.1
-SQLAlchemy==2.0.12
+SQLAlchemy==2.0.25
 toml==0.10.2
 colorlog==6.7.0
 flask==2.3.2
 waitress==2.1.2
-pyopenssl==21.0.0
+pyopenssl==24.0.0
 flask-login==0.6.3
 flask-mail==0.9.1
+alembic==1.13.1
 -e .
