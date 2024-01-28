@@ -1,4 +1,5 @@
 """This is the class handling the Database. More to come."""
+import os
 from os import path
 from os.path import dirname, abspath
 import logging
@@ -35,6 +36,26 @@ def getSetting(section: str, setting: str, settings_path: str = CONFIG_FILE) -> 
     """
     settings = toml.load(settings_path)
     return settings[section][setting]
+
+
+def getDatabaseUrl(settings_path: str = CONFIG_FILE) -> str:
+    # Get the database URL
+    db_url = getSetting("database", "url", settings_path)
+
+    # Check if it's a SQLite URL
+    if db_url.startswith("sqlite:///"):
+        # Remove the prefix to get the file path
+        file_path = db_url[len("sqlite:///") :]
+
+        # Get the absolute path
+        absolute_path = os.path.abspath(file_path)
+
+        # Add the prefix back to get the absolute URL
+        absolute_url = "sqlite:///" + absolute_path
+    else:
+        # If it's not a SQLite URL, just use it as is
+        absolute_url = db_url
+    return absolute_url
 
 
 class DatabaseBackend:
