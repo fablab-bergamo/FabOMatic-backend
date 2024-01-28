@@ -311,6 +311,7 @@ class Use(Base):
             "end_timestamp": self.end_timestamp,
             "last_seen": self.last_seen,
         }
+
     def __str__(self):
         """Return a string representation of the object."""
         return str(self.serialize())
