@@ -469,6 +469,8 @@ class MachineRepository(BaseRepository):
 
 
 class UseRepository(BaseRepository):
+    MAX_DURATION = 3600 * 24
+
     """Repository class for managing Use objects in the database."""
 
     def __init__(self, db_session: Session):
@@ -500,9 +502,11 @@ class UseRepository(BaseRepository):
             return False
 
         # Close eventual previous uses which were not closed with duration == (last_seen - start_timestamp)
-        self.db_session.query(Use).filter(Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)).update(
-            {Use.end_timestamp: Use.last_seen}
-        )
+        for rec in self.db_session.query(Use).filter(
+            Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)
+        ):
+            rec.end_timestamp = rec.last_seen
+            self.update(rec)
 
         # Register start of new use
         self.db_session.add(
@@ -525,7 +529,7 @@ class UseRepository(BaseRepository):
         """
         machine_repo = MachineRepository(self.db_session)
         machine = machine_repo.get_by_id(machine_id)
-        if machine is None or user is None:
+        if machine is None or user is None or duration_s < 0 or duration_s > UseRepository.MAX_DURATION:
             return False
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
@@ -563,6 +567,9 @@ class UseRepository(BaseRepository):
         if machine is None or user is None:
             return 0
 
+        if duration_s < 0 or duration_s > UseRepository.MAX_DURATION:
+            duration_s = 1
+
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
         end = time()
         if record is None:
@@ -597,9 +604,9 @@ class UseRepository(BaseRepository):
             self.update(record)
 
             # Close eventual previous uses which were not closed
-            self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).update(
-                {Use.end_timestamp: Use.last_seen}
-            )
+            for rec in self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)):
+                rec.end_timestamp = rec.last_seen
+                self.update(rec)
 
         self.db_session.commit()
 
