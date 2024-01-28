@@ -1,6 +1,7 @@
 """ This module contains the routes for the interventions. """
 # pylint: disable=C0116
 
+from datetime import datetime
 from time import time
 
 from flask import render_template, request, redirect, url_for
@@ -56,8 +57,13 @@ def edit_intervention(intervention_id):
         intervention.maintenance_id = request.form["maintenance_id"]
         intervention.machine_id = request.form["machine_id"]
         intervention.user_id = request.form["user_id"]
-        intervention.timestamp = time()
+        try:
+            timestamp = datetime.strptime(request.form["timestamp"], "%Y-%m-%dT%H:%M")
+            timestamp = timestamp.timestamp()
+        except ValueError:
+            timestamp = None
 
+        intervention.timestamp = timestamp
         session.add(intervention)
         session.commit()
 
