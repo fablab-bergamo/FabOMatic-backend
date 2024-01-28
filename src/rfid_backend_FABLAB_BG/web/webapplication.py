@@ -30,6 +30,18 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+from datetime import datetime
+from jinja2 import Environment
+
+
+def timestamp_to_datetime(value):
+    return datetime.fromtimestamp(value)
+
+
+# Add the filter to Jinja2's environment
+app.jinja_env.filters["timestamp_to_datetime"] = timestamp_to_datetime
+
+
 # Custom filter for datetime formatting
 @app.template_filter("datetimeformat")
 def datetimeformat(value, format="%b %d, %Y %I:%M %p"):
@@ -72,5 +84,8 @@ def about():
         machines = machine_repo.get_all()
         for mac in machines:
             setattr(mac, "maintenance_needed", machine_repo.getMachineMaintenanceNeeded(mac.machine_id)[0])
-            setattr(mac, "online", time() - mac.last_seen < 180)
+            if mac.last_seen is None:
+                setattr(mac, "online", False)
+            else:
+                setattr(mac, "online", time() - mac.last_seen < 180)
         return render_template("about.html", machines=machines)

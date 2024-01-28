@@ -1,0 +1,4 @@
+{% macro render_datetime(timestamp) %}
+    {% set dt = timestamp|float|timestamp_to_datetime %}
+    {{ dt.strftime('%Y-%m-%dT%H:%M') }}
+{% endmacro %}

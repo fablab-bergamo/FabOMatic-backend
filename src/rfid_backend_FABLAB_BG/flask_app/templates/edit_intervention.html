@@ -28,6 +28,10 @@
                 {% endfor %}
             </select>
         </div>
+        <div class="form-group">
+            <label for="timestamp">Intervention Time:</label>
+            <input type="datetime-local" id="timestamp" name="timestamp" class="form-control" value="{{ render_datetime(intervention.timestamp) }}" required>
+        </div>
         <input type="submit" value="Update Intervention" class="btn btn-primary">
     </form>
 </div>
