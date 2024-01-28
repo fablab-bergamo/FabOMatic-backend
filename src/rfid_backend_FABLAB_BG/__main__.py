@@ -29,7 +29,7 @@ class Backend:
         try:
             session = self._db.getSession()
             logging.info(f"Session info: {session.info}")
-            self.createDatabase()
+            self._db.createAndUpdateDatabase()
             self._mqtt.connect()
             return True
         except Exception as ex:
@@ -47,10 +47,6 @@ class Backend:
 
     def publishStats(self):
         self._mqtt.publishStats()
-
-    def createDatabase(self) -> None:
-        """Create the database if needed."""
-        self._db.createDatabase()
 
 
 _flaskThread: threading.Thread = None

@@ -14,4 +14,3 @@ class TestBackend(unittest.TestCase):
         backend.disconnect()
         self.assertTrue(backend.connect(), "Failed to connect the second time")
         backend.publishStats()
-        backend.createDatabase()

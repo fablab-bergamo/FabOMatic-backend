@@ -217,9 +217,15 @@ class DatabaseBackend:
     def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
         return UnknownCardsRepository(session)
 
-    def createDatabase(self) -> None:
+    def createAndUpdateDatabase(self) -> None:
         """Create the database."""
-        Base.metadata.create_all(self._engine, checkfirst=True)
+        # Runs any migrations
+        from alembic.config import Config
+        from alembic import command
+
+        alembic_cfg = Config("alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+
         with self._session() as session:
             if len(self.getUserRepository(session).get_all()) == 0:
                 self.seedDatabase()
