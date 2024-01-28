@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
-from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base
+from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base, UnknownCard
 from .constants import DEFAULT_TIMEOUT_MINUTES
 
 
@@ -623,3 +623,26 @@ class UseRepository(BaseRepository):
             List[Use]: A list of all Use objects.
         """
         return self.db_session.query(Use).order_by(Use.use_id).all()
+
+
+class UnknownCardsRepository(BaseRepository):
+    def __init__(self, db_session: Session):
+        super().__init__(db_session)
+
+    def get_all(self) -> List[UnknownCard]:
+        return self.db_session.query(UnknownCard).order_by(UnknownCard.id).all()
+
+    def registerUnknownCard(self, uuid: str, machine: Machine) -> int:
+        """Register an unknown card that was used on a machine.
+
+        Args:
+            card_uuid (str): UUID of the unknown card
+            machine (Machine): Machine where the card was used
+
+        Returns:
+            int: id of the new UnknownCard record
+        """
+        record = UnknownCard(card_UUID=uuid, machine_id=machine.machine_id, timestamp=time())
+        self.create(record)
+        self.db_session.commit()
+        return record.id
