@@ -2,19 +2,20 @@
 
 Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/python-package.yml/badge.svg)](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/python-package.yml)
 
-## Python dependencies
+## What is this project?
 
-* toml (for configuration file)
-* paho.mqtt (for MQTT client)
-* SQLAlchemy (for database interface)
-* colorlog (for nicer logs in the console)
+* This is a web interface to handle a FabLab machines access through RFID access cards.
+
+* [UI description](doc/UI.pdf)
+
+* This python application runs a MQTT client and a Flask HTTPS application.
 
 ## Backend runtime requirements
 
 * An external MQTT Broker. Mosquitto has been used for testing.
 * A database engine. SQLAlchemy supports several, but this has been tested with SQLite only (so far)
 
-## Installation instructions
+## Installation instructions on Raspberry Pi Zero
 
 * Install prerequisites (python 3.10+, rustc for cryptography, mosquitto, pip). It takes 3-4 hours on Raspberry Pi Zero to complete installation.
 
@@ -43,7 +44,10 @@ python -m rfid_backend_FABLAB_BG
 
 > Default URL is https://HOSTNAME:23336/
 
-* Setup backup strategy for SQLDB file.
+* Setup backup strategy for database (database.sqldb), which is automatically created on first run.
+
+* Setup systemd to automatically run on boot with user profile:
+
 
 ## How to upgrade release
 
