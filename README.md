@@ -4,16 +4,20 @@ Build & Test status [![Python package](https://github.com/fablab-bergamo/rfid-ba
 
 ## What is this project?
 
-* This is a web interface to handle a FabLab machines access through RFID access cards.
+* This is a web application to handle a FabLab machines access through RFID arduino boards (see arduino project : [RFID Arduino](https://github.com/fablab-bergamo/rfid-arduino) )
+
+* Homescreen example, with real-time machine status:
+
+![image](https://github.com/fablab-bergamo/rfid-backend/assets/6236243/75075b86-ec9b-4e6c-82d8-35de94663c09)
 
 * [UI description](doc/UI.pdf)
 
-* This python application runs a MQTT client and a Flask HTTPS application.
+* This Python 3.10 application runs a MQTT client and a Flask HTTPS application.
 
 ## Backend runtime requirements
 
 * An external MQTT Broker. Mosquitto has been used for testing.
-* A database engine. SQLAlchemy supports several, but this has been tested with SQLite only (so far)
+* SQLAlchemy supports several, but this has been tested with SQLite only.
 
 ## Installation instructions on Raspberry Pi Zero
 
