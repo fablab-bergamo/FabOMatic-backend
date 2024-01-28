@@ -77,7 +77,7 @@ class DatabaseBackend:
     def _loadSettings(self) -> None:
         """Load settings from TOML file."""
         self._settings = toml.load(self._settings_path)
-        self._url = self._settings["database"]["url"]
+        self._url = getDatabaseUrl(self._settings_path)
         self._name = self._settings["database"]["name"]
 
     def _connect(self) -> None:
