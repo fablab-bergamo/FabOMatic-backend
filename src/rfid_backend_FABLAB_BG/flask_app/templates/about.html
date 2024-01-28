@@ -6,5 +6,45 @@
     {% else %}
         <h2>About RFID-BACKEND</h2>
     {% endif %}
-    <h5>Rfid-backend is a Flask web application written in Python.</h5>
+    <h4>Machines status</h4>
+    {% set ns = namespace(cpt=0) %}
+    {% for mac in machines %}
+        {% if (ns.cpt % 3) == 0 %}
+            <div class="row m-2">
+        {% endif %}
+                <div class="col-sm-3">
+                {% if mac.active_user() != None %}
+                    <div class="card bg-success text-white">
+                    {% set text = "IN USE" %}
+                {% elif mac.blocked %}
+                    <div class="card bg-danger text-white">
+                    {% set text = "BLOCKED" %}
+                {% elif mac.maintenance_needed %}
+                    <div class="card bg-warning text-white">
+                    {% set text = "MAINTENANCE" %}
+                {% elif not mac.online %}
+                    <div class="card bg-secondary text-white">
+                    {% set text = "OFFLINE" %}
+                {% else %}
+                    <div class="card bg-light text-white">
+                    {% set text = "OFF" %}
+                {% endif %}
+                        <div class="card-body">
+                            <div class="card-header"><h5>{{ mac.machine_name }} ({{ mac.machine_type.type_name }})</h5></div>
+                            <p class="card-title">Machine is {{ text }}
+                            {% if mac.active_user() != None %}
+                                 by {{ mac.active_user().name }}</p>
+                            {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        {% set ns.cpt = ns.cpt + 1 %}
+        {% if ns.cpt % 3 == 0 %}
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if ns.cpt % 3 != 0 %}
+        </div>
+    {% endif %}
 {% endblock %}

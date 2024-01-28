@@ -285,6 +285,13 @@ class Machine(Base):
             "interventions": [intervention.intervention_id for intervention in self.interventions],
         }
 
+    def active_user(self) -> User | None:
+        """Get the current user."""
+        for use in reversed(self.uses):
+            if use.end_timestamp is None:
+                return use.user
+        return None
+
 
 class Use(Base):
     """Class handling machine use."""
