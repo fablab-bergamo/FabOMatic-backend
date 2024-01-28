@@ -3,12 +3,14 @@
 
 from datetime import datetime
 import os
+from time import time
 
 from flask import Flask, render_template, send_from_directory
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from rfid_backend_FABLAB_BG.database.models import Base
+from rfid_backend_FABLAB_BG.database.models import Base, Machine
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting, getDatabaseUrl
+from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FLASK_TEMPLATES_FOLDER = os.path.join(MODULE_DIR, "flask_app", "templates")
@@ -65,4 +67,10 @@ def download_attachment(filename):
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    with DBSession() as session:
+        machine_repo = MachineRepository(session)
+        machines = machine_repo.get_all()
+        for mac in machines:
+            setattr(mac, "maintenance_needed", machine_repo.getMachineMaintenanceNeeded(mac.machine_id)[0])
+            setattr(mac, "online", time() - mac.last_seen < 180)
+        return render_template("about.html", machines=machines)
