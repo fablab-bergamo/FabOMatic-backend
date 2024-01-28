@@ -42,6 +42,9 @@ class TestLogic(unittest.TestCase):
             response = ml.isAuthorized("1234")
             self.assertTrue(response.request_ok, "isAuthorized failed")
 
+            response = ml.isAuthorized("12345678")
+            self.assertFalse(response.request_ok, "isAuthorized succeeded with invalid card")
+
             response = ml.startUse("1234")
             self.assertTrue(response.request_ok, "startUse failed")
 

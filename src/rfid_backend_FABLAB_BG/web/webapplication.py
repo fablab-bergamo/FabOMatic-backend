@@ -5,6 +5,8 @@ import re
 import os
 from time import time
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -29,10 +31,14 @@ ALLOWED_EXTENSIONS = {"txt", "pdf", "docx"}
 
 app = Flask(__name__, template_folder=FLASK_TEMPLATES_FOLDER, static_folder=FLASK_STATIC_FOLDER)
 app.config["SECRET_KEY"] = getSetting("web", "secret_key")
+app.config["SQLALCHEMY_DATABASE_URI"] = getSetting("database", "url")
 
 engine = create_engine(getSetting("database", "url"), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 def allowed_file(filename):
@@ -158,7 +164,7 @@ def view_machine_use_history(machine_id):
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if machine is None:
         return "Machine not found", 404
-    
+
     return render_template("view_machine_use_history.html", uses=uses, machine=machine)
 
 

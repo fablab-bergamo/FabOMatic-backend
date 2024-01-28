@@ -58,6 +58,10 @@ class MachineLogic:
                 user_repo = MachineLogic.database.getUserRepository(session)
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
+                if user is None and machine is not None:
+                    unknown_repo = MachineLogic.database.getUnknownCardRepository(session)
+                    unknown_repo.registerUnknownCard(card_uuid, machine.machine_id)
+                
                 if machine is None or user is None:
                     return SimpleResponse(False, "Invalid card or machine")
 
