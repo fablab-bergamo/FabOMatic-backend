@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Register manually a machine use</h1>
+  <form method="POST" action="{{ url_for('add_use') }}">
+    <div class="form-group">
+      <label for="user_id">User</label>
+      <select class="form-control" id="user_id" name="user_id" required>
+        <option value="" selected>-</option
+        {% for user in users %}
+        <option value="{{ user.user_id }}">{{ user.name }} {{ user.surname }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="machine_id">Machine</label>
+      <select class="form-control" id="machine_id" name="machine_id" required>
+        <option value="" selected>-</option>
+        {% for machine in machines %}
+        <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="start_timestamp">Start Timestamp</label>
+      <input type="datetime-local" class="form-control" id="start_timestamp" name="start_timestamp" required>
+    </div>
+    <div class="form-group">
+      <label for="end_timestamp">End Timestamp</label>
+      <input type="datetime-local" class="form-control" id="end_timestamp" name="end_timestamp">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}
