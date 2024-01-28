@@ -18,6 +18,7 @@ from .repositories import (
     AuthorizationRepository,
     MaintenanceRepository,
     InterventionRepository,
+    UnknownCardsRepository,
     Session,
     Base,
 )
@@ -212,6 +213,9 @@ class DatabaseBackend:
             An InterventionRepository object.
         """
         return InterventionRepository(session)
+
+    def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
+        return UnknownCardsRepository(session)
 
     def createDatabase(self) -> None:
         """Create the database."""

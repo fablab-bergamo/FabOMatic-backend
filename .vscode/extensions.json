@@ -1,7 +1,8 @@
 {
     "recommendations": [
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite"
         "ms-python.python",
         "ms-python.black-formatter",
-        "alexcvzz.vscode-sqlite"
     ]
 }

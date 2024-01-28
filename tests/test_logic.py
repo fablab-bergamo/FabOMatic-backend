@@ -166,6 +166,11 @@ class TestLogic(unittest.TestCase):
 
             response = ml.isAuthorized("1234")
             self.assertTrue(response.request_ok, "isAuthorized failed")
+            self.assertTrue(response.is_valid, "isAuthorized returns invalid with valid card")
+
+            response = ml.isAuthorized("12345678")
+            self.assertTrue(response.request_ok, "isAuthorized must succeed with invalid card")
+            self.assertFalse(response.is_valid, "isAuthorized must return invalid with invalid card")
 
             response = ml.startUse("1234")
             self.assertTrue(response.request_ok, "startUse failed")
@@ -183,21 +188,34 @@ class TestLogic(unittest.TestCase):
         db = get_simple_db()
 
         mqtt = MQTTInterface(TEST_SETTINGS_PATH)
+        mqtt.connect()
         mapper = MsgMapper(mqtt, db)
         mapper.registerHandlers()
 
         # Try all messagges
         query = UserQuery("1234")
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = AliveQuery()
-        mapper.messageReceived("1", query)
+        self.assertFalse(mapper.messageReceived("1", query), "Alive message has no response")
         query = MachineQuery()
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = StartUseQuery("1234")
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = InUseQuery("1234", 123)
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = EndUseQuery("1234", 123)
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = RegisterMaintenanceQuery("1234")
-        mapper.messageReceived("1", query)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+
+        # Try all with invalid card
+        query = UserQuery("DEADBEEF")
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+        query = StartUseQuery("DEADBEEF")
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+        query = InUseQuery("DEADBEEF", 123)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+        query = EndUseQuery("DEADBEEF", 123)
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+        query = RegisterMaintenanceQuery("DEADBEEF")
+        self.assertTrue(mapper.messageReceived("1", query), "Message not processed")

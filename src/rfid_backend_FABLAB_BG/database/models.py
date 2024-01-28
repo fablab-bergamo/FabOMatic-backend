@@ -269,6 +269,7 @@ class Machine(Base):
     authorizations = relationship("Authorization", back_populates="machine")
     machine_type = relationship("MachineType", back_populates="machines")
     uses = relationship("Use", back_populates="machine")
+    cards = relationship("UnknownCard", back_populates="machine")
 
     __table_args__ = (Index("idx_machines_machine_name_unique", "machine_name", unique=True),)
 
@@ -310,7 +311,32 @@ class Use(Base):
             "end_timestamp": self.end_timestamp,
             "last_seen": self.last_seen,
         }
-
     def __str__(self):
         """Return a string representation of the object."""
         return str(self.serialize())
+
+
+class UnknownCard(Base):
+    """Class handling machine use."""
+
+    __tablename__ = "unknown_cards"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    card_UUID = Column(String, nullable=False)
+    timestamp = Column(Float, nullable=False)
+    machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
+
+    machine = relationship("Machine", back_populates="cards")
+
+    def serialize(self):
+        """Serialize data and return a Dict."""
+        return {
+            "id": self.id,
+            "card_UUID": self.card_UUID,
+            "timestamp": self.timestamp,
+            "machine_id": self.machine_id,
+        }
+
+    @classmethod
+    def from_dict(cls, dict_data):
+        """Deserialize data from Dictionary."""
+        return cls(**dict_data)
