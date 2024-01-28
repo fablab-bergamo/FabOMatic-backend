@@ -12,10 +12,14 @@ from rfid_backend_FABLAB_BG.logger import configure_logger
 class Backend:
     """Backend class."""
 
-    def __init__(self):
-        self._db = DatabaseBackend()
+    def __init__(self, config_file: str = None):
+        if config_file is None:
+            self._db = DatabaseBackend()
+            self._mqtt = MQTTInterface()
+        else:
+            self._db = DatabaseBackend(config_file)
+            self._mqtt = MQTTInterface(config_file)
 
-        self._mqtt = MQTTInterface()
         self._mapper = MsgMapper(self._mqtt, self._db)
         self._mapper.registerHandlers()
         self._flaskThread = None
@@ -23,9 +27,10 @@ class Backend:
     def connect(self) -> bool:
         """Connect to the MQTT broker and the database."""
         try:
-            self._mqtt.connect()
             session = self._db.getSession()
+            logging.info(f"Session info: {session.info}")
             self.createDatabase()
+            self._mqtt.connect()
             return True
         except Exception as ex:
             logging.error("Connection failed: %s", ex, exc_info=True)
@@ -54,7 +59,7 @@ _flaskThread: threading.Thread = None
 def _startApp() -> None:
     from rfid_backend_FABLAB_BG.web.webapplication import app
 
-    app.run(host="0.0.0.0", port=23336, debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=23336, debug=True, use_reloader=False, ssl_context="adhoc")
 
 
 def startServer() -> None:
@@ -77,3 +82,7 @@ def start(loglevel):
         else:
             back.publishStats()
         sleep(5)
+
+
+if __name__ == "__main__":
+    start(10)

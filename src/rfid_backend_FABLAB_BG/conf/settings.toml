@@ -1,14 +1,24 @@
 [database]
-url = "sqlite:///machines-test.sqldb"
-name = "fablab"
+url = "sqlite:///database.sqldb"    # Database source. Will be seeded if empty.
+name = "fablab"                     # Name of the database
 
 [MQTT]
-broker = "127.0.0.1"
-port = 1883
-client_id = "backend"
-topic = "machine/"        # root topic. Subtopics will be /machine/<ID> will be subscribed
-reply_subtopic = "/reply"  # appended to the machine topics for replies by backend. E.g. machine/1/reply
-stats_topic = "stats/"
+broker = "fabpi"            # Name / IP of the MQTT broker
+port = 1883                 # MQTT broker port
+client_id = "backend-2"     # MQTT Client name
+topic = "machine"           # Machine topic to be monitored. All subtopics with <topic>/<ID> will be subscribed. Do not include leading or trailing slashes.
+reply_subtopic = "/reply"   # appended to the <topic>/<id> for replies by backend. E.g. machine/1/reply
+stats_topic = "stats"       # Stats will be published in this topic on MQTT server.
+user = ""                   # Auth not used
 
 [web]
-secret_key = "lkgsjòlgjsd"
+secret_key = "ç°32è+3242039ikòlòà"              # Used for encryption by Flask. Change it to a random string.
+default_admin_email = "admin@fablag.org"        # Email of the admin, used for 1st login and seeding.
+
+
+[email]
+server = "smtp.google.com"
+port = 587
+use_tls = true
+username = ""
+password = ""

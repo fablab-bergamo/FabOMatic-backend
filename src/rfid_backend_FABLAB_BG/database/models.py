@@ -1,16 +1,24 @@
-import sqlite3
+"""Database models for the rfid_backend_FABLAB_BG application."""
 
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+import sqlite3
+import os
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy import event, Engine, Index
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
+from .constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 Base = declarative_base()
 
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    if type(dbapi_connection) is sqlite3.Connection:  # play well with other DB backends
+    """Set SQLite PRAGMA foreign_keys=ON."""
+    if isinstance(dbapi_connection, sqlite3.Connection):  # play well with other DB backends
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
@@ -26,6 +34,7 @@ class Role(Base):
     authorize_all = Column(Boolean, default=False, nullable=False)
     reserved = Column(Boolean, default=False, nullable=False)
     maintenance = Column(Boolean, default=False, nullable=False)
+    backend_admin = Column(Boolean, default=False, nullable=False)
 
     users = relationship("User", back_populates="role")
     __table_args__ = (Index("idx_roles_role_name_unique", "role_name", unique=True),)
@@ -46,16 +55,21 @@ class Role(Base):
         return cls(**dict_data)
 
 
-class User(Base):
+class User(UserMixin, Base):
     """Dataclass handling a user."""
 
     __tablename__ = "users"
+    DEFAULT_ADMIN_PASSWORD = "admin"
 
     user_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     surname = Column(String, nullable=False)
     role_id = Column(Integer, ForeignKey("roles.role_id"), nullable=False)
     card_UUID = Column(String, unique=True, nullable=True)
+    disabled = Column(Boolean, unique=False, nullable=False, default=False)
+    deleted = Column(Boolean, unique=False, nullable=False, default=False)
+    password_hash = Column(String(128), nullable=True)
+    email = Column(String, nullable=True)
 
     authorizations = relationship("Authorization", back_populates="user")
     interventions = relationship("Intervention", back_populates="user")
@@ -64,6 +78,38 @@ class User(Base):
 
     __table_args__ = (Index("idx_users_card_UUID_unique", "card_UUID", unique=True),)
 
+    """ Methods required by Flask-Login """
+
+    def set_password(self, password) -> None:
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+    def get_id(self) -> str:
+        return str(self.user_id)
+
+    """ Email reset """
+
+    def get_reset_token(self, key: bytes, salt: bytes) -> str:
+        s = Serializer(secret_key=key, salt=salt)
+        return s.dumps({"user_id": self.user_id})
+
+    """ Static method to verify a token"""
+    """ Returns the user_id if the token is valid, None otherwise """
+    """ max_age is in seconds"""
+    """ key and salt must be the same used to generate the token """
+
+    @staticmethod
+    def verify_reset_token(token: str, key: bytes, salt: bytes, max_age=1800) -> int | None:
+        s = Serializer(secret_key=key, salt=salt)
+        try:
+            user_id = s.loads(s=token, max_age=max_age)["user_id"]
+        except:
+            return None
+
+        return int(user_id)
+
     def serialize(self):
         """Serialize data and return a Dict."""
         return {
@@ -71,14 +117,28 @@ class User(Base):
             "name": self.name,
             "surname": self.surname,
             "role_id": self.role_id,
-            "authorization_ids": [auth.authorization_id for auth in self.authorizations],
+            "authorization_ids": [a.authorization_id for a in self.authorizations],
+            "intervention_ids": [i.intervention_id for i in self.interventions],
+            "use_ids": [u.use_id for u in self.uses],
             "card_UUID": self.card_UUID,
+            "disabled": self.disabled,
+            "deleted": self.deleted,
+            "email": self.email,
+            "password_hash": self.password_hash,
         }
 
     @classmethod
     def from_dict(cls, dict_data):
         """Deserialize data from Dictionary."""
         return cls(**dict_data)
+
+    def user_level(self) -> USER_LEVEL:
+        """Get the user level."""
+        if self.disabled:
+            return USER_LEVEL.INVALID
+        if self.role.authorize_all:
+            return USER_LEVEL.ADMIN
+        return USER_LEVEL.NORMAL
 
 
 class Authorization(Base):
@@ -92,6 +152,8 @@ class Authorization(Base):
 
     user = relationship("User", back_populates="authorizations")
     machine = relationship("Machine", back_populates="authorizations")
+
+    __table_args__ = (UniqueConstraint("user_id", "machine_id", name="uix_1"),)
 
     def serialize(self):
         """Serialize data and return a Dict."""
@@ -177,13 +239,13 @@ class MachineType(Base):
 
     type_id = Column(Integer, primary_key=True, autoincrement=True)
     type_name = Column(String, unique=True, nullable=False)
-
+    type_timeout_min = Column(Integer, unique=False, nullable=False, default=DEFAULT_TIMEOUT_MINUTES)
     machines = relationship("Machine", back_populates="machine_type")
     __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
 
     def serialize(self):
         """Serialize data and return a Dict."""
-        return {"type_id": self.type_id, "type_name": self.type_name}
+        return {"type_id": self.type_id, "type_name": self.type_name, "type_timeout_min": self.type_timeout_min}
 
     @classmethod
     def from_dict(cls, dict_data):
@@ -233,6 +295,7 @@ class Use(Base):
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
     start_timestamp = Column(Float, nullable=False)
+    last_seen = Column(Float, nullable=False)
     end_timestamp = Column(Float, nullable=True)
 
     machine = relationship("Machine", back_populates="uses")
@@ -246,7 +309,11 @@ class Use(Base):
             "machine_id": self.machine_id,
             "start_timestamp": self.start_timestamp,
             "end_timestamp": self.end_timestamp,
+            "last_seen": self.last_seen,
         }
+    def __str__(self):
+        """Return a string representation of the object."""
+        return str(self.serialize())
 
 
 class UnknownCard(Base):

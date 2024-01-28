@@ -1,10 +1,22 @@
-import os
+""" Test the MQTT interface and the message mapper """
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import unittest
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import *
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+    MachineQuery,
+    MachineResponse,
+    SimpleResponse,
+    StartUseQuery,
+    UserQuery,
+    UserResponse,
+    EndUseQuery,
+    RegisterMaintenanceQuery,
+    AliveQuery,
+)
 from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
 from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
-from tests.common import configure_logger, TEST_SETTINGS_PATH, get_simple_db
+from tests.common import TEST_SETTINGS_PATH, get_simple_db
 
 
 class TestMQTT(unittest.TestCase):
@@ -44,14 +56,19 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(alive_query.__class__, AliveQuery)
 
     def test_json_serialize(self):
-        response = UserResponse(True, True, "user name", 2)
-        json_response = response.serialize()
-        self.assertEqual(json_response, '{"request_ok": true, "is_valid": true, "name": "user name", "level": 2}')
-
-        response = MachineResponse(True, True, False, True)
+        response = UserResponse(True, True, "user name", 2, False)
         json_response = response.serialize()
         self.assertEqual(
-            json_response, '{"request_ok": true, "is_valid": true, "maintenance": false, "allowed": true}'
+            json_response,
+            '{"request_ok": true, "is_valid": true, "name": "user name", "missing_auth": false, "level": 2}',
+        )
+
+        response = MachineResponse(True, True, False, True, "Machine", 1, 120)
+        json_response = response.serialize()
+        self.assertEqual(
+            json_response,
+            '{"request_ok": true, "is_valid": true, "maintenance": false, '
+            + '"allowed": true, "name": "Machine", "logoff": 120, "type": 1}',
         )
 
         response = SimpleResponse(True)

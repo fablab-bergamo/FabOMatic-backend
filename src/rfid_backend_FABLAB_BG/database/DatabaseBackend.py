@@ -4,8 +4,22 @@ from os.path import dirname, abspath
 import logging
 import toml
 from sqlalchemy import create_engine
+from sqlalchemy.orm.exc import NoResultFound
 
-from .repositories import *
+from rfid_backend_FABLAB_BG.database.models import MachineType, Role, User, Machine, Maintenance
+
+from .repositories import (
+    UseRepository,
+    UserRepository,
+    RoleRepository,
+    MachineRepository,
+    MachineTypeRepository,
+    AuthorizationRepository,
+    MaintenanceRepository,
+    InterventionRepository,
+    Session,
+    Base,
+)
 
 MODULE_DIR = dirname(dirname(abspath(__file__)))
 CONFIG_FILE = path.join(MODULE_DIR, "conf", "settings.toml")
@@ -45,6 +59,7 @@ class DatabaseBackend:
         self._name = self._settings["database"]["name"]
 
     def _connect(self) -> None:
+        """Connect to the database."""
         from sqlalchemy.orm import sessionmaker
 
         self._engine = create_engine(self._url, echo=False)
@@ -52,7 +67,15 @@ class DatabaseBackend:
         logging.info("Connected to database %s", self._url)
 
     def getOne(self, Model, **kwargs):
-        """Return one instance of Model matching kwargs."""
+        """Return one instance of Model matching kwargs.
+
+        Args:
+            Model: The model class to query.
+            **kwargs: Keyword arguments to filter the query.
+
+        Returns:
+            The first instance of Model matching the kwargs, or None if not found.
+        """
         with self._session() as session:
             try:
                 result = session.query(Model).filter_by(**kwargs).one()
@@ -61,45 +84,159 @@ class DatabaseBackend:
                 return None
 
     def query(self, Model, **kwargs):
-        """Query for instances of Model matching kwargs."""
+        """Query for instances of Model matching kwargs.
+
+        Args:
+            Model: The model class to query.
+            **kwargs: Keyword arguments to filter the query.
+
+        Returns:
+            A list of instances of Model matching the kwargs.
+        """
         with self._session() as session:
             return session.query(Model).filter_by(**kwargs).all()
 
     def getSession(self) -> Session:
+        """Get a session object for database operations.
+
+        Returns:
+            A session object.
+        """
         return self._session()
 
     def getUserRepository(self, session: Session) -> UserRepository:
+        """Get a UserRepository object for user-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A UserRepository object.
+        """
         return UserRepository(session)
 
     def getRoleRepository(self, session: Session) -> RoleRepository:
+        """Get a RoleRepository object for role-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A RoleRepository object.
+        """
         return RoleRepository(session)
 
     def getMachineRepository(self, session: Session) -> MachineRepository:
+        """Get a MachineRepository object for machine-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A MachineRepository object.
+        """
         return MachineRepository(session)
 
     def getMachineTypeRepository(self, session: Session) -> MachineTypeRepository:
+        """Get a MachineTypeRepository object for machine type-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A MachineTypeRepository object.
+        """
         return MachineTypeRepository(session)
 
     def getUseRepository(self, session: Session) -> UseRepository:
+        """Get a UseRepository object for use-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A UseRepository object.
+        """
         return UseRepository(session)
 
     def getAuthorizationRepository(self, session: Session) -> AuthorizationRepository:
+        """Get an AuthorizationRepository object for authorization-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            An AuthorizationRepository object.
+        """
         return AuthorizationRepository(session)
 
     def getMaintenanceRepository(self, session: Session) -> MaintenanceRepository:
+        """Get a MaintenanceRepository object for maintenance-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            A MaintenanceRepository object.
+        """
         return MaintenanceRepository(session)
 
     def getInterventionRepository(self, session: Session) -> InterventionRepository:
+        """Get an InterventionRepository object for intervention-related database operations.
+
+        Args:
+            session: The session object to use for database operations.
+
+        Returns:
+            An InterventionRepository object.
+        """
         return InterventionRepository(session)
 
     def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
         return UnknownCardsRepository(session)
 
     def createDatabase(self) -> None:
-        logging.debug("Creating database %s", self._url)
+        """Create the database."""
         Base.metadata.create_all(self._engine, checkfirst=True)
+        with self._session() as session:
+            if len(self.getUserRepository(session).get_all()) == 0:
+                self.seedDatabase()
+
+    def seedDatabase(self) -> None:
+        """Seed the database with initial data."""
+        logging.warning("Seeding empty database %s", self._url)
+        with self._session() as session:
+            mt1 = MachineType(type_name="Default type", type_timeout_min=8 * 60)
+            self.getMachineTypeRepository(session).create(mt1)
+
+            r1 = Role(role_name="admins", authorize_all=True, reserved=True, maintenance=True, backend_admin=True)
+            self.getRoleRepository(session).create(r1)
+
+            r3 = Role(role_name="Fab Staff", authorize_all=True, reserved=False, maintenance=True, backend_admin=False)
+            self.getRoleRepository(session).create(r3)
+
+            r2 = Role(
+                role_name="Fab Users", authorize_all=True, reserved=False, maintenance=False, backend_admin=False
+            )
+            self.getRoleRepository(session).create(r2)
+
+            u1 = User(
+                name="admin",
+                surname="admin",
+                role_id=r1.role_id,
+                card_UUID="12345678",
+                email=getSetting("web", "default_admin_email"),
+            )
+
+            u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
+
+            self.getUserRepository(session).create(u1)
+
+            m1 = Machine(machine_name="MACHINE1", machine_type_id=mt1.type_id)
+            self.getMachineRepository(session).create(m1)
 
     def dropContents(self) -> None:
+        """Drop all contents of the database."""
         logging.warning("Dropping all contents of database: %s", self._url)
         meta = Base.metadata
         with self._session() as session:

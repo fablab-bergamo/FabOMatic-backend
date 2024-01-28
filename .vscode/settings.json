@@ -19,6 +19,11 @@
       "driver": "SQLite",
       "database": "${workspaceFolder:rfid-backend}/machines-test.sqldb",
       "name": "Testdb"
-    }
+    },
+  "pylint.args": [
+    "--max-line-length=120",
+    "--variable-naming-style=any",
+    "--class-naming-style=any",
+    "--method-naming-style=any"
   ]
 }
