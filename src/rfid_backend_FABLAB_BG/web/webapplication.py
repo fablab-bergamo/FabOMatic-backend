@@ -8,7 +8,7 @@ from flask import Flask, render_template, send_from_directory
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting
+from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting, getDatabaseUrl
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FLASK_TEMPLATES_FOLDER = os.path.join(MODULE_DIR, "flask_app", "templates")
@@ -19,7 +19,7 @@ ALLOWED_EXTENSIONS = {"txt", "pdf", "docx"}
 app = Flask(__name__, template_folder=FLASK_TEMPLATES_FOLDER, static_folder=FLASK_STATIC_FOLDER)
 app.config["SECRET_KEY"] = getSetting("web", "secret_key")
 
-engine = create_engine(getSetting("database", "url"), echo=False)
+engine = create_engine(getDatabaseUrl(), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 

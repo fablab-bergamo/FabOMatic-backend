@@ -17,5 +17,13 @@
     "--variable-naming-style=any",
     "--class-naming-style=any",
     "--method-naming-style=any"
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "Prod",
+      "database": "${workspaceFolder:rfid-backend}/database.sqldb"
+    }
   ]
 }
