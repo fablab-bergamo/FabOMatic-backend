@@ -46,7 +46,7 @@ def get_empty_db() -> DatabaseBackend:
         DatabaseBackend: An instance of DatabaseBackend with an empty database.
     """
     d = DatabaseBackend(TEST_SETTINGS_PATH)
-    d.createDatabase()
+    d.createAndUpdateDatabase()
     d.dropContents()
     return d
 
@@ -59,7 +59,7 @@ def seed_db() -> DatabaseBackend:
         DatabaseBackend: The seeded database instance.
     """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
-    empty_db.createDatabase()
+    empty_db.createAndUpdateDatabase()
     empty_db.dropContents()
 
     with empty_db.getSession() as session:
@@ -106,7 +106,7 @@ def get_simple_db() -> DatabaseBackend:
         DatabaseBackend: An instance of the created database.
     """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
-    empty_db.createDatabase()
+    empty_db.createAndUpdateDatabase()
     empty_db.dropContents()
 
     with empty_db.getSession() as session:

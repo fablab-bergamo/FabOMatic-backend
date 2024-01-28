@@ -55,7 +55,7 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 
 * Review settings.toml file after installation.
 
-* TODO : database schema upgrade instructions
+* Database upgrades are applied by Alembic on start of the backend.
 
 ## Configuration file
 
@@ -87,17 +87,18 @@ password = ""
 
 ```
 
-## Dev environment settings
+## Developper notes
 
-* Developped with VSCode
-* Create a python venv with Python >=3.10
+* Developped with VSCode, extensions: Python, SQLTools, SQLTools SQLite, Black formatter
+
+* Create a python venv with Python >=3.10 and make sure your terminal has activated the venv
+
 * Test settings are into tests\test_settings.toml file, to run tests from root folder (or Terminal)
 
 ```shell
 pytest -v
 ```
 
-* VSCode extensions : Python, Black extension for automatic code formatting
 * How to run the server from Terminal (from root folder)
 
 ```shell
@@ -115,6 +116,22 @@ pip install --upgrade twine
 To update distribution
 
 ```shell
-py -m build
-py -m twine upload --repository testpypi dist/*
+python -m build
+python -m twine upload --repository testpypi dist/*
 ```
+
+* To handle schema changes with existing installations, changes the database/models.py, check that the changes are properly captured by alembic, then generate a migration script, and apply it. Then commit all files and publish a new revision. 
+
+```shell
+alembic check
+alembic revision --autogenerate -m "Description of change"
+alembic upgrade head
+```
+
+* To handle data migration you have to manually edit the generated migration file in alembic folder.
+
+## Main revision log
+
+| Version | When | Release notes |
+|--|--|--|
+| 0.0.18 | January 2024 | first revision with Alembic for database version tracking to handle graceful updates |
