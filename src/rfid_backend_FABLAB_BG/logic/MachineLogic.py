@@ -108,9 +108,9 @@ class MachineLogic:
                 user = user_repo.getUserByCardUUID(card_uuid)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if user is None and machine is not None:
-                    unknown_repo = MachineLogic.database.getUnknownCardRepository(session)
-                    unknown_repo.registerUnknownCard(card_uuid, machine.machine_id)
-                
+                    unknown_repo = MachineLogic.database.getUnknownCardsRepository(session)
+                    unknown_repo.registerUnknownCard(card_uuid, machine)
+
                 if machine is None or user is None:
                     return UserResponse(True, False, "Unknown", USER_LEVEL.INVALID, False)
                 if user_repo.IsUserAuthorizedForMachine(machine, user):

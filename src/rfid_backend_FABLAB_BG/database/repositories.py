@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
-from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base
+from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base, UnknownCard
 from .constants import DEFAULT_TIMEOUT_MINUTES
 
 
@@ -642,7 +642,7 @@ class UnknownCardsRepository(BaseRepository):
         Returns:
             int: id of the new UnknownCard record
         """
-        record = UnknownCard(card_uuid=uuid, machine_id=machine.machine_id, timestamp=time())
-        self.db_session.add(record)
+        record = UnknownCard(card_UUID=uuid, machine_id=machine.machine_id, timestamp=time())
+        self.create(record)
         self.db_session.commit()
         return record.id
