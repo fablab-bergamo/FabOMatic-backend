@@ -38,6 +38,8 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 
 * Change defaults in conf/settings.toml (see below)
 
+* Copy alembic.ini file to user home folder (TODO: add to installation script)
+
 * Run it with
 
 ```shell
@@ -50,8 +52,9 @@ python -m rfid_backend_FABLAB_BG
 
 * Setup backup strategy for database (database.sqldb), which is automatically created on first run.
 
-* Setup systemd to automatically run on boot with user profile:
+* Setup systemd to automatically launch Python module on boot with user profile:
 
+See sample configuration example in doc/systemd
 
 ## How to upgrade release
 
