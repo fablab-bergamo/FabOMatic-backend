@@ -25,6 +25,7 @@ from .repositories import (
 
 MODULE_DIR = dirname(dirname(abspath(__file__)))
 CONFIG_FILE = path.join(MODULE_DIR, "conf", "settings.toml")
+MIGRATIONS_DIR = path.join(MODULE_DIR, "alembic")
 
 
 def getSetting(section: str, setting: str, settings_path: str = CONFIG_FILE) -> str:
@@ -225,6 +226,7 @@ class DatabaseBackend:
 
         alembic_cfg = Config("alembic.ini")
         alembic_cfg.set_main_option("sqlalchemy.url", self._url)
+        alembic_cfg.set_main_option("script_location", MIGRATIONS_DIR)
         command.upgrade(alembic_cfg, "head")
 
         with self._session() as session:
