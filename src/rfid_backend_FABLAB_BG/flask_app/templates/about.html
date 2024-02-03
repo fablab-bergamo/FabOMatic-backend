@@ -30,7 +30,7 @@
                     {% set text = "FREE" %}
                 {% endif %}
                         <div class="card-body">
-                            <div class="card-header"><h5>{{ mac.machine_name }} ({{ mac.machine_type.type_name }})</h5></div>
+                            <div class="card-header"><h5>{{ mac.machine_name }}</h5></div>
                             <p class="card-title">Machine is {{ text }}
                             {% if mac.active_user() != None %}
                                  by {{ mac.active_user().name }}</p>
