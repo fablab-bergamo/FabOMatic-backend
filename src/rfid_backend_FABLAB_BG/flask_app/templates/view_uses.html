@@ -45,9 +45,8 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Use ID</th>
-        <th>User</th>
         <th>Machine</th>
+        <th>User</th>
         <th>Start Time</th>
         <th>End Time</th>
         <th>Last update</th>
@@ -58,7 +57,7 @@
     <tbody>
       {% for use in uses %}
       <tr class="{% if use.end_timestamp is none %}table-warning{% endif %}">
-        <td>{{ use.use_id }}</td>
+        <td>{{ use.machine.machine_name }}</td>
         <td>
           {% if use.user.deleted %}
           deleted user
@@ -66,7 +65,6 @@
           {{ use.user.name }} {{ use.user.surname }}
           {% endif %}
         </td>
-        <td>{{ use.machine.machine_name }}</td>
         <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
         <td>{{ use.last_seen|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
         <td>
