@@ -72,67 +72,75 @@ class TestLogic(unittest.TestCase):
         db = get_simple_db()
         with db.getSession() as session:
             MachineLogic.database = db
-            mac = db.getMachineRepository(session).get_all()[0]
+
             user = db.getUserRepository(session).get_all()[0]
             user.card_UUID = "1234"
             db.getUserRepository(session).update(user)
-            ml = MachineLogic(mac.machine_id)
 
             use_repo = db.getUseRepository(session)
 
-            for use in use_repo.get_all():
-                use_repo.delete(use)
+            for mac_id in range(1, 4):
+                mac = db.getMachineRepository(session).get_by_id(mac_id)
+                ml = MachineLogic(mac.machine_id)
 
-            session.commit()
-            # Call inUse without startUse
-            response = ml.inUse("1234", 10)
-            self.assertTrue(response.request_ok, "inUse succeeded")
+                for use in use_repo.get_all():
+                    use_repo.delete(use)
 
-            # Check a usage has been created with the correct duration
-            usage = session.query(Use).filter(Use.machine_id.__eq__(mac.machine_id)).first()
-            self.assertIsNotNone(usage, "Usage not created")
-            self.assertAlmostEqual(time() - usage.start_timestamp, 10, 0, "Usage duration is not correct")
-            self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (1)")
+                session.commit()
 
-            # Call again with another duration
-            response = ml.startUse("1234")
-            self.assertTrue(response.request_ok, "startUse failed")
+                for d in range(10):
+                    # Call inUse without startUse
+                    response = ml.inUse("1234", 10 + d)
+                    self.assertTrue(response.request_ok, "inUse succeeded")
 
-            session.commit()
-            # Check that inuse has been closed with duration 10s
-            usage = (
-                session.query(Use)
-                .filter(Use.machine_id.__eq__(mac.machine_id))
-                .order_by(Use.start_timestamp.asc())
-                .first()
-            )
-            self.assertIsNotNone(usage.end_timestamp, f"Usage end timestamp is None : {usage}")
-            self.assertAlmostEqual(
-                usage.end_timestamp - usage.start_timestamp, 10, 0, f"Usage duration is not correct {usage}"
-            )
+                    # Check a usage has been created with the correct duration
+                    usage = session.query(Use).filter(Use.machine_id == mac.machine_id).first()
+                    self.assertIsNotNone(usage, "Usage not created")
+                    self.assertAlmostEqual(time() - usage.start_timestamp, 10, 0, "Usage duration is not correct")
+                    self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (1)")
 
-            # Check that another record has been opened
-            usage = (
-                session.query(Use)
-                .filter(Use.machine_id.__eq__(mac.machine_id))
-                .order_by(Use.start_timestamp.desc())
-                .first()
-            )
-            self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (2)")
+                    # Check for duplicated records
+                    self.assertEqual(len(use_repo.get_all()), 1, "Usage has been duplicated")
 
-            response = ml.endUse("1234", 1)
-            self.assertTrue(response.request_ok, "endUse failed")
+                # Call again with another duration
+                response = ml.startUse("1234")
+                self.assertTrue(response.request_ok, "startUse failed")
 
-            session.commit()
-            usage = (
-                session.query(Use)
-                .filter(Use.machine_id.__eq__(mac.machine_id))
-                .order_by(Use.start_timestamp.desc())
-                .first()
-            )
-            self.assertIsNotNone(usage.end_timestamp, f"Usage end timestamp is None : {response}")
-            # Check that we have two records
-            self.assertEqual(len(use_repo.get_all()), 2, "wrong number of request")
+                session.commit()
+                # Check that inuse has been closed with duration 10s
+                usage = (
+                    session.query(Use)
+                    .filter(Use.machine_id == mac.machine_id)
+                    .order_by(Use.start_timestamp.asc())
+                    .first()
+                )
+                self.assertIsNotNone(usage.end_timestamp, f"Usage end timestamp is None : {usage}")
+                self.assertAlmostEqual(
+                    usage.end_timestamp - usage.start_timestamp, 10, 0, f"Usage duration is not correct {usage}"
+                )
+
+                # Check that another record has been opened
+                usage = (
+                    session.query(Use)
+                    .filter(Use.machine_id == mac.machine_id)
+                    .order_by(Use.start_timestamp.desc())
+                    .first()
+                )
+                self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (2)")
+
+                response = ml.endUse("1234", 1)
+                self.assertTrue(response.request_ok, "endUse failed")
+
+                session.commit()
+                usage = (
+                    session.query(Use)
+                    .filter(Use.machine_id == mac.machine_id)
+                    .order_by(Use.start_timestamp.desc())
+                    .first()
+                )
+                self.assertIsNotNone(usage.end_timestamp, f"Usage end timestamp is None : {response}")
+                # Check that we have two records
+                self.assertEqual(len(use_repo.get_all()), 2, "wrong number of request")
 
     def test_machine_logic(self):
         db = get_simple_db()
