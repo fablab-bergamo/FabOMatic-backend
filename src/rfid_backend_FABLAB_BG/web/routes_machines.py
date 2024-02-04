@@ -1,7 +1,8 @@
 """ Routes for machines management. """
+
 # pylint: disable=C0116
 
-from flask import render_template, request, redirect, url_for
+from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType
 from .webapplication import DBSession, app
@@ -28,6 +29,12 @@ def add_machine():
 def create_machine():
     session = DBSession()
     machine_data = request.form
+
+    # Input validation
+    if not machine_data["machine_hours"].isnumeric() or float(machine_data["machine_hours"]) < 0:
+        flash("Hours must be a positive number.")
+        return redirect(url_for("add_machine"))
+
     new_machine = Machine(
         machine_name=machine_data["machine_name"],
         machine_type_id=machine_data["machine_type_id"],
@@ -60,6 +67,12 @@ def update_machine():
     if machine:
         machine.machine_name = machine_data["machine_name"]
         machine.machine_type_id = machine_data["machine_type_id"]
+
+        # Input validation
+        if not machine_data["machine_hours"].isnumeric() or float(machine_data["machine_hours"]) < 0:
+            flash("Hours must be a positive number.")
+            return redirect(url_for("edit_machine", machine_id=machine.machine_id))
+
         machine.machine_hours = float(machine_data["machine_hours"])
         machine.blocked = machine_data.get("blocked", "off") == "on"
         session.commit()

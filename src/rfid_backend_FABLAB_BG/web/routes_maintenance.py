@@ -1,4 +1,5 @@
 """ This module contains the routes for the maintenance management. """
+
 # pylint: disable=C0116
 
 import logging
@@ -39,6 +40,10 @@ def add_maintenance():
     logging.debug("Processing add_maintenance %s", request)
     if request.method == "POST":
         hours_between = request.form["hours_between"]
+        if (not hours_between.isnumeric()) or (float(hours_between) <= 0):
+            flash("Hours between must be a positive number.")
+            return redirect(url_for("add_maintenance"))
+
         description = request.form["description"]
         machine_id = request.form["machine_id"]
         attachment = None
@@ -69,10 +74,15 @@ def edit_maintenance(maintenance_id):
     session = DBSession()
     maintenance = session.query(Maintenance).filter_by(maintenance_id=maintenance_id).one()
     if request.method == "POST":
-        maintenance.hours_between = request.form["hours_between"]
+        hours_between = request.form["hours_between"]
         maintenance.description = request.form["description"]
         maintenance.machine_id = request.form["machine_id"]
         maintenance.attachment = None
+        if (not hours_between.isnumeric()) or (float(hours_between) <= 0):
+            flash("Hours between must be a positive number.")
+            return redirect(url_for("edit_maintenance", maintenance_id=maintenance_id))
+        maintenance.hours_between = hours_between
+
         if "attachment" in request.files:
             file = request.files["attachment"]
             if file.filename != "" and allowed_file(file.filename):

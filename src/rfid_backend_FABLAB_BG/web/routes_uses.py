@@ -1,4 +1,5 @@
 """ This module contains the routes for the uses pages. """
+
 # pylint: disable=C0116
 
 from datetime import datetime
@@ -105,6 +106,10 @@ def add_use_post():
             end_timestamp = end_timestamp.timestamp()
         except ValueError:
             end_timestamp = None
+
+        if end_timestamp and end_timestamp < start_timestamp:
+            flash("End timestamp cannot be before start timestamp.", "error")
+            return redirect(url_for("add_use"))
 
         machine_repo = MachineRepository(session)
         machine = machine_repo.get_by_id(machine_id)
