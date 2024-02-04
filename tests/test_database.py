@@ -596,6 +596,15 @@ class TestDB(unittest.TestCase):
             )
 
             for _ in range(100):
+                use_repo.inUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
+
+            self.assertEqual(
+                99,
+                len(session.query(Use).filter(Use.end_timestamp.is_not(None)).all()),
+                "In use does not duplicate records",
+            )
+
+            for _ in range(100):
                 use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1)
 
             self.assertEqual(

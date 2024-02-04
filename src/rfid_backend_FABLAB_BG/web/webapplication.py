@@ -1,4 +1,5 @@
 """ This module contains the web application and common functions. """
+
 # pylint: disable=C0116
 
 from datetime import datetime
@@ -6,6 +7,7 @@ import os
 from time import time
 
 from flask import Flask, render_template, send_from_directory
+from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base, Machine
@@ -73,6 +75,7 @@ def index():
 
 
 @app.route("/download_attachment/<filename>")
+@login_required
 def download_attachment(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
