@@ -58,22 +58,42 @@ class MsgMapper:
 
     def handleStartUseQuery(self, machine_logic: MachineLogic, startUse: StartUseQuery) -> str:
         response = machine_logic.startUse(startUse.uid)
-        logging.debug("Start use query: %s -> response: %s", startUse.toJSON(), response.serialize())
+        logging.info(
+            "[Machine %d] Start use query: %s -> response: %s",
+            machine_logic.getMachineId(),
+            startUse.toJSON(),
+            response.serialize(),
+        )
         return response.serialize()
 
     def handleInUseQuery(self, machine_logic: MachineLogic, inUse: InUseQuery) -> str:
         response = machine_logic.startUse(inUse.uid)
-        logging.debug("In use query: %s -> response: %s", inUse.toJSON(), response.serialize())
+        logging.info(
+            "[Machine %d] In use query: %s -> response: %s",
+            machine_logic.getMachineId(),
+            inUse.toJSON(),
+            response.serialize(),
+        )
         return response.serialize()
 
     def handleEndUseQuery(self, machine_logic: MachineLogic, stopUse: EndUseQuery) -> str:
         response = machine_logic.endUse(stopUse.uid, stopUse.duration)
-        logging.debug("End use query: %s -> response: %s", stopUse.toJSON(), response.serialize())
+        logging.info(
+            "[Machine %d] End use query: %s -> response: %s",
+            machine_logic.getMachineId(),
+            stopUse.toJSON(),
+            response.serialize(),
+        )
         return response.serialize()
 
     def handleMaintenanceQuery(self, machine_logic: MachineLogic, maintenance: RegisterMaintenanceQuery) -> str:
         response = machine_logic.registerMaintenance(maintenance.uid)
-        logging.debug("Start use query: %s -> response: %s", maintenance.toJSON(), response.serialize())
+        logging.info(
+            "[Machine %d] Start use query: %s -> response: %s",
+            machine_logic.getMachineId(),
+            maintenance.toJSON(),
+            response.serialize(),
+        )
         return response.serialize()
 
     def handleAliveQuery(self, machine_logic: MachineLogic, alive: AliveQuery) -> str:
@@ -125,7 +145,6 @@ class MsgMapper:
         response = self._handlers[type(query)](machine_logic, query)
 
         if response is not None:
-            logging.info("Machine %s query: %s -> response: %s", machine, query.toJSON(), response)
             if not self._mqtt.publishReply(machine, response):
                 logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
                 return False

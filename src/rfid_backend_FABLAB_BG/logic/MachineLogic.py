@@ -229,3 +229,6 @@ class MachineLogic:
         except Exception as e:
             logging.error("registerMaintenance exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")
+
+    def getMachineId(self) -> int:
+        return self._machine_id
