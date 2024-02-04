@@ -9,4 +9,5 @@ from . import (
     routes_roles,
     routes_users,
     routes_uses,
+    routes_system,
 )
