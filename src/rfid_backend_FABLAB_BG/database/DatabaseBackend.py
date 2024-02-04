@@ -1,4 +1,5 @@
 """This is the class handling the Database. More to come."""
+
 import os
 from os import path
 from os.path import dirname, abspath
@@ -227,6 +228,7 @@ class DatabaseBackend:
         alembic_cfg = Config("alembic.ini")
         alembic_cfg.set_main_option("sqlalchemy.url", self._url)
         alembic_cfg.set_main_option("script_location", MIGRATIONS_DIR)
+        alembic_cfg.attributes["configure_logger"] = False
         command.upgrade(alembic_cfg, "head")
 
         with self._session() as session:
