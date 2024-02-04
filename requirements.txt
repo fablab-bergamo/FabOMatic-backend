@@ -8,4 +8,5 @@ pyopenssl==24.0.0
 flask-login==0.6.3
 flask-mail==0.9.1
 alembic==1.13.1
+psutil==5.9.8
 -e .
