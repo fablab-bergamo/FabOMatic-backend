@@ -1,3 +1,4 @@
+import logging
 from flask_login import LoginManager, login_user, logout_user, login_required
 from flask import render_template, request, redirect, url_for, flash
 from .webapplication import DBSession, app
@@ -35,11 +36,14 @@ def login():
                 # Now check the user role
                 if user.role.backend_admin or user.role.authorize_all:
                     login_user(user)
+                    logging.info("User %s logged in", user.email)
                     return redirect(url_for("about"))
                 else:
+                    logging.warning("User %s does not have a role with backend administration permission.", user.email)
                     flash("Your user does not have a role with backend administration permission.", "danger")
                     return redirect(url_for("login"))
             else:
+                logging.warning("Failed login attempt for user %s", request.form["email"])
                 flash("Wrong username or password.", "danger")
                 return redirect(url_for("login"))
     return render_template("login.html")
