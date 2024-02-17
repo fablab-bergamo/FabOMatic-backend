@@ -538,7 +538,11 @@ class UseRepository(BaseRepository):
         if record is None:
             # InUse received but no startUse was received before
             record = Use(
-                machine_id=machine_id, user_id=user.user_id, start_timestamp=(end - duration_s), last_seen=end
+                machine_id=machine_id,
+                user_id=user.user_id,
+                start_timestamp=(end - duration_s),
+                last_seen=end,
+                end_timestamp=None,
             )
             logging.warning("Missed startUse event, using inUse data.")
             self.create(record)

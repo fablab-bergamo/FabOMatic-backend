@@ -18,7 +18,7 @@ class MachineLogic:
 
     database: DatabaseBackend = None
 
-    def __init__(self, machine_id):
+    def __init__(self, machine_id: int):
         """
         Initializes a new instance of the MachineLogic class.
 
