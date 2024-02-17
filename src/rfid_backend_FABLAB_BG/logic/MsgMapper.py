@@ -30,7 +30,7 @@ class MsgMapper:
         self._machines = {}
         self._handlers = {}
 
-    def getMachineLogic(self, mid: str) -> MachineLogic | None:
+    def getMachineLogic(self, mid: int) -> MachineLogic | None:
         """
         Retrieves the MachineLogic object associated with the given machine ID.
 
@@ -126,30 +126,33 @@ class MsgMapper:
         logging.debug("Machine query: %s -> response: %s", machineQuery.toJSON(), status.serialize())
         return status.serialize()
 
-    def messageReceived(self, machine: str, query: BaseJson) -> bool:
+    def messageReceived(self, machine: int, query: BaseJson) -> bool:
         """This function is called when a message is received from the MQTT broker.
         It calls the appropriate handler for the message type."""
 
         if type(query) not in self._handlers:
             logging.warning(f"No handler for query {query} on machine {machine}")
             return False
+        if not machine.isdigit():
+            logging.error(f"Invalid machine ID: {machine}")
+            return False
 
         machine_logic = self.getMachineLogic(machine)
         if machine_logic is None:
-            logging.error("Failed to create MachineLogic instance for machine %s", machine)
+            logging.error(f"Failed to create MachineLogic instance for machine {machine}")
             response = SimpleResponse(False, "Invalid machine ID").serialize()
             if not self._mqtt.publishReply(machine, response):
-                logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
+                logging.error(f"Failed to publish response for machine {machine} to MQTT broker: {response}")
             return False
 
         response = self._handlers[type(query)](machine_logic, query)
 
         if response is not None:
             if not self._mqtt.publishReply(machine, response):
-                logging.error("Failed to publish response for machine %s to MQTT broker: %s", machine, response)
+                logging.error(f"Failed to publish response for machine {machine} to MQTT broker: {response}")
                 return False
         else:
-            logging.warning("Machine %s query: %s -> no response", machine, query.toJSON())
+            logging.warning(f"Machine {machine} query: {query.toJSON()} -> no response")
             return False
 
         return True
