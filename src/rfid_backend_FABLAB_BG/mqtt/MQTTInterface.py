@@ -99,8 +99,8 @@ class MQTTInterface:
 
         try:
             query = Parser.parse(message)
-            if query is not None:
-                self._messageCallback(machine, query)
+            if query is not None and machine.isdigit():
+                self._messageCallback(int(machine), query)
         except ValueError:
             logging.warning("Invalid message received: %s on machine %s", message, machine)
             return
