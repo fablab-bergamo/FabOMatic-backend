@@ -292,7 +292,7 @@ class InterventionRepository(BaseRepository):
         timestamp = time()
         for maintenance in machine.maintenances:
             if (
-                machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance.maintenance_id)
+                machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maintenance)
                 > maintenance.hours_between * 3600
             ):
                 intervention = Intervention(
@@ -407,7 +407,7 @@ class MachineRepository(BaseRepository):
 
         return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
 
-    def getRelativeUseTimeByMaintenance(self, machine_id: int, maintenance_id: int) -> int:
+    def getRelativeUseTimeByMaintenance(self, machine_id: int, maintenance: Maintenance) -> int:
         """Return total time the Machine has been used since last intervention.
 
         Args:
@@ -419,7 +419,7 @@ class MachineRepository(BaseRepository):
         """
         record = (
             self.db_session.query(Intervention)
-            .filter(Intervention.machine_id == machine_id, Intervention.maintenance_id == maintenance_id)
+            .filter(Intervention.machine_id == machine_id, Intervention.maintenance_id == maintenance.maintenance_id)
             .order_by(Intervention.timestamp.desc())
             .first()
         )
@@ -437,7 +437,11 @@ class MachineRepository(BaseRepository):
             .all()
         )
 
-        return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+        relative_time = sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+        logging.debug(
+            f"Machine {machine_id} Maintenance [{maintenance.description} - {maintenance.maintenance_id}], last_intervention {last_intervention} relative time = {relative_time} seconds ({uses.count()} uses)"
+        )
+        return relative_time
 
     def getTotalUseTime(self, machine_id: int) -> int:
         """Return total time the Machine has been used.
@@ -450,7 +454,9 @@ class MachineRepository(BaseRepository):
         """
         uses = self.db_session.query(Use).filter(Use.end_timestamp.is_not(None), Use.machine_id == machine_id).all()
 
-        return sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+        total_time = sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
+        logging.debug(f"Machine {machine_id} total time = {total_time} seconds ({uses.count()} uses)")
+        return total_time
 
     def getMachineMaintenanceNeeded(self, machine_id: int) -> Tuple[bool, str]:
         """Return True if the Machine needs any maintenance, False otherwise.
@@ -463,10 +469,8 @@ class MachineRepository(BaseRepository):
         """
         machine = self.db_session.query(Machine).filter(Machine.machine_id == machine_id).first()
         for maintenance in machine.maintenances:
-            if (
-                self.getRelativeUseTimeByMaintenance(machine_id, maintenance.maintenance_id)
-                > maintenance.hours_between * 3600.0
-            ):
+            if self.getRelativeUseTimeByMaintenance(machine_id, maintenance) > maintenance.hours_between * 3600.0:
+                logging.debug(f"Machine {machine_id} needs maintenance [{maintenance.description}]")
                 return (True, maintenance.description)
 
         return (False, "")
