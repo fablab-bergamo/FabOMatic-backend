@@ -23,7 +23,7 @@ def view_machine_use_history(machine_id):
     return render_template("view_machine_use_history.html", uses=uses, machine=machine)
 
 
-@app.route("/delete_use/<int:use_id>", methods=["POST"])
+@app.route("/delete_use/<int:use_id>", methods=["POST", "GET"])
 @login_required
 def delete_use(use_id):
     session = DBSession()
