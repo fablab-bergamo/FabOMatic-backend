@@ -77,7 +77,7 @@ def time_since(dt):
         dt = datetime.fromtimestamp(dt)
 
     diff = now - dt
-    seconds = abs(diff.total_seconds())
+    seconds = int(abs(diff.total_seconds()))
 
     if seconds < 60:
         return f"{seconds} seconds ago"
