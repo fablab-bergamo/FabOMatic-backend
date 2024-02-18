@@ -67,7 +67,7 @@ class MsgMapper:
         return response.serialize()
 
     def handleInUseQuery(self, machine_logic: MachineLogic, inUse: InUseQuery) -> str:
-        response = machine_logic.startUse(inUse.uid)
+        response = machine_logic.inUse(inUse.uid)
         logging.info(
             "[Machine %d] In use query: %s -> response: %s",
             machine_logic.getMachineId(),
