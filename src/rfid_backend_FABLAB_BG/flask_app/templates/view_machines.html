@@ -32,12 +32,17 @@
                     <i class="fa-solid fa-lock-open"></i> <!-- Unlocked Icon -->
                     {% endif %}
                 </td>
-                <td>
-                    <ul>
-                        {% for maintenance in machine.maintenances %}
-                        <li>{{ maintenance.description }} ({{ maintenance.hours_between }} h.)</li>
-                        {% endfor %}
-                    </ul>
+                <td>                    
+                    {% for m in machine.maintenances %} 
+                        {% if maint_stats[m.maintenance_id]["expired"] %}
+                            <span class="badge bg-danger">EXPIRED</span>
+                        {% else %}
+                            <span class="badge bg-success">OK</span>
+                        {% endif %}
+                        {{ m.description }}
+                        <div class="d-none d-lg-table-cell">({{ maint_stats[m.maintenance_id]["elapsed"] }} h. / {{ m.hours_between }} h.)</div>
+                        <br/>
+                    {% endfor %}
                 </td>
                 <td class="d-none d-lg-table-cell">{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
                 <td>
