@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base, Machine
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting, getDatabaseUrl
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
+import flask_excel as excel
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FLASK_TEMPLATES_FOLDER = os.path.join(MODULE_DIR, "flask_app", "templates")
@@ -26,6 +27,8 @@ app.config["SECRET_KEY"] = getSetting("web", "secret_key")
 engine = create_engine(getDatabaseUrl(), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
+
+excel.init_excel(app)
 
 
 def allowed_file(filename):

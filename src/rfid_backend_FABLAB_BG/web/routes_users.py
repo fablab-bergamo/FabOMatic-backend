@@ -8,7 +8,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import User, Role, UnknownCard
 from rfid_backend_FABLAB_BG.web.authentication import send_reset_email
-from .webapplication import DBSession, app
+from .webapplication import DBSession, app, excel
 
 
 @app.route("/users", methods=["GET"])
@@ -152,3 +152,10 @@ def delete_user(user_id):
         return redirect(url_for("view_users"))
 
     return render_template("delete_user.html", user=user)
+
+
+@app.route("/users/export", methods=["GET"])
+@login_required
+def users_export():
+    session = DBSession()
+    return excel.make_response_from_tables(session, [User], "xlsx")
