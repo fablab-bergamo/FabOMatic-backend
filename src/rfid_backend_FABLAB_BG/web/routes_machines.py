@@ -5,6 +5,7 @@
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType
+from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
 from .webapplication import DBSession, app
 
 
@@ -12,8 +13,17 @@ from .webapplication import DBSession, app
 @login_required
 def view_machines():
     session = DBSession()
+    machine_repo = MachineRepository(session)
     machines = session.query(Machine).order_by(Machine.machine_id).all()
-    return render_template("view_machines.html", machines=machines)
+    maint_stats = {}
+    for machine in machines:
+        for maint in machine.maintenances:
+            elapsed_s = machine_repo.getRelativeUseTimeByMaintenance(machine.machine_id, maint)
+            elapsed_h = round(elapsed_s / 3600.0, 1)
+            expired = elapsed_h > maint.hours_between
+            maint_stats[maint.maintenance_id] = {"expired": expired, "elapsed": elapsed_h}
+
+    return render_template("view_machines.html", machines=machines, maint_stats=maint_stats)
 
 
 @app.route("/machines/add", methods=["GET"])
