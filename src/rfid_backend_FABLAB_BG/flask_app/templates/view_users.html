@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h1>Users</h1>
     <h3>List of machines and web interface users</h3>
     <a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">Add User</a>
@@ -12,8 +12,8 @@
                 <th>Name</th>
                 <th>Surname</th>
                 <th>Role</th>
-                <th>Card UUID</th>
-                <th>E-mail</th>
+                <th class="d-none d-sm-table-cell">Card UUID</th>
+                <th class="d-none d-sm-table-cell">E-mail</th>
                 <th>Disabled?</th>
                 <th>Action</th>
             </tr>
@@ -27,8 +27,8 @@
                 <td>
                     <span class="badge bg-info">{{ user.role.role_name }}</span>
                 </td>
-                <td>{{ user.card_UUID }}</td>
-                <td>
+                <td class="d-none d-sm-table-cell">{{ user.card_UUID }}</td>
+                <td class="d-none d-sm-table-cell">
                     {% if user.email != "" %}
                     <a href="mailto:{{ user.email }}">{{ user.email }}</a><br />
                     <a href="{{ url_for('reset_user', user_id=user.user_id) }}" class="btn btn-dark btn-sm">Password
@@ -51,7 +51,7 @@
         </tbody>
     </table>
 </div>
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h3>List of rejected RFID cards</h3>
     <table class="table table-striped">
         <thead>

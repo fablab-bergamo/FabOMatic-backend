@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h1>Reset password</h1>
     <p>Are you sure you want to send reset password e-mail for the user '{{ user.name }} {{ user.surname }} ({{ user.email }})'?</p>
     <form method="POST" action="{{ url_for('reset_user', user_id=user.user_id) }}">

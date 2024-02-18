@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h1>Delete Machine</h1>
     <p>Are you sure you want to delete the machine '{{ machine.machine_name }}'?</p>
     <form method="POST" action="{{ url_for('delete_machine', machine_id=machine.machine_id) }}">

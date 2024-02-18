@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <h1>Usage History</h1>
   <h3>Search page for machine usage history</h3>
   <a href="{{ url_for('add_use') }}" class="btn btn-primary mb-3">Manual registration</a>
@@ -49,8 +49,8 @@
         <th>User</th>
         <th>Start Time</th>
         <th>End Time</th>
-        <th>Duration (minutes)</th>
-        <th>Last seen</th>
+        <th class="d-none d-sm-table-cell">Duration (minutes)</th>
+        <th class="d-none d-sm-table-cell">Last update</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -73,14 +73,14 @@
           {{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}
           {% endif %}
         </td>
-        <td>
+        <td class="d-none d-sm-table-cell">
           {% if use.end_timestamp is not none %}
           {{ ((use.end_timestamp - use.start_timestamp) // 60) | round(0, 'ceil') }}
           {% else %}
           In use
           {% endif %}
         </td>
-        <td>{{ use.last_seen|time_since }}</td>
+        <td class="d-none d-sm-table-cell">{{ use.last_seen|time_since }}</td>
         <td>
           <a href="{{ url_for('delete_use', use_id=use.use_id) }}" class="btn btn-danger">Delete</a>
         </td>
