@@ -1,4 +1,5 @@
 """ This module contains the routes for the interventions. """
+
 # pylint: disable=C0116
 
 from datetime import datetime
@@ -14,8 +15,30 @@ from .webapplication import DBSession, app
 @login_required
 def view_interventions():
     session = DBSession()
-    interventions = session.query(Intervention).all()
-    return render_template("view_interventions.html", interventions=interventions)
+    users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
+    machines = session.query(Machine).order_by(Machine.machine_id).all()
+
+    search_user = request.args.get("search_user_id")
+    search_machine = request.args.get("search_machine_id")
+
+    query = session.query(Intervention)
+
+    if search_user and search_user.isdigit():
+        search_user = int(search_user)
+        query = query.filter(Intervention.user_id == search_user)
+    if search_machine and search_machine.isdigit():
+        search_machine = int(search_machine)
+        query = query.filter(Intervention.machine_id == search_machine)
+
+    interventions = query.limit(500).all()
+    return render_template(
+        "view_interventions.html",
+        users=users,
+        machines=machines,
+        interventions=interventions,
+        search_user_id=search_user,
+        search_machine_id=search_machine,
+    )
 
 
 @app.route("/interventions/add", methods=["GET", "POST"])

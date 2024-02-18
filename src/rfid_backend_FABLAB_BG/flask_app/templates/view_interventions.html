@@ -3,8 +3,32 @@
 {% block content %}
 <div class="container-fluid mt-4">
     <h1>Interventions</h1>
-    <h3>This is the list of performed maintenance actions on the machines.</h3>
-    <a href="{{ url_for('add_intervention') }}" class="btn btn-primary mb-3">Add Intervention</a>
+    <a href="{{ url_for('add_intervention') }}" class="btn btn-primary mb-3">Register manually...</a>
+    <h4>You can filter the results below with this form</h4>
+    <form method="GET" action="{{ url_for('view_interventions') }}">
+        <select name="search_user_id" class="form-control">
+            <option value="">Select user</option>
+            {% for user in users %}
+                <option value="{{ user.user_id }}" 
+                {% if search_user_id==user.user_id %}selected{% endif %}>
+                    {{ user.name }} {{ user.surname }}
+                </option>
+            {% endfor %}
+        </select>
+        <select name="search_machine_id" class="form-control">
+            <option value="">Select machine</option>
+            {% for machine in machines %}
+                <option value="{{ machine.machine_id }}" 
+                {% if search_machine_id==machine.machine_id %}selected{% endif %}>
+                    {{ machine.machine_name }}
+                </option>
+            {% endfor %}
+        </select>
+         <button type="submit">Filter</button>
+    </form>
+    
+    <!-- Your table here -->
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -35,4 +59,7 @@
         </tbody>
     </table>
 </div>
+{% if interventions|length >= 500 %}
+<span class="small">Only first 500 records are displayed. Use filters page if needed.</span>
+{% endif %}
 {% endblock %}

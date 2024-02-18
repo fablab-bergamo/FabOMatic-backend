@@ -15,7 +15,7 @@ from .webapplication import DBSession, app
 @login_required
 def view_machine_use_history(machine_id):
     session = DBSession()
-    uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).all()
+    uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).limit(500).all()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if machine is None:
         return "Machine not found", 404
@@ -56,16 +56,18 @@ def view_uses():
     # Query the database to get the data
     uses = session.query(Use)
 
-    if user_id:
+    if user_id and user_id.isdigit():
+        user_id = int(user_id)
         uses = uses.filter(Use.user_id == user_id)
 
-    if machine_id:
+    if machine_id and machine_id.isdigit():
+        machine_id = int(machine_id)
         uses = uses.filter(Use.machine_id == machine_id)
 
     if start_time:
         uses = uses.filter(Use.start_timestamp >= start_time)
 
-    uses = uses.order_by(Use.start_timestamp.desc()).all()
+    uses = uses.order_by(Use.start_timestamp.desc()).limit(500).all()
 
     # Query the database to get all users and machines for the filter dropdowns
     all_users = session.query(User).filter_by(deleted=False).all()

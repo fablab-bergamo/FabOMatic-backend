@@ -20,4 +20,7 @@
         {% endfor %}
     </ul>
 </div>
+{% if uses|length >= 500 %}
+<span class="small">Only first 500 records are displayed. Use History page if needed.</span>
+{% endif %}
 {% endblock %}
