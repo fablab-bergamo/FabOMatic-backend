@@ -1,4 +1,5 @@
 """ This module contains the routes for the users management. """
+
 # pylint: disable=C0116
 
 import re
@@ -15,7 +16,7 @@ from .webapplication import DBSession, app
 def view_users():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
-    cards = session.query(UnknownCard).order_by(UnknownCard.timestamp.desc()).all()
+    cards = session.query(UnknownCard).order_by(UnknownCard.timestamp.desc()).limit(20)
     return render_template("view_users.html", users=users, cards=cards)
 
 

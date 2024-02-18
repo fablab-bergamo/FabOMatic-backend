@@ -10,7 +10,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th class="d-none d-sm-table-cell">Reserved</th>
+                <th class="d-none d-lg-table-cell">Reserved</th>
                 <th>Backend admin?</th>
                 <th>Maintenance?</th>
                 <th>Authorize All?</th>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ role.role_id }}</td>
                 <td>{{ role.role_name }}</td>
-                <td class="d-none d-sm-table-cell">
+                <td class="d-none d-lg-table-cell">
                     {% if role.reserved %}
                     <i class="fa-solid fa-lock"></i> <!-- Locked Icon -->
                     {% else %}
