@@ -509,8 +509,8 @@ class UseRepository(BaseRepository):
         for rec in self.db_session.query(Use).filter(
             Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)
         ):
-            rec.end_timestamp = rec.last_seen
-            self.update(rec)
+            logging.warning("Missed stopUse event in previous record, forcing stopUse")
+            self.endUse(rec.machine_id, rec.user, int(rec.last_seen - rec.start_timestamp))
 
         # Register start of new use
         self.db_session.add(
@@ -553,7 +553,6 @@ class UseRepository(BaseRepository):
         else:
             # Update existing record
             record.last_seen = end
-            self.update(record)
 
         self.db_session.commit()
 
@@ -602,6 +601,7 @@ class UseRepository(BaseRepository):
                 .first()
             )
             if existing_record is None:
+                logging.warning("Missing startUse detected, creating new record on the fly.")
                 self.create(record)
             else:
                 logging.warning("Duplicate stopUse detected, ignoring client request")
@@ -609,12 +609,12 @@ class UseRepository(BaseRepository):
             # Update existing record
             record.end_timestamp = record.start_timestamp + duration_s
             record.last_seen = end
-            self.update(record)
+            self.db_session.commit()
 
             # Close eventual previous uses which were not closed
             for rec in self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)):
+                duration_s += int(rec.last_seen - rec.start_timestamp)
                 rec.end_timestamp = rec.last_seen
-                self.update(rec)
 
         self.db_session.commit()
 
