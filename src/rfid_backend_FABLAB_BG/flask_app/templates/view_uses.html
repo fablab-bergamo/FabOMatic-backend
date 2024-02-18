@@ -49,8 +49,8 @@
         <th>User</th>
         <th>Start Time</th>
         <th>End Time</th>
-        <th class="d-none d-sm-table-cell">Duration (minutes)</th>
-        <th class="d-none d-sm-table-cell">Last update</th>
+        <th class="d-none d-lg-table-cell">Duration (minutes)</th>
+        <th class="d-none d-lg-table-cell">Last update</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -73,14 +73,14 @@
           {{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}
           {% endif %}
         </td>
-        <td class="d-none d-sm-table-cell">
+        <td class="d-none d-lg-table-cell">
           {% if use.end_timestamp is not none %}
           {{ ((use.end_timestamp - use.start_timestamp) // 60) | round(0, 'ceil') }}
           {% else %}
           In use
           {% endif %}
         </td>
-        <td class="d-none d-sm-table-cell">{{ use.last_seen|time_since }}</td>
+        <td class="d-none d-lg-table-cell">{{ use.last_seen|time_since }}</td>
         <td>
           <a href="{{ url_for('delete_use', use_id=use.use_id) }}" class="btn btn-danger">Delete</a>
         </td>

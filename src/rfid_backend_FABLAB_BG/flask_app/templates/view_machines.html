@@ -8,22 +8,22 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="d-none d-sm-table-cell">ID</th>
+                <th class="d-none d-lg-table-cell">ID</th>
                 <th>Name</th>
-                <th class="d-none d-sm-table-cell">Machine type</th>
+                <th class="d-none d-lg-table-cell">Machine type</th>
                 <th>Cumulated usage</th>
                 <th>Blocked for all?</th>
                 <th>Maintenance plan</th>
-                <th class="d-none d-sm-table-cell">Last seen</th>
+                <th class="d-none d-lg-table-cell">Last seen</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for machine in machines %}
             <tr>
-                <td class="d-none d-sm-table-cell">{{ machine.machine_id }}</td>
+                <td class="d-none d-lg-table-cell">{{ machine.machine_id }}</td>
                 <td>{{ machine.machine_name }}</td>
-                <td class="d-none d-sm-table-cell"><span class="badge bg-info">{{ machine.machine_type.type_name }}</span></td>
+                <td class="d-none d-lg-table-cell"><span class="badge bg-info">{{ machine.machine_type.type_name }}</span></td>
                 <td>{{ machine.machine_hours | format_hours }}</td>
                 <td>
                     {% if machine.blocked %}
@@ -39,7 +39,7 @@
                         {% endfor %}
                     </ul>
                 </td>
-                <td class="d-none d-sm-table-cell">{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
+                <td class="d-none d-lg-table-cell">{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
                 <td>
                     <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
                         class="btn btn-info">View history</a>
