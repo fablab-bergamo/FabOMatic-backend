@@ -71,7 +71,7 @@ def format_hours(value):
 
 @app.template_filter("time_since")
 def time_since(dt):
-    now = datetime.utcnow()
+    now = datetime.now()
 
     if not isinstance(dt, datetime):
         dt = datetime.fromtimestamp(dt)

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h1>Roles</h1>
     <h2>This system page configures the possible role of the users</h2>
     <a href="{{ url_for('add_role') }}" class="btn btn-primary mb-3">Add Role</a>
@@ -10,7 +10,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Reserved</th>
+                <th class="d-none d-sm-table-cell">Reserved</th>
                 <th>Backend admin?</th>
                 <th>Maintenance?</th>
                 <th>Authorize All?</th>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ role.role_id }}</td>
                 <td>{{ role.role_name }}</td>
-                <td>
+                <td class="d-none d-sm-table-cell">
                     {% if role.reserved %}
                     <i class="fa-solid fa-lock"></i> <!-- Locked Icon -->
                     {% else %}
