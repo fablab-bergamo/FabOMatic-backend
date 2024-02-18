@@ -7,7 +7,7 @@ import random
 from time import time
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getSetting
-from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, User, Intervention
+from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, Use, User, Intervention
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
@@ -96,6 +96,36 @@ def seed_db() -> DatabaseBackend:
         empty_db.getMaintenanceRepository(session).create(maint1)
 
     return empty_db
+
+
+def add_data(db: DatabaseBackend, nb_records: int) -> DatabaseBackend:
+    with db.getSession() as session:
+        use_repo = db.getUseRepository(session)
+        inter_repo = db.getInterventionRepository(session)
+        for m in db.getMachineRepository(session).get_all():
+            for i in range(1, nb_records):
+                start = time() - 100000 * i
+                end = start + random.randint(1, 100000)
+
+                use = Use(
+                    user_id=random.choice(range(1, 10)),
+                    machine_id=m.machine_id,
+                    start_timestamp=start,
+                    end_timestamp=end,
+                    last_seen=end,
+                )
+                use_repo.create(use)
+
+            for mt in m.maintenances:
+                for i in range(1, nb_records // 5):
+                    inter = Intervention(
+                        maintenance_id=mt.maintenance_id,
+                        user_id=random.choice(range(1, 10)),
+                        machine_id=m.machine_id,
+                        timestamp=time() - 100000 * i,
+                    )
+                    inter_repo.create(inter)
+            session.commit()
 
 
 def get_simple_db() -> DatabaseBackend:
