@@ -28,6 +28,10 @@ def view_machine_use_history(machine_id):
 def delete_use(use_id):
     session = DBSession()
     use = session.query(Use).filter_by(use_id=use_id).one()
+    # ASk for confirmation before deleting
+    if request.method == "GET":
+        return render_template("delete_use.html", use=use)
+
     if use:
         session.delete(use)
         session.commit()

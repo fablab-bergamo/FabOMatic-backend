@@ -7,7 +7,7 @@
     <div class="form-group">
       <label for="user_id">User</label>
       <select class="form-control" id="user_id" name="user_id" required>
-        <option value="" selected>-</option
+        <option value="" selected>-</option>
         {% for user in users %}
         <option value="{{ user.user_id }}">{{ user.name }} {{ user.surname }}</option>
         {% endfor %}
