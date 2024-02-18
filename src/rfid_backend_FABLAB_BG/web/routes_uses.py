@@ -8,7 +8,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Machine, Use, User
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository, UserRepository
-from .webapplication import DBSession, app
+from .webapplication import DBSession, app, excel
 
 
 @app.route("/machines/history/<int:machine_id>", methods=["GET"])
@@ -140,3 +140,10 @@ def add_use_post():
         session.commit()
         flash("Registration added successfully.")
         return redirect(url_for("view_uses"))
+
+
+@app.route("/uses/export", methods=["GET"])
+@login_required
+def uses_export():
+    session = DBSession()
+    return excel.make_response_from_tables(session, [Use], "xlsx")

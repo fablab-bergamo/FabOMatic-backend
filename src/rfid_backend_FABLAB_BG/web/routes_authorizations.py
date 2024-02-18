@@ -1,10 +1,11 @@
 """ This module contains the routes for the authorizations. """
+
 # pylint: disable=C0116
 
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
-from .webapplication import DBSession, app
+from .webapplication import DBSession, app, excel
 
 
 @app.route("/authorizations", methods=["GET"])
@@ -131,3 +132,10 @@ def bulkadd_authorizations():
             return redirect(url_for("view_authorizations"))
 
         return render_template("bulkadd_authorizations.html", machines=machines, users=users)
+
+
+@app.route("/authorizations/export", methods=["GET"])
+@login_required
+def authorizations_export():
+    session = DBSession()
+    return excel.make_response_from_tables(session, [Authorization], "xlsx")

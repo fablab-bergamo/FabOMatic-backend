@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog", "flask", "pyopenssl", "flask-login", "flask-mail", "alembic", "psutil"]
+requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog", "flask", "pyopenssl", "flask-login", "flask-mail", "alembic", "psutil", "flask-excel", "pyexcel-xlsx"]
 build-backend = "hatchling.build"
 
 [project]

@@ -8,7 +8,7 @@ from time import time
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 from rfid_backend_FABLAB_BG.database.models import Intervention, Machine, Maintenance, User
-from .webapplication import DBSession, app
+from .webapplication import DBSession, app, excel
 
 
 @app.route("/interventions")
@@ -117,3 +117,9 @@ def delete_intervention(intervention_id):
         return redirect(url_for("view_interventions"))
 
     return render_template("delete_intervention.html", intervention=intervention)
+
+
+@app.route("/interventions/export", methods=["GET"])
+def doexport():
+    session = DBSession()
+    return excel.make_response_from_tables(session, [Intervention], "xlsx")
