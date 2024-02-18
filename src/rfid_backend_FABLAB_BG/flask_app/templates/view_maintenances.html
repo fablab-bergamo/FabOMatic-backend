@@ -21,7 +21,7 @@
             <input type="text" id="descriptionFilter" name="description" class="form-control"
                 value="{{ request.args.get('description', '') }}">
         </div>
-        <button type="submit" class="btn btn-primary">Apply Filters</button>
+        <button type="submit" class="btn btn-info">Apply Filters</button>
     </form>
     <ul class="list-group">
         {% for maintenance in maintenances %}
