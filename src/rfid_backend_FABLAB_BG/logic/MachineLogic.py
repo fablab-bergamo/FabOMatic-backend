@@ -6,7 +6,7 @@ from time import time
 
 from rfid_backend_FABLAB_BG.mqtt.mqtt_types import MachineResponse, SimpleResponse, UserResponse
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.constants import DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
+from rfid_backend_FABLAB_BG.database.constants import DEFAULT_GRACE_PERIOD_MINUTES, DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
 
 class MachineLogic:
@@ -68,7 +68,9 @@ class MachineLogic:
                 machine_repo = MachineLogic.database.getMachineRepository(session)
                 machine = machine_repo.get_by_id(self._machine_id)
                 if machine is None:
-                    return MachineResponse(True, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES)
+                    return MachineResponse(
+                        True, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES, DEFAULT_GRACE_PERIOD_MINUTES
+                    )
                 self.updateMachineLastSeen()
                 return MachineResponse(
                     True,
@@ -78,10 +80,13 @@ class MachineLogic:
                     machine.machine_name,
                     machine.machine_type_id,
                     machine.machine_type.type_timeout_min,
+                    machine.machine_type.grace_period_min,
                 )
         except Exception as e:
             logging.error("machineStatus exception %s", str(e), exc_info=True)
-            return MachineResponse(False, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES)
+            return MachineResponse(
+                False, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES, DEFAULT_GRACE_PERIOD_MINUTES
+            )
 
     def machineAlive(self):
         """

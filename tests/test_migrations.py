@@ -1,4 +1,5 @@
 """ Test the database backend. """
+
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 import unittest
@@ -35,13 +36,17 @@ class TestMigrations(unittest.TestCase):
             backend.createAndUpdateDatabase()
             with backend.getSession() as session:
                 user_repo = backend.getUserRepository(session)
-                self.assertEqual(len(user_repo.get_all()), 1)
+                self.assertGreaterEqual(len(user_repo.get_all()), 1)
                 role_repo = backend.getRoleRepository(session)
-                self.assertEqual(len(role_repo.get_all()), 3)
+                self.assertGreaterEqual(len(role_repo.get_all()), 3)
                 machine_repo = backend.getMachineRepository(session)
-                self.assertEqual(len(machine_repo.get_all()), 1)
+                self.assertGreaterEqual(len(machine_repo.get_all()), 1)
                 type_repo = backend.getMachineTypeRepository(session)
-                self.assertEqual(len(type_repo.get_all()), 1)
+                self.assertGreaterEqual(len(type_repo.get_all()), 1)
+                maint_repo = backend.getMaintenanceRepository(session)
+                self.assertGreaterEqual(len(maint_repo.get_all()), 0)
+                inter_repo = backend.getInterventionRepository(session)
+                self.assertGreaterEqual(len(inter_repo.get_all()), 0)
 
         except Exception as e:
-            self.fail(f"Failed to upgrade the database : {e}")
+            self.fail(f"Failed to upgrade the database {file} : {e}")

@@ -277,3 +277,14 @@ class DatabaseBackend:
             for table in reversed(meta.sorted_tables):
                 session.execute(table.delete())
             trans.commit()
+
+    def copy(self, destination: str) -> None:
+        """Copy the database to a new location.
+
+        Args:
+            destination (str): The destination of the copy.
+        """
+        from shutil import copyfile
+
+        copyfile(self._url.replace("sqlite:///", ""), destination)
+        logging.info("Copied database from %s to %s", self._name, destination)

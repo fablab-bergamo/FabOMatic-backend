@@ -217,4 +217,7 @@ def get_simple_db() -> DatabaseBackend:
         )
         empty_db.getInterventionRepository(session).create(inter2)
 
+        session.commit()
+
+    empty_db.copy("simple-db.sqldb")
     return empty_db
