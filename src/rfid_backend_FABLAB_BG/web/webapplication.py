@@ -58,6 +58,7 @@ def datetimeformat(value, format="%b %d, %Y %I:%M %p"):
 def format_hours(value):
     if value is None:
         return "-"
+
     hours = int(value)
     minutes = int((value % 1) * 60)
     if hours == 0:
@@ -71,6 +72,10 @@ def format_hours(value):
 @app.template_filter("time_since")
 def time_since(dt):
     now = datetime.utcnow()
+
+    if not isinstance(dt, datetime):
+        dt = datetime.fromtimestamp(dt)
+
     diff = now - dt
     seconds = diff.total_seconds()
 
