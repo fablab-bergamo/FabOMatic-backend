@@ -141,6 +141,8 @@ alembic upgrade head
 
 * To handle data migration you have to manually edit the generated migration file in alembic folder.
 
+* Run the full test-suite and archive a copy of simple-db.sqldb into tests/databases folder with the revision name. This will ensure migrations will be tested on this new release in the future.
+
 ## Main revision log
 
 | Version | When | Release notes |

@@ -30,6 +30,13 @@
       "driver": "SQLite",
       "database": "${workspaceFolder:rfid-backend}/tests/databases/database-0.0.18.db",
       "name": "0.0.18"
+    },
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:rfid-backend-fl}/tests/databases/database-0.1.5.db",
+      "name": "0.1.5"
     }
-  ]
+  ],
+  "sqltools.useNodeRuntime": true
 }

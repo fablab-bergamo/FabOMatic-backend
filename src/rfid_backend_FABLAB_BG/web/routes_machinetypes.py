@@ -1,4 +1,5 @@
 """ Routes for Machine Types management """
+
 # pylint: disable=C0116
 
 from flask import render_template, request, redirect, url_for, flash
@@ -22,7 +23,10 @@ def add_machinetype():
         session = DBSession()
         type_name = request.form["type_name"]
         timeout_min = request.form["type_timeout_min"]
-        machine_type = MachineType(type_name=type_name, type_timeout_min=timeout_min)
+        grace_period_min = request.form["grace_period_min"]
+        machine_type = MachineType(
+            type_name=type_name, type_timeout_min=timeout_min, grace_period_min=grace_period_min
+        )
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))
@@ -37,7 +41,8 @@ def edit_machinetype(type_id):
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
     if request.method == "POST":
         machine_type.type_name = request.form["type_name"]
-        machine_type.type_timeout_min = request.form["type_timeout_min"]
+        machine_type.type_timeout_min = int(request.form["type_timeout_min"])
+        machine_type.grace_period_min = int(request.form["grace_period_min"])
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))

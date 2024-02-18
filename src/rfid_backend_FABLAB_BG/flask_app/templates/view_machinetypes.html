@@ -11,6 +11,7 @@
                 <th>ID</th>
                 <th>Machine type</th>
                 <th>Auto-logoff</th>
+                <th>Power-off</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -21,6 +22,12 @@
                 <td>{{ machine_type.type_name }}</td>
                 <td>{% if machine_type.type_timeout_min > 0 %}
                     {{ machine_type.type_timeout_min }} min
+                    {% else %}
+                    <i>disabled</i>
+                    {% endif %}
+                </td>
+                <td>{% if machine_type.grace_period_min is not none and machine_type.grace_period_min > 0 %}
+                    {{ machine_type.grace_period_min }} min
                     {% else %}
                     <i>disabled</i>
                     {% endif %}
