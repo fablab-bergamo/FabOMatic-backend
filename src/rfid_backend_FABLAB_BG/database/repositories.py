@@ -1,4 +1,5 @@
 """ Database repositories for the rfid_backend_FABLAB_BG application."""
+
 import logging
 
 from time import time
@@ -8,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base, UnknownCard
 from .constants import DEFAULT_TIMEOUT_MINUTES
+from sqlalchemy.orm import object_session
 
 
 class BaseRepository:
@@ -24,8 +26,10 @@ class BaseRepository:
 
     def update(self, model: Base):
         """Update an existing model instance in the database."""
-        self.db_session.add(model)
-        self.db_session.commit()
+        if object_session(model) is None:
+            raise ValueError("Object is not bound to a session")
+        object_session(model).commit()
+        self.db_session.refresh(model)
 
     def delete(self, model: Base):
         """Delete a model instance from the database."""
