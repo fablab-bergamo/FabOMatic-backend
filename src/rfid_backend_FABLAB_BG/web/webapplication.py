@@ -68,6 +68,22 @@ def format_hours(value):
     return f"{hours} hours {minutes} minutes"
 
 
+@app.template_filter("time_since")
+def time_since(dt):
+    now = datetime.utcnow()
+    diff = now - dt
+    seconds = diff.total_seconds()
+
+    if seconds < 60:
+        return f"{seconds} seconds ago"
+    elif seconds < 3600:
+        return f"{seconds // 60} minutes ago"
+    elif seconds < 86400:
+        return f"{seconds // 3600} hours ago"
+    else:
+        return f"{seconds // 86400} days ago"
+
+
 # Define routes
 @app.route("/")
 def index():
