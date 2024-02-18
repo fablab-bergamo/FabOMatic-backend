@@ -24,6 +24,15 @@ def add_machinetype():
         type_name = request.form["type_name"]
         timeout_min = request.form["type_timeout_min"]
         grace_period_min = request.form["grace_period_min"]
+
+        if timeout_min < 0 or timeout_min > 65535:
+            flash("Invalid values for timeout")
+            return redirect(url_for("add_machinetype"))
+
+        if grace_period_min < 0 or grace_period_min > 65535:
+            flash("Invalid values for grace period.")
+            return redirect(url_for("add_machinetype"))
+
         machine_type = MachineType(
             type_name=type_name, type_timeout_min=timeout_min, grace_period_min=grace_period_min
         )
@@ -42,7 +51,17 @@ def edit_machinetype(type_id):
     if request.method == "POST":
         machine_type.type_name = request.form["type_name"]
         machine_type.type_timeout_min = int(request.form["type_timeout_min"])
+
+        if machine_type.type_timeout_min < 0 or machine_type.type_timeout_min > 65535:
+            flash("Invalid values for timeout")
+            return redirect(url_for("edit_machinetype", type_id=type_id))
+
         machine_type.grace_period_min = int(request.form["grace_period_min"])
+
+        if machine_type.type_timeout_min < 0 or machine_type.grace_period_min > 65535:
+            flash("Invalid values for grace period.")
+            return redirect(url_for("edit_machinetype", type_id=type_id))
+
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))
