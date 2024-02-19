@@ -138,4 +138,4 @@ def bulkadd_authorizations():
 @login_required
 def authorizations_export():
     session = DBSession()
-    return excel.make_response_from_tables(session, [Authorization], "xlsx")
+    return excel.make_response_from_tables(session, [Authorization, User, Machine], "xlsx", file_name="authorizations")

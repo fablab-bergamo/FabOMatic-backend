@@ -91,5 +91,6 @@
   {% if uses|length >= 500 %}
   <span class="small">Only first 500 records are displayed. Use filters if needed.</span>
   {% endif %}
+  <a href="{{ url_for('uses_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
 </div>
 {% endblock %}

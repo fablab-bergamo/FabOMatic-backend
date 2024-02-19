@@ -77,7 +77,11 @@ def time_since(dt):
     now = datetime.now()
 
     if not isinstance(dt, datetime):
-        dt = datetime.fromtimestamp(dt)
+        try:
+            value = int(dt)
+            dt = datetime.fromtimestamp(value)
+        except ValueError:
+            dt = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
 
     diff = now - dt
     seconds = int(abs(diff.total_seconds()))

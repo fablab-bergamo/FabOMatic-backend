@@ -158,4 +158,4 @@ def delete_user(user_id):
 @login_required
 def users_export():
     session = DBSession()
-    return excel.make_response_from_tables(session, [User], "xlsx")
+    return excel.make_response_from_tables(session, [User, Role], "xlsx", file_name="users")
