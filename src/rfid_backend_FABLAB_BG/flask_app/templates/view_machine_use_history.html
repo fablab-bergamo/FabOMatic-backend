@@ -2,20 +2,20 @@
 
 {% block content %}
 <div class="container-fluid mt-4">
-    <h1>Machine Use History</h1>
-    <h3>This page shows the most recent usages of the machine {{ machine.machine_name }}.</h3>
+    <h1>Use History</h1>
+    <h4>This page shows the most recent uses of the machine {{ machine.machine_name }}.</h4>
     <a href="{{ url_for('view_machines') }}" class="btn btn-secondary mb-3">Back</a>
     <ul class="list-group">
         {% for use in uses %}
-        <li class="list-group-item" style="{% if use.end_timestamp is none %}background-color: lightorange;{% endif %}">
-            Start: {{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
+        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center" style="{% if use.end_timestamp is none %}background-color: lightorange;{% endif %}; margin: 2px;">
+            <strong>Start</strong>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
             {% if use.end_timestamp is none %}
-            End: Still in use<br>
+            <strong>End</strong>Still in use<br>
             {% else %}
-            End: {{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
-            Duration: {{ ((use.end_timestamp - use.start_timestamp) / 60) | round(0, 'ceil') }} minutes<br>
+            <strong>End</strong>{{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}<br>
+            <strong>Duration</strong>{{ ((use.end_timestamp - use.start_timestamp) / 60) | round(0, 'ceil') }} minutes<br>
             {% endif %}
-            User: {{ use.user.name }}
+            <span class="badge bg-primary rounded-pill">{{ use.user.name }} {{ use.user.surname }}</span>
         </li>
         {% endfor %}
     </ul>
@@ -23,4 +23,5 @@
 {% if uses|length >= 500 %}
 <span class="small">Only first 500 records are displayed. Use History page if needed.</span>
 {% endif %}
+<a href="{{ url_for('machine_use_export', machine_id=machine.machine_id) }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
 {% endblock %}

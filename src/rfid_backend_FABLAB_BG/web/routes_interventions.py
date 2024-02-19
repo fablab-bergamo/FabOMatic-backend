@@ -120,6 +120,6 @@ def delete_intervention(intervention_id):
 
 
 @app.route("/interventions/export", methods=["GET"])
-def doexport():
+def interventions_export():
     session = DBSession()
-    return excel.make_response_from_tables(session, [Intervention], "xlsx")
+    return excel.make_response_from_tables(session, [Intervention, User, Machine], "xlsx", file_name="interventions")

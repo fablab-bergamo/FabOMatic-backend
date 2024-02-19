@@ -146,4 +146,16 @@ def add_use_post():
 @login_required
 def uses_export():
     session = DBSession()
-    return excel.make_response_from_tables(session, [Use], "xlsx")
+    return excel.make_response_from_tables(session, [Use, Machine, User], "xlsx", file_name="uses")
+
+
+@app.route("/machines/history/<int:machine_id>/export", methods=["GET"])
+@login_required
+def machine_use_export(machine_id):
+    session = DBSession()
+    machine = session.query(Machine).filter_by(machine_id=machine_id).one()
+    if machine is None:
+        return "Machine not found", 404
+    uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).all()
+    columns = ["use_id", "user_id", "machine_id", "start_timestamp", "end_timestamp"]
+    return excel.make_response_from_query_sets(uses, columns, "xlsx", file_name="machine_use")

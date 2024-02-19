@@ -62,4 +62,5 @@
 {% if interventions|length >= 500 %}
 <span class="small">Only first 500 records are displayed. Use filters page if needed.</span>
 {% endif %}
+<a href="{{ url_for('interventions_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
 {% endblock %}
