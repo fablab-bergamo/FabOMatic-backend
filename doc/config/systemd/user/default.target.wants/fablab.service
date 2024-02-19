@@ -1,11 +1,14 @@
 [Unit]
-Description=Fablab
+Description=FabLab RFID service
+After=multi-user.target
+After=network.target
 
 [Service]
 Type=exec
 Delegate=true
 KillMode=process
-ExecStart=python -m rfid_backend_FABLAB_BG 
+ExecStartPre=pip install rfid_backend_FABLAB_BG --upgrade
+ExecStart=python -m rfid_backend_FABLAB_BG
 
 [Install]
-WantedBy=default.target
+WantedBy=default.target	
