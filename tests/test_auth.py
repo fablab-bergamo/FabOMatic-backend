@@ -1,11 +1,12 @@
 """ Test the database backend. """
+
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 import unittest
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
 from rfid_backend_FABLAB_BG.database.models import User, Role
-from tests.common import TEST_SETTINGS_PATH, get_empty_db, configure_logger
+from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, configure_logger
 
 
 class TestAuth(unittest.TestCase):
@@ -13,7 +14,7 @@ class TestAuth(unittest.TestCase):
         _ = DatabaseBackend(TEST_SETTINGS_PATH)
 
     def test_user_auth(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             empty_db.getRoleRepository(session).create(Role(role_id=1, role_name="admin"))
 

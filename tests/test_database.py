@@ -1,4 +1,5 @@
 """ Test the database backend. """
+
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 import random
@@ -20,7 +21,7 @@ from rfid_backend_FABLAB_BG.database.models import (
     Use,
     Intervention,
 )
-from tests.common import TEST_SETTINGS_PATH, get_empty_db, get_simple_db, configure_logger
+from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, get_simple_db, configure_logger
 
 
 def random_string(length=16):
@@ -37,7 +38,7 @@ class TestDB(unittest.TestCase):
         _ = DatabaseBackend(TEST_SETTINGS_PATH)
 
     def test_drop(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             self.assertEqual(len(empty_db.getMachineRepository(session).get_all()), 0)
             self.assertEqual(len(empty_db.getMachineTypeRepository(session).get_all()), 0)
@@ -48,7 +49,7 @@ class TestDB(unittest.TestCase):
             self.assertEqual(len(empty_db.getInterventionRepository(session).get_all()), 0)
 
     def test_simple_add_roles(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         role_names = ["user", "power user", "moderator", "crew", "admin", "super admin"]
 
         with empty_db.getSession() as session:
@@ -107,7 +108,7 @@ class TestDB(unittest.TestCase):
                 role_repo.create(Role(role_name="ÜBERÜBER ADMIN", role_id=1))
 
     def test_types(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         type_names = ["3d printer", "laser cutter", "vertical drill", "saw"]
 
         with empty_db.getSession() as session:
@@ -154,7 +155,7 @@ class TestDB(unittest.TestCase):
             type_repo.rollback()
 
     def test_users(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             empty_db.getRoleRepository(session).create(Role(role_id=1, role_name="admin"))
 
@@ -207,7 +208,7 @@ class TestDB(unittest.TestCase):
             self.assertIsNone(user_repo.getUserByCardUUID(random_string(8)))
 
     def test_roles(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             # add roles
             role_repo = empty_db.getRoleRepository(session)
@@ -360,7 +361,7 @@ class TestDB(unittest.TestCase):
             )
 
     def test_long_add_users(self):
-        db = get_empty_db()
+        db = get_empty_test_db()
         with db.getSession() as session:
             USERS = 100
             name = "Mario"
@@ -377,7 +378,7 @@ class TestDB(unittest.TestCase):
             self.assertEqual(len(db.getUserRepository(session).get_all()), USERS)
 
     def test_machines(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             TYPES = 10
             MACHINES = 10
@@ -439,7 +440,7 @@ class TestDB(unittest.TestCase):
             self.assertEqual(0, len(machineRepo.get_all()), "All machines should have been deleted")
 
     def test_maintenances(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         with empty_db.getSession() as session:
             maint_repo = empty_db.getMaintenanceRepository(session)
 
@@ -478,7 +479,7 @@ class TestDB(unittest.TestCase):
             self.assertEqual(len(maint_repo.get_all()), 0, "All maintenances should have been deleted")
 
     def test_machine_maintenance_interaction(self):
-        empty_db = get_empty_db()
+        empty_db = get_empty_test_db()
         MACHINE_TYPE_NAME = "drill"
         MACHINES = 3
 
