@@ -40,8 +40,13 @@ def add_maintenance():
     logging.debug("Processing add_maintenance %s", request)
     if request.method == "POST":
         hours_between = request.form["hours_between"]
-        if (not hours_between.isnumeric()) or (float(hours_between) <= 0):
-            flash("Hours between must be a positive number.")
+        try:
+            if float(hours_between) <= 0:
+                flash("Hours between must be a positive number.")
+                return redirect(url_for("add_maintenance"))
+            hours_between = float(hours_between)
+        except ValueError:
+            flash("Hours between must be a number.")
             return redirect(url_for("add_maintenance"))
 
         description = request.form["description"]
@@ -78,9 +83,15 @@ def edit_maintenance(maintenance_id):
         maintenance.description = request.form["description"]
         maintenance.machine_id = request.form["machine_id"]
         maintenance.attachment = None
-        if (not hours_between.isnumeric()) or (float(hours_between) <= 0):
-            flash("Hours between must be a positive number.")
+        try:
+            if float(hours_between) <= 0:
+                flash("Hours between must be a positive number.")
+                return redirect(url_for("edit_maintenance", maintenance_id=maintenance_id))
+            hours_between = float(hours_between)
+        except ValueError:
+            flash("Hours between must be a number.")
             return redirect(url_for("edit_maintenance", maintenance_id=maintenance_id))
+
         maintenance.hours_between = hours_between
 
         if "attachment" in request.files:
