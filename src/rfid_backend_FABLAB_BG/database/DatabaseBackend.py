@@ -219,6 +219,24 @@ class DatabaseBackend:
     def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
         return UnknownCardsRepository(session)
 
+    def deleteExistingDatabase(self) -> bool:
+        """Delete the existing database."""
+        if self._url.startswith("sqlite:///"):
+            file_path = self._url[len("sqlite:///") :]
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    logging.error("Error deleting existing database %s: %s", file_path, e)
+                    return False
+                logging.warning("Deleted existing database %s", file_path)
+                return True
+            else:
+                logging.warning("No existing database found at %s", file_path)
+                return False
+        logging.warning("Not deleting non-SQLite database %s", self._url)
+        return False
+
     def createAndUpdateDatabase(self) -> None:
         """Create the database."""
         # Runs any migrations

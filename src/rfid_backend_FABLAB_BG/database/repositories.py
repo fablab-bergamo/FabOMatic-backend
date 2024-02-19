@@ -53,6 +53,9 @@ class BaseRepository:
         primary_key_name = model_class.__table__.primary_key.columns.keys()[0]
         return self.db_session.query(model_class).filter_by(**{primary_key_name: id_filter}).first()
 
+    def bulk_create(self, entities):
+        self.db_session.bulk_save_objects(entities)
+
 
 class RoleRepository(BaseRepository):
     """

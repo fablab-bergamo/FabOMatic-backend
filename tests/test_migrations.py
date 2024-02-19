@@ -9,7 +9,7 @@ import os
 import shutil
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getDatabaseUrl
-from tests.common import TEST_SETTINGS_PATH, get_empty_db, configure_logger
+from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, configure_logger
 
 
 class TestMigrations(unittest.TestCase):

@@ -6,6 +6,8 @@ from logging.handlers import RotatingFileHandler
 import random
 from time import time
 
+from sqlalchemy import text
+
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getSetting
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, Use, User, Intervention
 
@@ -38,7 +40,7 @@ def configure_logger():
     logger.addHandler(file_handler)
 
 
-def get_empty_db() -> DatabaseBackend:
+def get_empty_test_db() -> DatabaseBackend:
     """
     Returns an instance of DatabaseBackend with an empty database.
 
@@ -46,12 +48,13 @@ def get_empty_db() -> DatabaseBackend:
         DatabaseBackend: An instance of DatabaseBackend with an empty database.
     """
     d = DatabaseBackend(TEST_SETTINGS_PATH)
+    d.deleteExistingDatabase()
     d.createAndUpdateDatabase()
     d.dropContents()
     return d
 
 
-def seed_db() -> DatabaseBackend:
+def seed_test_db() -> DatabaseBackend:
     """
     Seeds the database with initial data for testing purposes.
 
@@ -59,6 +62,7 @@ def seed_db() -> DatabaseBackend:
         DatabaseBackend: The seeded database instance.
     """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
+    empty_db.deleteExistingDatabase()
     empty_db.createAndUpdateDatabase()
     empty_db.dropContents()
 
@@ -98,11 +102,28 @@ def seed_db() -> DatabaseBackend:
     return empty_db
 
 
-def add_data(db: DatabaseBackend, nb_records: int) -> DatabaseBackend:
+def add_test_data(db: DatabaseBackend, nb_records: int) -> DatabaseBackend:
     with db.getSession() as session:
         use_repo = db.getUseRepository(session)
         inter_repo = db.getInterventionRepository(session)
+        # generate 100 more users
+        users = []
+        for i in range(100, 201):
+            temp_user = User(
+                name="User" + str(i),
+                surname="Surname" + str(i),
+                role_id=2,
+                card_UUID=(str(i * 100) * 8)[:8],
+                disabled=random.choice([True, False]),
+            )
+            temp_user.set_password("")
+            temp_user.email = f"user{str(i)*2}@fablab.org"
+            users.append(temp_user)
+        db.getUserRepository(session).bulk_create(users)
+        session.commit()
+
         for m in db.getMachineRepository(session).get_all():
+            uses = []
             for i in range(1, nb_records):
                 start = time() - 100000 * i
                 end = start + random.randint(1, 100000)
@@ -114,9 +135,11 @@ def add_data(db: DatabaseBackend, nb_records: int) -> DatabaseBackend:
                     end_timestamp=end,
                     last_seen=end,
                 )
-                use_repo.create(use)
+                uses.append(use)
+            use_repo.bulk_create(uses)
 
             for mt in m.maintenances:
+                interventions = []
                 for i in range(1, nb_records // 5):
                     inter = Intervention(
                         maintenance_id=mt.maintenance_id,
@@ -125,7 +148,11 @@ def add_data(db: DatabaseBackend, nb_records: int) -> DatabaseBackend:
                         timestamp=time() - 100000 * i,
                     )
                     inter_repo.create(inter)
-            session.commit()
+                inter_repo.bulk_create(interventions)
+        session.commit()
+    # Make a copy in current folder to ease testing with UI/archival into tests/databases
+    db.copy("test-full.sqldb")
+    return db
 
 
 def get_simple_db() -> DatabaseBackend:
@@ -136,6 +163,7 @@ def get_simple_db() -> DatabaseBackend:
         DatabaseBackend: An instance of the created database.
     """
     empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
+    empty_db.deleteExistingDatabase()
     empty_db.createAndUpdateDatabase()
     empty_db.dropContents()
 
@@ -218,6 +246,6 @@ def get_simple_db() -> DatabaseBackend:
         empty_db.getInterventionRepository(session).create(inter2)
 
         session.commit()
-
-    empty_db.copy("simple-db.sqldb")
+    # Make a copy in current folder to ease testing with UI/archival into tests/databases
+    empty_db.copy("test-simple.sqldb")
     return empty_db

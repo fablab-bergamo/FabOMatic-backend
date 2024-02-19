@@ -21,6 +21,8 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     if isinstance(dbapi_connection, sqlite3.Connection):  # play well with other DB backends
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("pragma auto_vacuum = incremental;")
+        cursor.execute("pragma optimize;")
         cursor.close()
 
 
