@@ -41,8 +41,12 @@ def create_machine():
     machine_data = request.form
 
     # Input validation
-    if not machine_data["machine_hours"].isnumeric() or float(machine_data["machine_hours"]) < 0:
-        flash("Hours must be a positive number.")
+    try:
+        if float(machine_data["machine_hours"]) < 0:
+            flash("Hours must be a positive number.")
+            return redirect(url_for("add_machine"))
+    except ValueError:
+        flash("Hours must be a number.")
         return redirect(url_for("add_machine"))
 
     new_machine = Machine(
@@ -79,8 +83,12 @@ def update_machine():
         machine.machine_type_id = machine_data["machine_type_id"]
 
         # Input validation
-        if not machine_data["machine_hours"].isnumeric() or float(machine_data["machine_hours"]) < 0:
-            flash("Hours must be a positive number.")
+        try:
+            if float(machine_data["machine_hours"]) < 0:
+                flash("Hours must be a positive number.")
+                return redirect(url_for("edit_machine", machine_id=machine.machine_id))
+        except ValueError:
+            flash("Hours must be a number.")
             return redirect(url_for("edit_machine", machine_id=machine.machine_id))
 
         machine.machine_hours = float(machine_data["machine_hours"])
