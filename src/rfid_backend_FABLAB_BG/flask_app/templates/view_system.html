@@ -54,4 +54,29 @@
         </div>
     </div>
 </div>
+<h4>Boards list</h4>
+<div class="container-fluid">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Machine</th>
+                <th scope="col">IP address</th>
+                <th scope="col">FW Version</th>
+                <th scope="col">Last seen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for board in boards %}
+            <tr>
+                <th scope="row">{{ board.id }}</th>
+                <td>{{ board.machine.machine_name }} ({{ board.machine_id }})</td>
+                <td>{{ board.ip_address }}</td>
+                <td>{{ board.fw_version }}</td>
+                <td>{{ board.last_seen | time_since }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>   
+</div>
 {% endblock %}

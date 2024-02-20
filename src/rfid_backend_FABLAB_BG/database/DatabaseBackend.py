@@ -11,6 +11,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from rfid_backend_FABLAB_BG.database.models import MachineType, Role, User, Machine, Maintenance
 
 from .repositories import (
+    BoardsRepository,
     UseRepository,
     UserRepository,
     RoleRepository,
@@ -218,6 +219,9 @@ class DatabaseBackend:
 
     def getUnknownCardsRepository(self, session: Session) -> UnknownCardsRepository:
         return UnknownCardsRepository(session)
+
+    def getBoardsRepository(self, session: Session) -> BoardsRepository:
+        return BoardsRepository(session)
 
     def deleteExistingDatabase(self) -> bool:
         """Delete the existing database."""

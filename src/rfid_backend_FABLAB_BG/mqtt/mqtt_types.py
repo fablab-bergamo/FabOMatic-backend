@@ -67,12 +67,15 @@ class MachineQuery(BaseJson):
 
 
 class AliveQuery(BaseJson):
-    def __init__(self):
+    def __init__(self, version: str, ip: str):
         self.action = "alive"
+        self.version = version
+        self.ip = ip
 
     @staticmethod
     def deserialize(json_data: str):
-        return AliveQuery()
+        data = json.loads(json_data)
+        return AliveQuery(data["version"], data["ip"])
 
 
 class StartUseQuery(BaseJson):

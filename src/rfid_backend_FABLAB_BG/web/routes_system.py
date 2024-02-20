@@ -7,12 +7,14 @@ from flask_login import login_required
 from importlib.metadata import version
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getDatabaseUrl
-from .webapplication import app
+from rfid_backend_FABLAB_BG.database.repositories import BoardsRepository
+from .webapplication import DBSession, app
 import os
 import platform
 import shutil
 import psutil
 import subprocess
+import requests
 
 
 @app.route("/system")
@@ -28,8 +30,16 @@ def system():
 
     # application details
     app_version = version("rfid_backend_FABLAB_BG")
+
     # check if there is an updated pypi package
-    latest_version = "Not available"
+    package = "rfid_backend_FABLAB_BG"  # replace with the package you want to check
+    response = requests.get(f"https://test.pypi.org/pypi/{package}/json")
+    latest_version = response.json()["info"]["version"]
+
+    # Get the boards from the database repository
+    session = DBSession()
+    board_repo = BoardsRepository(session)
+    boards = board_repo.get_all()
 
     return render_template(
         "view_system.html",
@@ -40,6 +50,7 @@ def system():
         app_version=app_version,
         latest_version=latest_version,
         db_file=db_file,
+        boards=boards,
     )
 
 

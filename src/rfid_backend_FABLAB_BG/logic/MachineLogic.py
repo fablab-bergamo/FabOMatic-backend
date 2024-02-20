@@ -4,7 +4,7 @@ import logging
 
 from time import time
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import MachineResponse, SimpleResponse, UserResponse
+from rfid_backend_FABLAB_BG.mqtt.mqtt_types import AliveQuery, MachineResponse, SimpleResponse, UserResponse
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
 from rfid_backend_FABLAB_BG.database.constants import DEFAULT_GRACE_PERIOD_MINUTES, DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
@@ -88,12 +88,16 @@ class MachineLogic:
                 False, False, False, False, "?", 0, DEFAULT_TIMEOUT_MINUTES, DEFAULT_GRACE_PERIOD_MINUTES
             )
 
-    def machineAlive(self):
+    def machineAlive(self, alive: AliveQuery):
         """
         Called when a machine sends an alive message.
         """
         logging.debug(f"Machine {self._machine_id} alive")
         self.updateMachineLastSeen()
+        with MachineLogic.database.getSession() as session:
+            board_repo = MachineLogic.database.getBoardsRepository(session)
+            machine = MachineLogic.database.getMachineRepository(session).get_by_id(self._machine_id)
+            board_repo.registerBoard(alive.ip, alive.version, machine)
 
     def isAuthorized(self, card_uuid: str) -> UserResponse:
         """
