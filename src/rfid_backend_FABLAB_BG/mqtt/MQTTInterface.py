@@ -56,7 +56,7 @@ class MQTTInterface:
         self._client_id = settings["client_id"]
         self._topic = settings["topic"]
         self._reply_subtopic = settings["reply_subtopic"]
-        self._statsTopic = settings["stats_topic"]
+        self._statsTopic = settings["stats_topic"] + "/" + self._client_id
         logging.info("Loaded MQTT settings from file %s", self._settings_path)
 
     def _extractMachineFromTopic(self, topic: str) -> str:
@@ -233,9 +233,14 @@ class MQTTInterface:
         Returns:
             dict: A dictionary containing the statistics.
         """
+        import socket
+
+        hostname = socket.gethostname()
+        ipaddress = socket.gethostbyname(hostname)
         return {
             "Connected": self.connected,
-            "MQTT Broker": self._broker,
+            "Backend host": hostname,
+            "Backend IP": ipaddress,
             "Received": self._msg_recv_count,
             "Sent": self._msg_send_count,
         }

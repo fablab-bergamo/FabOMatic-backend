@@ -45,6 +45,9 @@ class BaseJson:
     def toJSON(self):
         return json.dumps(self, default=lambda o: (o.__dict__), sort_keys=True, separators=(",", ":"))
 
+    def serialize(self) -> str:
+        return json.dumps(self.__dict__)
+
 
 class UserQuery(BaseJson):
     def __init__(self, card_uid: str):
