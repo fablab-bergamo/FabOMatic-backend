@@ -170,7 +170,8 @@ class TestLogic(unittest.TestCase):
             mac.blocked = False
             db.getMachineRepository(session).update(mac)
 
-            ml.machineAlive()
+            query = AliveQuery("0.1.32", "127.0.0.1")
+            ml.machineAlive(query)
 
             response = ml.isAuthorized("1234")
             self.assertTrue(response.request_ok, "isAuthorized failed")
@@ -203,7 +204,7 @@ class TestLogic(unittest.TestCase):
         # Try all messagges
         query = UserQuery("1234")
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = AliveQuery()
+        query = AliveQuery("0.1.31", "127.0.0.1")
         self.assertFalse(mapper.messageReceived("1", query), "Alive message has no response")
         query = MachineQuery()
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")

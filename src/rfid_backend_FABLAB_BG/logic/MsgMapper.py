@@ -107,7 +107,7 @@ class MsgMapper:
         Returns:
             str: None
         """
-        machine_logic.machineAlive()
+        machine_logic.machineAlive(alive)
         logging.debug("Alive query: %s", alive.toJSON())
         return None
 

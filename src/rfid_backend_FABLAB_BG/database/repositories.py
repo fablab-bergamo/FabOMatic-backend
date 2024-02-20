@@ -7,7 +7,19 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
-from .models import Use, Machine, MachineType, Intervention, User, Maintenance, Authorization, Role, Base, UnknownCard
+from .models import (
+    Board,
+    Use,
+    Machine,
+    MachineType,
+    Intervention,
+    User,
+    Maintenance,
+    Authorization,
+    Role,
+    Base,
+    UnknownCard,
+)
 from .constants import DEFAULT_TIMEOUT_MINUTES
 from sqlalchemy.orm import object_session
 
@@ -661,3 +673,41 @@ class UnknownCardsRepository(BaseRepository):
         self.create(record)
         self.db_session.commit()
         return record.id
+
+
+class BoardsRepository(BaseRepository):
+    def __init__(self, db_session: Session):
+        super().__init__(db_session)
+
+    def get_all(self) -> List[Board]:
+        return self.db_session.query(Board).order_by(Board.board_id).all()
+
+    def registerBoard(self, ip: str, version: str, machine: Machine) -> int:
+        """Register a board that was used on a machine.
+
+        Args:
+            ip (str): IP address of the board
+            version (str): Firmware version of the board
+            machine (Machine): Machine where the board was used
+
+        Returns:
+            int: id of the new Board record
+        """
+        # Checks if a board already exists for this machine
+        record = self.db_session.query(Board).filter(Board.machine_id == machine.machine_id).first()
+        if record is not None:
+            record.ip_address = ip
+            record.fw_version = version
+            record.last_seen = time()
+            self.update(record)
+            self.db_session.commit()
+            return record.board_id
+
+        # Create a new record
+        record = Board(ip_address=ip, fw_version=version, machine_id=machine.machine_id, last_seen=time())
+        self.create(record)
+        self.db_session.commit()
+        logging.info(
+            f"Registered new board #{record.board_id} for machine {machine.machine_id} (IP: {ip}, FW: {version})"
+        )
+        return record.board_id

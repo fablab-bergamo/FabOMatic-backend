@@ -51,7 +51,7 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(register_maintenance_query.action, "maintenance")
         self.assertEqual(register_maintenance_query.__class__, RegisterMaintenanceQuery)
 
-        json_alive_query = '{"action": "alive"}'
+        json_alive_query = '{"action": "alive", "ip": "1.2.3.4", "version": "1.2.3"}'
         alive_query = AliveQuery.deserialize(json_alive_query)
         self.assertEqual(alive_query.action, "alive")
         self.assertEqual(alive_query.__class__, AliveQuery)

@@ -749,6 +749,27 @@ class TestDB(unittest.TestCase):
             # Check user's use history
             self.assertGreater(len(user_repo.getUserUses(user_repo.get_by_id(1))), 0, "User should have use history")
 
+    def test_boards(self):
+        simple_db = get_simple_db()
+        with simple_db.getSession() as session:
+            board_repo = simple_db.getBoardsRepository(session)
+            machine_repo = simple_db.getMachineRepository(session)
+            for mac in machine_repo.get_all():
+                board_repo.registerBoard(f"1.2.3.{mac.machine_id}", "0.1.2", mac)
+
+            # check if boards were added
+            self.assertEqual(len(board_repo.get_all()), len(machine_repo.get_all()))
+
+            for mac in machine_repo.get_all():
+                board_repo.registerBoard(f"1.3.4.{mac.machine_id}", "0.1.3", mac)
+
+            # check no duplicates were created
+            self.assertEqual(len(board_repo.get_all()), len(machine_repo.get_all()))
+
+            # check last_seen is updated
+            for board in board_repo.get_all():
+                self.assertAlmostEqual(board.last_seen, time(), delta=1000)
+
 
 if __name__ == "__main__":
     configure_logger()

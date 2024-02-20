@@ -278,6 +278,7 @@ class Machine(Base):
     machine_type = relationship("MachineType", back_populates="machines")
     uses = relationship("Use", back_populates="machine")
     cards = relationship("UnknownCard", back_populates="machine")
+    boards = relationship("Board", back_populates="machine")
 
     __table_args__ = (Index("idx_machines_machine_name_unique", "machine_name", unique=True),)
 
@@ -350,6 +351,35 @@ class UnknownCard(Base):
             "card_UUID": self.card_UUID,
             "timestamp": self.timestamp,
             "machine_id": self.machine_id,
+        }
+
+    @classmethod
+    def from_dict(cls, dict_data):
+        """Deserialize data from Dictionary."""
+        return cls(**dict_data)
+
+
+class Board(Base):
+    """Dataclass handling a role."""
+
+    __tablename__ = "boards"
+
+    board_id = Column(Integer, primary_key=True, autoincrement=True)
+    machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
+    ip_address = Column(String, unique=False, nullable=False)
+    fw_version = Column(String, unique=False, nullable=False)
+    last_seen = Column(Float, nullable=False)
+
+    machine = relationship("Machine", back_populates="boards")
+
+    def serialize(self):
+        """Serialize data and return a Dict."""
+        return {
+            "board_id": self.board_id,
+            "machine_id": self.machine_id,
+            "ip_address": self.ip_address,
+            "fw_version": self.fw_version,
+            "last_seen": self.last_seen,
         }
 
     @classmethod
