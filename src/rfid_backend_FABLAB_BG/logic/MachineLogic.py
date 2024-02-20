@@ -92,12 +92,11 @@ class MachineLogic:
         """
         Called when a machine sends an alive message.
         """
-        logging.debug(f"Machine {self._machine_id} alive")
-        self.updateMachineLastSeen()
         with MachineLogic.database.getSession() as session:
             board_repo = MachineLogic.database.getBoardsRepository(session)
             machine = MachineLogic.database.getMachineRepository(session).get_by_id(self._machine_id)
             board_repo.registerBoard(alive.ip, alive.version, machine)
+            self.updateMachineLastSeen()
 
     def isAuthorized(self, card_uuid: str) -> UserResponse:
         """

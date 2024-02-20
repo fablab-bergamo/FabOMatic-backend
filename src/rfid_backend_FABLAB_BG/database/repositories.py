@@ -693,6 +693,9 @@ class BoardsRepository(BaseRepository):
         Returns:
             int: id of the new Board record
         """
+        if machine is None:
+            raise ValueError("Invalid machine")
+
         # Checks if a board already exists for this machine
         record = self.db_session.query(Board).filter(Board.machine_id == machine.machine_id).first()
         if record is not None:
@@ -701,6 +704,9 @@ class BoardsRepository(BaseRepository):
             record.last_seen = time()
             self.update(record)
             self.db_session.commit()
+            logging.debug(
+                f"Updated board #{record.board_id} for machine {machine.machine_id} (IP: {ip}, FW: {version})"
+            )
             return record.board_id
 
         # Create a new record
