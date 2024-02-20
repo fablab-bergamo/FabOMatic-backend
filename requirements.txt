@@ -11,4 +11,5 @@ alembic==1.13.1
 psutil==5.9.8
 flask-excel==0.0.7
 pyexcel-xlsx==0.6.0
+requests==2.30.0
 -e .
