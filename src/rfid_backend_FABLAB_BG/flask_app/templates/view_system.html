@@ -69,7 +69,7 @@
         <tbody>
             {% for board in boards %}
             <tr>
-                <th scope="row">{{ board.id }}</th>
+                <td>{{ board.id }}</td>
                 <td>{{ board.machine.machine_name }} ({{ board.machine_id }})</td>
                 <td>{{ board.ip_address }}</td>
                 <td>{{ board.fw_version }}</td>
