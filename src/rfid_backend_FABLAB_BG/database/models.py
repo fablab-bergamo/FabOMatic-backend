@@ -303,9 +303,8 @@ class Machine(Base):
 
     def active_board(self):
         """Get the current board."""
-        boards = self.boards.sort(key=lambda x: x.last_seen, reverse=True)
-        if boards:
-            return boards[0]
+        if len(self.boards) > 0:
+            return sorted(self.boards, key=lambda b: b.last_seen, reverse=True)[0]
         return None
 
 

@@ -1,11 +1,6 @@
 {% extends 'base_refresh.html' %}
 
 {% block content %}
-    {% if current_user.is_authenticated %}
-        <h2>Hello {{ current_user.name }}!</h2>
-    {% else %}
-        <h2>About RFID-BACKEND</h2>
-    {% endif %}
     <h4>Machines status</h4>
     {% set ns = namespace(cpt=0) %}
     {% for mac in machines %}
@@ -29,16 +24,18 @@
                     <div class="card bg-light text-black">
                     {% set text = "FREE" %}
                 {% endif %}
+                        <div class="card-header"><h5><a href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">{{ mac.machine_name }}</a></h5></div>
                         <div class="card-body">
-                            <div class="card-header"><h5>{{ mac.machine_name }}</h5></div>
-                            <p class="card-title">Machine is {{ text }}
+                            <p class="card-title">Machine status: {{ text }}<br/>
                             {% if mac.active_user() != None %}
-                                 by {{ mac.active_user().name }}</p>
-                            {% endif %}
-                            {% if mac.active_board() != None %}
-                                <p class="card-text">{{ mac.active_board().ip_address }}</p>
+                                 In use by {{ mac.active_user().name }}</p>
                             {% endif %}
                             </p>
+                        </div>
+                        <div card="card-footer">
+                            {% if mac.active_board() != None %}
+                                <p class="card-text text-center"><small>Board IP: {{ mac.active_board().ip_address }}</small></p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
