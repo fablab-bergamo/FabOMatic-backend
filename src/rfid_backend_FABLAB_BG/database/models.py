@@ -301,6 +301,13 @@ class Machine(Base):
                 return use.user
         return None
 
+    def active_board(self):
+        """Get the current board."""
+        boards = self.boards.sort(key=lambda x: x.last_seen, reverse=True)
+        if boards:
+            return boards[0]
+        return None
+
 
 class Use(Base):
     """Class handling machine use."""
