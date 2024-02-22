@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-0">
     <h1>Users</h1>
     <h3>List of machines and web interface users</h3>
     <a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">Add User</a>
@@ -54,7 +54,7 @@
     </table>
 </div>
 <a href="{{ url_for('users_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-0">
     <h3>List of last 20 rejected RFID cards</h3>
     <table class="table table-striped">
         <thead>

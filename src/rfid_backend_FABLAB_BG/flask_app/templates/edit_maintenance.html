@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-0">
   <h1>Edit Maintenance</h1>
   <form method="POST" action="{{ url_for('edit_maintenance', maintenance_id=maintenance.maintenance_id) }}">
     <input type="hidden" name="maintenance_id" value="{{ maintenance.maintenance_id }}" />
