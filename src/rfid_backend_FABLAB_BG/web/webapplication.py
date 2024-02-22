@@ -68,8 +68,8 @@ def format_hours(value):
         if minutes == 0:
             return "-"
         else:
-            return f"{minutes} minutes"
-    return f"{hours} hours {minutes} minutes"
+            return f"{minutes} minute{'' if minutes == 1 else 's'}"
+    return f"{hours} hour{'' if hours == 1 else 's'} {minutes} minute{'' if minutes == 1 else 's'}"
 
 
 @app.template_filter("time_since")
@@ -87,13 +87,13 @@ def time_since(dt):
     seconds = int(abs(diff.total_seconds()))
 
     if seconds < 60:
-        return f"{seconds} seconds ago"
+        return f"{seconds} second{'' if seconds == 1 else 's'} ago"
     elif seconds < 3600:
-        return f"{seconds // 60} minutes ago"
+        return f"{seconds // 60} minute{'' if seconds // 60 == 1 else 's'} ago"
     elif seconds < 86400:
-        return f"{seconds // 3600} hours ago"
+        return f"{seconds // 3600} hour{'' if seconds // 3600 == 1 else 's'} ago"
     else:
-        return f"{seconds // 86400} days ago"
+        return f"{seconds // 86400} day{'' if seconds // 86400 == 1 else 's'} ago"
 
 
 # Define routes

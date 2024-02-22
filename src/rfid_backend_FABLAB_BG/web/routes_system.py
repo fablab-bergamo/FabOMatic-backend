@@ -66,7 +66,10 @@ def download_db():
 @login_required
 def update_app():
     upgrade_output = subprocess.run(
-        ["pip", "install", "--upgrade", "rfid_backend_FABLAB_BG"], check=True, text=True, capture_output=True
+        ["pip", "install", "-i", "https://test.pypi.org/simple/", "rfid_backend_FABLAB_BG", "--upgrade"],
+        check=True,
+        text=True,
+        capture_output=True,
     )
 
     # Restart the application using Systemd

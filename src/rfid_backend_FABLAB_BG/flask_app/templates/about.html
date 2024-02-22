@@ -35,6 +35,9 @@
                             {% if mac.active_user() != None %}
                                  by {{ mac.active_user().name }}</p>
                             {% endif %}
+                            {% if mac.active_board() != None %}
+                                <p class="card-text">{{ mac.active_board().ip_address }}</p>
+                            {% endif %}
                             </p>
                         </div>
                     </div>
