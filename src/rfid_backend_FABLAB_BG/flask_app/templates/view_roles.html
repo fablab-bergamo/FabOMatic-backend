@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Roles</h1>
-    <h2>This system page configures the possible role of the users</h2>
-    <a href="{{ url_for('add_role') }}" class="btn btn-primary mb-3">Add Role</a>
+    <h1>{{ _("Roles") }}</h1>
+    <h2>{{ _("This page configures the possible roles of FabLab users.") }}</h2>
+    <a href="{{ url_for('add_role') }}" class="btn btn-primary mb-3">{{ _("Add Role") }}</a>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th class="d-none d-lg-table-cell">Reserved</th>
-                <th>Backend admin?</th>
-                <th>Maintenance?</th>
-                <th>Authorize All?</th>
-                <th>Action</th>
+                <th>{{ _("Name") }}</th>
+                <th class="d-none d-lg-table-cell">{{ _("Reserved") }}</th>
+                <th>{{ _("Backend admin?") }}</th>
+                <th>{{ _("Maintener?") }}</th>
+                <th>{{ _("Authorize All?") }}</th>
+                <th>{{ _("Action") }}</th>
             </tr>
         </thead>
         <tbody>
@@ -52,8 +51,8 @@
                 </td>
                 <td>
                     {% if not role.reserved %}
-                    <a href="{{ url_for('edit_role', role_id=role.role_id) }}" class="btn btn-warning">Edit</a>
-                    <a href="{{ url_for('delete_role', role_id=role.role_id) }}" class="btn btn-danger">Delete</a>
+                    <a href="{{ url_for('edit_role', role_id=role.role_id) }}" class="btn btn-warning">{{ _("Edit") }}</a>
+                    <a href="{{ url_for('delete_role', role_id=role.role_id) }}" class="btn btn-danger">{{ _("Delete") }}</a>
                     {% endif %}
                 </td>
             </tr>

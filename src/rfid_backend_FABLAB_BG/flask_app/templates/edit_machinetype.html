@@ -2,27 +2,27 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Edit Machine Type</h1>
+    <h1>{{ _("Edit Machine Type") }}</h1>
     <form method="POST">
         <div class="mb-3">
-            <label class="form-label">Type Name</label>
+            <label class="form-label">{{ _("Type Name") }}</label>
             <input type="text" class="form-control" name="type_name" value="{{ machine_type.type_name }}" required>
         </div>
         <div class="mb-3 ">
-            <label class="form-label">Auto-logoff delay</label>
+            <label class="form-label">{{ _("Auto-logoff delay") }}</label>
             <div class="input-group-prepend">
-                <div class="input-group-text">(minutes)</div>
+                <div class="input-group-text">{{ _("(minutes)") }}</div>
               </div>
             <input type="number" class="form-control" name="type_timeout_min" value="{{ machine_type.type_timeout_min }}" required>
         </div>
         <div class="mb-3 ">
-            <label class="form-label">Power-off grace period</label>
+            <label class="form-label">{{ _("Power-off grace period") }}</label>
             <div class="input-group-prepend">
-                <div class="input-group-text">(minutes)</div>
+                <div class="input-group-text">{{ _("(minutes)") }}</div>
               </div>
             <input type="number" class="form-control" name="grace_period_min" value="{{ machine_type.grace_period_min }}" required>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">{{ _("Submit") }}</button>
     </form>
 </div>
 {% endblock %}

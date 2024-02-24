@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-  <h1>Register manually a machine use</h1>
+  <h1>{{ _("Register manually a machine use") }}</h1>
   <form method="POST" action="{{ url_for('add_use') }}">
     <div class="form-group">
-      <label for="user_id">User</label>
+      <label for="user_id">{{ _("User") }}:</label>
       <select class="form-control" id="user_id" name="user_id" required>
         <option value="" selected>-</option>
         {% for user in users %}
@@ -14,7 +14,7 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="machine_id">{{ _("Machine") }}</label>
+      <label for="machine_id">{{ _("Machine") }}:</label>
       <select class="form-control" id="machine_id" name="machine_id" required>
         <option value="" selected>-</option>
         {% for machine in machines %}
@@ -23,14 +23,14 @@
       </select>
     </div>
     <div class="form-group">
-      <label for="start_timestamp">Start Timestamp</label>
+      <label for="start_timestamp">{{ _("Start Timestamp") }}:</label>
       <input type="datetime-local" class="form-control" id="start_timestamp" name="start_timestamp" required>
     </div>
     <div class="form-group">
-      <label for="end_timestamp">End Timestamp</label>
+      <label for="end_timestamp">{{ _("End Timestamp") }}:</label>
       <input type="datetime-local" class="form-control" id="end_timestamp" name="end_timestamp">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">{{ _("Submit") }}</button>
   </form>
 </div>
 {% endblock %}

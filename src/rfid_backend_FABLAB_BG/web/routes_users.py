@@ -36,7 +36,7 @@ def reset_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
     if not user:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
     if request.method == "POST":
         send_reset_email(user)
@@ -85,7 +85,9 @@ def create_user():
 
     if new_user.role.backend_admin and len(new_user.email) == 0:
         flash(
-            "You have created a backend admin user without an email address. User will not be able to log on.",
+            gettext(
+                "You have created a backend admin user without an email address. User will not be able to log on."
+            ),
             "warning",
         )
     return redirect(url_for("view_users"))
@@ -100,7 +102,7 @@ def edit_user(user_id):
     if user:
         return render_template("edit_user.html", user=user, roles=roles)
     else:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
 
 @app.route("/users/update", methods=["POST"])
@@ -126,7 +128,8 @@ def update_user():
         )
         if check_user and check_user.user_id != user.user_id:
             flash(
-                f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
+                gettext("This card ID is already assigned to another user")
+                + f" ({check_user.name} {check_user.surname})",
                 "error",
             )
             return redirect(url_for("edit_user", user_id=user.user_id))
@@ -139,7 +142,7 @@ def update_user():
         session.commit()
         return redirect(url_for("view_users"))
     else:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
 
 @app.route("/users/delete/<int:user_id>", methods=["GET", "POST"])
@@ -148,7 +151,7 @@ def delete_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
     if not user:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
     if request.method == "POST":
         user.deleted = True
