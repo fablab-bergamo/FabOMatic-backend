@@ -10,25 +10,25 @@
                 <div class="col-lg-3" style="margin: 1px;">
                 {% if mac.active_user() != None %}
                     <div class="card bg-success text-white">
-                    {% set text = "IN USE" %}
+                    {% set text = gettext("IN USE") %}
                 {% elif mac.blocked %}
                     <div class="card bg-danger text-white">
-                    {% set text = "BLOCKED" %}
+                    {% set text = gettext("BLOCKED") %}
                 {% elif mac.maintenance_needed %}
                     <div class="card bg-warning text-white">
-                    {% set text = "MAINTENANCE" %}
+                    {% set text = gettext("MAINTENANCE") %}
                 {% elif not mac.online %}
                     <div class="card bg-secondary text-white">
-                    {% set text = "OFFLINE" %}
+                    {% set text = gettext("OFFLINE") %}
                 {% else %}
                     <div class="card bg-light text-black">
-                    {% set text = "FREE" %}
+                    {% set text = gettext("FREE") %}
                 {% endif %}
                         <div class="card-header"><h5><a class="link-secondary" href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">{{ mac.machine_name }}</a></h5></div>
                         <div class="card-body">
-                            <p class="card-title">Machine status: {{ text }}<br/>
+                            <p class="card-title">{{ gettext("Machine status") }}: {{ text }}<br/>
                             {% if mac.active_user() != None %}
-                                 In use by {{ mac.active_user().name }}</p>
+                                {{ gettext("In use by:") }} {{ mac.active_user().name }}</p>
                             {% endif %}
                             </p>
                         </div>

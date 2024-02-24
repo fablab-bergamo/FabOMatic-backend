@@ -26,6 +26,13 @@ def add_machinetype():
         timeout_min = request.form["type_timeout_min"]
         grace_period_min = request.form["grace_period_min"]
 
+        if not timeout_min.isnumeric() or not grace_period_min.isnumeric():
+            flash(gettext("Invalid values for timeout or grace period."))
+            return redirect(url_for("add_machinetype"))
+        else:
+            timeout_min = int(timeout_min)
+            grace_period_min = int(grace_period_min)
+
         if timeout_min < 0 or timeout_min > 65535:
             flash(gettext("Invalid values for timeout"))
             return redirect(url_for("add_machinetype"))
@@ -76,7 +83,7 @@ def delete_machinetype(type_id):
     session = DBSession()
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
     if not machine_type:
-        return "Machine Type not found", 404
+        return gettext("Machine Type not found"), 404
     if request.method == "POST":
         session.delete(machine_type)
         session.commit()

@@ -7,6 +7,7 @@ from time import time
 
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Intervention, Machine, Maintenance, User
 from .webapplication import DBSession, app, excel
 
@@ -108,7 +109,7 @@ def delete_intervention(intervention_id):
     intervention = session.query(Intervention).get(intervention_id)
 
     if not intervention:
-        return "Intervention not found", 404
+        return gettext("Intervention not found"), 404
 
     if request.method == "POST":
         session.delete(intervention)

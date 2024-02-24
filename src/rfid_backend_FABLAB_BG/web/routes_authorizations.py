@@ -71,7 +71,7 @@ def edit_authorization(authorization_id):
                 "edit_authorization.html", authorization=authorization, users=users, machines=machines
             )
         else:
-            return "Authorization not found", 404
+            return gettext("Authorization not found"), 404
 
 
 @app.route("/authorizations/update", methods=["POST"])
@@ -91,7 +91,7 @@ def update_authorization():
                 flash(str(e), "danger")
             return redirect(url_for("view_authorizations"))
         else:
-            return "Authorization not found", 404
+            return gettext("Authorization not found"), 404
 
 
 @app.route("/authorizations/delete/<int:authorization_id>", methods=["GET", "POST"])

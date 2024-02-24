@@ -19,7 +19,7 @@ def view_machine_use_history(machine_id):
     uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).limit(500).all()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if machine is None:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
     return render_template("view_machine_use_history.html", uses=uses, machine=machine)
 
@@ -156,7 +156,7 @@ def machine_use_export(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if machine is None:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
     uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).all()
     columns = ["use_id", "user_id", "machine_id", "start_timestamp", "end_timestamp"]
     return excel.make_response_from_query_sets(uses, columns, "xlsx", file_name="machine_use")

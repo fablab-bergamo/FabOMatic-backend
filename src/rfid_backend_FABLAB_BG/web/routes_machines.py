@@ -70,7 +70,7 @@ def edit_machine(machine_id):
     if machine:
         return render_template("edit_machine.html", machine=machine, machine_types=machine_types)
     else:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
 
 @app.route("/machines/update", methods=["POST"])
@@ -97,7 +97,7 @@ def update_machine():
         session.commit()
         return redirect(url_for("view_machines"))
     else:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])
@@ -106,7 +106,7 @@ def delete_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if not machine:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
     if request.method == "POST":
         session.delete(machine)

@@ -7,6 +7,6 @@
     <form method="POST" action="{{ url_for('reset_user', user_id=user.user_id) }}">
         <input type="submit" value="Yes, send e-mail" class="btn btn-danger" />
     </form>
-    <a href="{{ url_for('view_users') }}" class="btn btn-secondary">No, go back</a>
+    <a href="{{ url_for('view_users') }}" class="btn btn-secondary">{{ _("No, go back") }}</a>
 </div>
 {% endblock %}

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Bulk Authorization</h1>
+<h1>{{ _("Bulk Authorization") }}</h1>
 <div>
-    Only the checked users will be authorized for the chosen machines. Unselected users will keep their current authorizations.
+    {{ _("Only the checked users will be authorized for the chosen machines. Unselected users will keep their current authorizations.") }}
 </div>
 <div class="container-fluid mt-0">
     <form method="POST" action="{{ url_for('bulkadd_authorizations') }}">
         <div class="form-group">
-            <label for="machine">Select Machine:</label>
+            <label for="machine">{{ _("Select Machine") }}:</label>
             <select class="form-control" id="machine" name="machine_id">
                 {% for machine in machines %}
                 <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
@@ -15,9 +15,9 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="users">Select Users:</label>
+            <label for="users">{{ _("Select Users") }}:</label>
             <div class="checkbox">
-                <label><input type="checkbox" id="checkAll">Add All users...</label>
+                <label><input type="checkbox" id="checkAll">{{ _("Add All users...") }}</label>
             </div>
             <div class="users-list">
                 {% for user in users %}
@@ -29,7 +29,7 @@
                 {% endfor %}
             </div>
         </div>
-        <button type="submit" class="btn btn-primary" value="Bulk">Bulk add authorizations</button>
+        <button type="submit" class="btn btn-primary" value="Bulk">{{ _("Bulk add authorizations") }}</button>
     </form>
     <script>
         document.getElementById('checkAll').addEventListener('click', function (e) {

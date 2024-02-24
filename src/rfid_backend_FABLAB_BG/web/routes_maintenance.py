@@ -121,7 +121,7 @@ def delete_maintenance(maintenance_id):
     session = DBSession()
     maintenance = session.query(Maintenance).filter_by(maintenance_id=maintenance_id).one()
     if not maintenance:
-        return "Maintenance not found", 404
+        return gettext("Maintenance not found"), 404
 
     if request.method == "POST":
         session.delete(maintenance)
