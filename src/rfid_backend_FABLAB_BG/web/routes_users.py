@@ -53,14 +53,14 @@ def create_user():
     user_data = request.form
     card_UUID = user_data.get("card_UUID", None)
 
-    if card_UUID == "":  # If the card_UUID is empty, set it to None
+    if card_UUID == "" or card_UUID == "None":  # If the card_UUID is empty, set it to None
         card_UUID = None
 
     if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
         flash(gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error")
         return redirect(url_for("view_users"))
 
-    check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+    check_user = session.query(User).filter(User.card_UUID.isnot(None)).filter_by(card_UUID=card_UUID).one_or_none()
     if check_user:
         flash(
             f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
@@ -118,10 +118,12 @@ def update_user():
                 gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error"
             )
             return redirect(url_for("edit_user", user_id=user.user_id))
-        if card_UUID == "":
+        if card_UUID == "" or card_UUID == "None":
             card_UUID = None
 
-        check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+        check_user = (
+            session.query(User).filter(User.card_UUID.isnot(None)).filter_by(card_UUID=card_UUID).one_or_none()
+        )
         if check_user and check_user.user_id != user.user_id:
             flash(
                 f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
