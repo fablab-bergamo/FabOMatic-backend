@@ -1,0 +1,259 @@
+# Italian translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-02-24 12:53+0100\n"
+"PO-Revision-Date: 2024-02-24 11:47+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: it\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: flask_app/templates/about.html:4
+msgid "Machines status"
+msgstr "Stato macchine"
+
+#: flask_app/templates/add_authorization.html:14
+#: flask_app/templates/add_use.html:17
+#: flask_app/templates/edit_authorization.html:15
+#: flask_app/templates/view_authorizations.html:32
+#: flask_app/templates/view_interventions.html:37
+#: flask_app/templates/view_users.html:61 flask_app/templates/view_uses.html:48
+#, fuzzy
+msgid "Machine"
+msgstr "Macchina"
+
+#: flask_app/templates/base_body.html:15 flask_app/templates/view_users.html:5
+msgid "Users"
+msgstr "Utenti"
+
+#: flask_app/templates/base_body.html:18
+msgid "Machines"
+msgstr "Macchine"
+
+#: flask_app/templates/base_body.html:21
+msgid "History"
+msgstr "Storico"
+
+#: flask_app/templates/base_body.html:24
+msgid "Authorizations"
+msgstr "Permessi"
+
+#: flask_app/templates/base_body.html:27
+msgid "Maintenance"
+msgstr "Manutenzione"
+
+#: flask_app/templates/base_body.html:30
+msgid "Interventions"
+msgstr "Interventi"
+
+#: flask_app/templates/base_body.html:33
+msgid "Roles"
+msgstr "Ruoli"
+
+#: flask_app/templates/base_body.html:36
+msgid "Machine types"
+msgstr "Tipologie"
+
+#: flask_app/templates/base_body.html:39
+#, fuzzy
+msgid "System"
+msgstr "Sistema"
+
+#: flask_app/templates/base_body.html:42
+msgid "Logout"
+msgstr ""
+
+#: flask_app/templates/base_body.html:46 flask_app/templates/login.html:14
+msgid "Login"
+msgstr "Login"
+
+#: flask_app/templates/index.html:4
+msgid "Home"
+msgstr ""
+
+#: flask_app/templates/index.html:5
+msgid "This is a web application to manage machines in a Fab Lab environment."
+msgstr "Applicativo di gestione parco macchine per Fab Lab"
+
+#: flask_app/templates/login.html:7
+msgid "Email"
+msgstr "Email"
+
+#: flask_app/templates/login.html:11
+msgid "Password"
+msgstr "Password"
+
+#: flask_app/templates/login.html:16
+msgid "Forgot your password?"
+msgstr "Password dimenticata?"
+
+#: flask_app/templates/view_system.html:4
+msgid "System status"
+msgstr "Stato sistema"
+
+#: flask_app/templates/view_system.html:10
+msgid "Database info"
+msgstr "Database"
+
+#: flask_app/templates/view_system.html:14
+#, fuzzy
+msgid "Database size (KB)"
+msgstr "Dimensioni database (KB)"
+
+#: flask_app/templates/view_system.html:25
+msgid "System info"
+msgstr "Info sistema"
+
+#: flask_app/templates/view_system.html:40
+msgid "Application info"
+msgstr "Info applicativo"
+
+#: flask_app/templates/view_system.html:57
+msgid "Boards list"
+msgstr "Elenco boards"
+
+#: flask_app/templates/vie._users.html:6
+msgid "List of machines and web interface users"
+msgstr "Elenco degli utenti"
+
+#: flask_app/templates/view_users.html:7
+msgid "Add User..."
+msgstr "Nuovo utente..."
+
+#: flask_app/templates/view_users.html:44
+msgid "Edit"
+msgstr "Modifica"
+
+#: flask_app/templates/view_users.html:45
+msgid "Delete"
+msgstr "Cancella"
+
+#: flask_app/templates/view_users.html:47
+#, fuzzy
+msgid "Password reset"
+msgstr "Password"
+
+#: flask_app/templates/view_users.html:57
+msgid "List of last 20 rejected RFID cards"
+msgstr "Elenco delle ultime 20 tessere sconosciute"
+
+#: web/authentication.py:44
+msgid "Your user does not have a role with backend administration permission."
+msgstr "Il tuo utente non ha i permessi di amministrazione del backend."
+
+#: web/authentication.py:48
+msgid "Wrong username or password."
+msgstr "Nome utente o password non validi."
+
+#: web/authentication.py:57
+msgid "You have been logged out."
+msgstr "Ti sei scollegato."
+
+#: web/authentication.py:80
+msgid "Email sent with instructions to reset your password."
+msgstr ""
+
+#: web/authentication.py:83
+msgid "No user found with this email."
+msgstr ""
+
+#: web/authentication.py:92
+msgid "That is an invalid or expired token"
+msgstr ""
+
+#: web/authentication.py:99
+msgid "Your password has been updated! You are now able to log in"
+msgstr ""
+
+#: web/routes_authorizations.py:132
+msgid "Authorizations added successfully"
+msgstr "Permessi aggiunti con successo."
+
+#: web/routes_machines.py:47 web/routes_machines.py:89
+msgid "Hours must be a positive number."
+msgstr "Il campo Ore deve essere un numero positivo"
+
+#: web/routes_machines.py:50 web/routes_machines.py:92
+msgid "Hours must be a number."
+msgstr "Il campo Ore deve essere un numero."
+
+#: web/routes_machinetypes.py:30 web/routes_machinetypes.py:57
+msgid "Invalid values for timeout"
+msgstr "Valore scorretto per il periodo di auto-logoff."
+
+#: web/routes_machinetypes.py:34 web/routes_machinetypes.py:63
+msgid "Invalid values for grace period."
+msgstr "Valore scorretto per il periodo di spegnimento"
+
+#: web/routes_machinetypes.py:83
+msgid "Machine type deleted successfully."
+msgstr "Tipologia di macchina cancellata con successo."
+
+#: web/routes_maintenance.py:46 web/routes_maintenance.py:89
+msgid "Hours between must be a positive number."
+msgstr "Il campo Ore deve essere un numero positivo."
+
+#: web/routes_maintenance.py:50 web/routes_maintenance.py:93
+msgid "Hours between must be a number."
+msgstr "Il campo Ore deve essere un numero."
+
+#: web/routes_maintenance.py:129
+msgid "Maintenance deleted successfully."
+msgstr "Manutenzione cancellata con successo."
+
+#: web/routes_roles.py:52 web/routes_roles.py:77
+msgid "Role not found."
+msgstr "Ruolo non trovato."
+
+#: web/routes_roles.py:56 web/routes_roles.py:81
+msgid "Cannot edit reserved role."
+msgstr "Impossibile modificare ruolo riservato."
+
+#: web/routes_roles.py:86
+msgid "Role deleted successfully."
+msgstr "Ruolo cancellato con successo."
+
+#: web/routes_users.py:43
+msgid "An email has been sent with instructions to reset password."
+msgstr "Un'e-mail è stato mandata con le istruzioni di re-impostazione password."
+
+#: web/routes_users.py:60 web/routes_users.py:118
+msgid ""
+"Invalid card UUID. Please enter either 8 hexadecimal characters or leave "
+"it empty."
+msgstr ""
+
+#: web/routes_uses.py:39
+msgid "Use deleted successfully."
+msgstr "Uso cancellato con successo."
+
+#: web/routes_uses.py:108
+msgid "Invalid start timestamp."
+msgstr "Data-ora inizio non valida."
+
+#: web/routes_uses.py:118
+msgid "End timestamp cannot be before start timestamp."
+msgstr "La data-ora fine non può essere anteriore alla data-ora inizio."
+
+#: web/routes_uses.py:124
+msgid "Machine not found."
+msgstr "Macchina non trovata."
+
+#: web/routes_uses.py:130
+msgid "User not found."
+msgstr "Utente non trovato."
+
+#: web/routes_uses.py:142
+msgid "Registration added successfully."
+msgstr "Uso registrato con successo."
+

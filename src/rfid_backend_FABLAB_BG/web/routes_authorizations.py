@@ -4,6 +4,7 @@
 
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app, excel
 
@@ -128,7 +129,7 @@ def bulkadd_authorizations():
                 authorization = Authorization(user_id=user_id, machine_id=machine.machine_id)
                 session.add(authorization)
             session.commit()
-            flash("Authorizations added successfully", "success")
+            flash(gettext("Authorizations added successfully"), "success")
             return redirect(url_for("view_authorizations"))
 
         return render_template("bulkadd_authorizations.html", machines=machines, users=users)

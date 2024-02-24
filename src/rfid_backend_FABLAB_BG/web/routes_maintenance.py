@@ -7,6 +7,7 @@ import os
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from werkzeug.utils import secure_filename
 
 from rfid_backend_FABLAB_BG.database.models import Machine, Maintenance
@@ -42,11 +43,11 @@ def add_maintenance():
         hours_between = request.form["hours_between"]
         try:
             if float(hours_between) <= 0:
-                flash("Hours between must be a positive number.")
+                flash(gettext("Hours between must be a positive number."))
                 return redirect(url_for("add_maintenance"))
             hours_between = float(hours_between)
         except ValueError:
-            flash("Hours between must be a number.")
+            flash(gettext("Hours between must be a number."))
             return redirect(url_for("add_maintenance"))
 
         description = request.form["description"]
@@ -85,11 +86,11 @@ def edit_maintenance(maintenance_id):
         maintenance.attachment = None
         try:
             if float(hours_between) <= 0:
-                flash("Hours between must be a positive number.")
+                flash(gettext("Hours between must be a positive number."))
                 return redirect(url_for("edit_maintenance", maintenance_id=maintenance_id))
             hours_between = float(hours_between)
         except ValueError:
-            flash("Hours between must be a number.")
+            flash(gettext("Hours between must be a number."))
             return redirect(url_for("edit_maintenance", maintenance_id=maintenance_id))
 
         maintenance.hours_between = hours_between
@@ -125,7 +126,7 @@ def delete_maintenance(maintenance_id):
     if request.method == "POST":
         session.delete(maintenance)
         session.commit()
-        flash("Maintenance deleted successfully.")
+        flash(gettext("Maintenance deleted successfully."))
         return redirect(url_for("maintenances"))
 
     return render_template("delete_maintenance.html", maintenance=maintenance)

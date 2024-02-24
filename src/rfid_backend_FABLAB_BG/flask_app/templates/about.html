@@ -1,7 +1,7 @@
 {% extends 'base_refresh.html' %}
 
 {% block content %}
-    <h4>Machines status</h4>
+    <h4>{{ _("Machines status") }}</h4>
     {% set ns = namespace(cpt=0) %}
     {% for mac in machines %}
         {% if (ns.cpt % 3) == 0 %}

@@ -1,8 +1,10 @@
 """ Routes for managing roles. """
+
 # pylint: disable=C0116
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Role
 from rfid_backend_FABLAB_BG.database.repositories import RoleRepository
 from .webapplication import DBSession, app
@@ -47,11 +49,11 @@ def edit_role(role_id):
 
     # Block editing of reserved roles
     if not role:
-        flash("Role not found.", "error")
+        flash(gettext("Role not found."), "error")
         return redirect(url_for("roles"))
 
     if role.reserved:
-        flash("Cannot edit reserved role.", "error")
+        flash(gettext("Cannot edit reserved role."), "error")
         return redirect(url_for("roles"))
 
     if request.method == "POST":
@@ -72,16 +74,16 @@ def delete_role(role_id):
     role_repo = RoleRepository(session)
     role = role_repo.get_by_id(role_id)
     if not role:
-        flash("Role not found.", "error")
+        flash(gettext("Role not found."), "error")
         return redirect(url_for("roles"))
 
     if role.reserved:
-        flash("Cannot edit reserved role.", "error")
+        flash(gettext("Cannot edit reserved role."), "error")
         return redirect(url_for("roles"))
 
     if request.method == "POST":
         role_repo.delete(role)
-        flash("Role deleted successfully.")
+        flash(gettext("Role deleted successfully."))
         return redirect(url_for("roles"))
 
     return render_template("delete_role.html", role=role)

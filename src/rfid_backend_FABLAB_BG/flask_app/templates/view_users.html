@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Users</h1>
-    <h3>List of machines and web interface users</h3>
-    <a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">Add User</a>
+    <h1>{{ _("Users") }}</h1>
+    <h3>{{ _("List of machines and web interface users") }}</h3>
+    <a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">{{ _("Add User...") }}</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -41,11 +41,10 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ url_for('edit_user', user_id=user.user_id) }}" class="btn btn-warning">Edit</a>
-                    <a href="{{ url_for('delete_user', user_id=user.user_id) }}" class="btn btn-danger">Delete</a>
+                    <a href="{{ url_for('edit_user', user_id=user.user_id) }}" class="btn btn-warning">{{ _("Edit") }}</a>
+                    <a href="{{ url_for('delete_user', user_id=user.user_id) }}" class="btn btn-danger">{{ _("Delete") }}</a>
                     {% if user.email != "" %}
-                    <a href="{{ url_for('reset_user', user_id=user.user_id) }}" class="btn btn-dark" style="margin: 15px;">Password
-                        reset</a>
+                    <a href="{{ url_for('reset_user', user_id=user.user_id) }}" class="btn btn-dark" style="margin: 15px;">{{ _("Password reset") }}</a>
                     {% endif %}
                 </td>
             </tr>
@@ -55,11 +54,11 @@
 </div>
 <a href="{{ url_for('users_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
 <div class="container-fluid mt-0">
-    <h3>List of last 20 rejected RFID cards</h3>
+    <h3>{{ _("List of last 20 rejected RFID cards") }}</h3>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Machine</th>
+                <th>{{ _("Machine") }}</th>
                 <th>Card UUID</th>
                 <th>Time of attempt</th>
                 <th>Action</th>
