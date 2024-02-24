@@ -4,6 +4,7 @@
 
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
 from .webapplication import DBSession, app
@@ -43,10 +44,10 @@ def create_machine():
     # Input validation
     try:
         if float(machine_data["machine_hours"]) < 0:
-            flash("Hours must be a positive number.")
+            flash(gettext("Hours must be a positive number."))
             return redirect(url_for("add_machine"))
     except ValueError:
-        flash("Hours must be a number.")
+        flash(gettext("Hours must be a number."))
         return redirect(url_for("add_machine"))
 
     new_machine = Machine(
@@ -85,10 +86,10 @@ def update_machine():
         # Input validation
         try:
             if float(machine_data["machine_hours"]) < 0:
-                flash("Hours must be a positive number.")
+                flash(gettext("Hours must be a positive number."))
                 return redirect(url_for("edit_machine", machine_id=machine.machine_id))
         except ValueError:
-            flash("Hours must be a number.")
+            flash(gettext("Hours must be a number."))
             return redirect(url_for("edit_machine", machine_id=machine.machine_id))
 
         machine.machine_hours = float(machine_data["machine_hours"])

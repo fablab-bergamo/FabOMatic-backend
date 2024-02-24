@@ -6,6 +6,7 @@ from datetime import datetime
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Machine, Use, User
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository, UserRepository
 from .webapplication import DBSession, app, excel
@@ -35,7 +36,7 @@ def delete_use(use_id):
     if use:
         session.delete(use)
         session.commit()
-        flash("Use deleted successfully.")
+        flash(gettext("Use deleted successfully."))
     else:
         return "Use not found.", 404
     return redirect(url_for("view_uses"))
@@ -104,7 +105,7 @@ def add_use_post():
             start_timestamp = datetime.strptime(use_data["start_timestamp"], "%Y-%m-%dT%H:%M")
             start_timestamp = start_timestamp.timestamp()
         except ValueError:
-            flash("Invalid start timestamp.", "error")
+            flash(gettext("Invalid start timestamp."), "error")
             return redirect(url_for("add_use"))
 
         try:
@@ -114,19 +115,19 @@ def add_use_post():
             end_timestamp = None
 
         if end_timestamp and end_timestamp < start_timestamp:
-            flash("End timestamp cannot be before start timestamp.", "error")
+            flash(gettext("End timestamp cannot be before start timestamp."), "error")
             return redirect(url_for("add_use"))
 
         machine_repo = MachineRepository(session)
         machine = machine_repo.get_by_id(machine_id)
         if machine is None:
-            flash("Machine not found.", "error")
+            flash(gettext("Machine not found."), "error")
             return redirect(url_for("add_use"))
 
         user_repo = UserRepository(session)
         user = user_repo.get_by_id(user_id)
         if user is None:
-            flash("User not found.", "error")
+            flash(gettext("User not found."), "error")
             return redirect(url_for("add_use"))
 
         new_use = Use(
@@ -138,7 +139,7 @@ def add_use_post():
         )
         session.add(new_use)
         session.commit()
-        flash("Registration added successfully.")
+        flash(gettext("Registration added successfully."))
         return redirect(url_for("view_uses"))
 
 

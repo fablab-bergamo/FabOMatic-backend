@@ -12,38 +12,38 @@
                 <ul class="navbar-nav">
                     {% if current_user and current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_users') }}">Users</a>
+                            <a class="nav-link" href="{{ url_for('view_users') }}">{{ _("Users") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_machines') }}">Machines</a>
+                            <a class="nav-link" href="{{ url_for('view_machines') }}">{{ _("Machines") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_uses') }}">History</a>
+                            <a class="nav-link" href="{{ url_for('view_uses') }}">{{ _("History") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_authorizations') }}">Authorizations</a>
+                            <a class="nav-link" href="{{ url_for('view_authorizations') }}">{{ _("Authorizations") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('maintenances') }}">Maintenance</a>
+                            <a class="nav-link" href="{{ url_for('maintenances') }}">{{ _("Maintenance") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_interventions') }}">Interventions</a>
+                            <a class="nav-link" href="{{ url_for('view_interventions') }}">{{ _("Interventions") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('roles') }}">Roles</a>
+                            <a class="nav-link" href="{{ url_for('roles') }}">{{ _("Roles") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('machinetypes') }}">Machine types</a>
+                            <a class="nav-link" href="{{ url_for('machinetypes') }}">{{ _("Machine types") }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('system') }}">System</a>
+                            <a class="nav-link" href="{{ url_for('system') }}">{{ _("System") }}</a>
                         </li>                    
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">{{ _("Logout") }}</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                            <a class="nav-link" href="{{ url_for('login') }}">{{ _("Login") }}</a>
                         </li>
                     {% endif %}
                 </ul>

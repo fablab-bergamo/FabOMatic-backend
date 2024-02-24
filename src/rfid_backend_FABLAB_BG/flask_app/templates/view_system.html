@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h4>System status</h4>
+<h4>{{ _("System status") }}</h4>
 <div class="row mt-0">
     <div class="col-md-4">
 
         <div class="card">
             <div class="card-header">
-                Database info
+                {{ _("Database info") }}
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Database size (KB): {{ db_size }}</li>
+                    <li class="list-group-item">{{ _("Database size (KB)") }}: {{ db_size }}</li>
                     <li class="list-group-item">Database file : {{ db_file }}</li>
                     <li class="list-group-item"><a href="{{ url_for('download_db') }}"
                             class="btn btn-info">Download DB</a></li>
@@ -22,7 +22,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                System info
+                {{ _("System info") }}
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
@@ -37,7 +37,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                Application info
+                {{ _("Application info") }}
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
@@ -54,7 +54,7 @@
         </div>
     </div>
 </div>
-<h4>Boards list</h4>
+<h4>{{ _("Boards list") }}</h4>
 <div class="container-fluid">
     <table class="table table-striped">
         <thead>

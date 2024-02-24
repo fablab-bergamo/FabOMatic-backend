@@ -5,6 +5,7 @@ from .webapplication import DBSession, app
 from rfid_backend_FABLAB_BG.database.models import User
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting
 from flask_mail import Mail, Message
+from flask_babel import gettext
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -40,11 +41,11 @@ def login():
                     return redirect(url_for("about"))
                 else:
                     logging.warning("User %s does not have a role with backend administration permission.", user.email)
-                    flash("Your user does not have a role with backend administration permission.", "danger")
+                    flash(gettext("Your user does not have a role with backend administration permission."), "danger")
                     return redirect(url_for("login"))
             else:
                 logging.warning("Failed login attempt for user %s", request.form["email"])
-                flash("Wrong username or password.", "danger")
+                flash(gettext("Wrong username or password."), "danger")
                 return redirect(url_for("login"))
     return render_template("login.html")
 
@@ -53,7 +54,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out.", "success")
+    flash(gettext("You have been logged out."), "success")
     return redirect(url_for("login"))
 
 
@@ -76,10 +77,10 @@ def forgot_password():
             user = session.query(User).filter_by(email=request.form["email"]).first()
             if user:
                 send_reset_email(user)
-                flash("Email sent with instructions to reset your password.", "info")
+                flash(gettext("Email sent with instructions to reset your password."), "info")
                 return redirect(url_for("login"))
             else:
-                flash("No user found with this email.", "danger")
+                flash(gettext("No user found with this email."), "danger")
                 return redirect(url_for("login"))
     return render_template("forgot_password.html")
 
@@ -88,13 +89,13 @@ def forgot_password():
 def reset_token(token):
     user_id = User.verify_reset_token(token, app.config["SECRET_KEY"], SALT)
     if not user_id:
-        flash("That is an invalid or expired token", "warning")
+        flash(gettext("That is an invalid or expired token"), "warning")
         return redirect(url_for("forgot_password"))
     if request.method == "POST":
         with DBSession() as session:
             user = session.query(User).get(user_id)
             user.set_password(request.form["password"])
             session.commit()
-            flash("Your password has been updated! You are now able to log in", "success")
+            flash(gettext("Your password has been updated! You are now able to log in"), "success")
             return redirect(url_for("login"))
     return render_template("reset_token.html", title="Reset Password")

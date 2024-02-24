@@ -6,6 +6,7 @@ import re
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import User, Role, UnknownCard
 from rfid_backend_FABLAB_BG.web.authentication import send_reset_email
 from .webapplication import DBSession, app, excel
@@ -39,7 +40,7 @@ def reset_user(user_id):
 
     if request.method == "POST":
         send_reset_email(user)
-        flash("An email has been sent with instructions to reset password.", "info")
+        flash(gettext("An email has been sent with instructions to reset password."), "info")
         return redirect(url_for("view_users"))
 
     return render_template("reset_user.html", user=user)
@@ -56,7 +57,7 @@ def create_user():
         card_UUID = None
 
     if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
-        flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
+        flash(gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error")
         return redirect(url_for("view_users"))
 
     check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
@@ -113,7 +114,9 @@ def update_user():
         card_UUID = user_data.get("card_UUID", None)
 
         if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
-            flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
+            flash(
+                gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error"
+            )
             return redirect(url_for("edit_user", user_id=user.user_id))
         if card_UUID == "":
             card_UUID = None

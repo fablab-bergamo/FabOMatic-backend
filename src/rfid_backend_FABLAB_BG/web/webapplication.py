@@ -6,13 +6,14 @@ from datetime import datetime
 import os
 from time import time
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, g
 from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from rfid_backend_FABLAB_BG.database.models import Base, Machine
+from rfid_backend_FABLAB_BG.database.models import Base
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getSetting, getDatabaseUrl
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
+from flask_babel import Babel
 import flask_excel as excel
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,15 +29,41 @@ engine = create_engine(getDatabaseUrl(), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 
+# Init various extensions
+
 excel.init_excel(app)
+
+
+def get_locale():
+    return "it"
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, "user", None)
+    if user is not None:
+        return user.locale
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/fr/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(["it"])  # , "en"])
+
+
+def get_timezone():
+    user = getattr(g, "user", None)
+    if user is not None:
+        return user.timezone
+
+
+babel = Babel(
+    app,
+    locale_selector=get_locale,
+    timezone_selector=get_timezone,
+    default_timezone="Europe/Rome",
+    default_locale="it",
+    default_translation_directories=os.path.join(MODULE_DIR, "translations"),
+)
 
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-from datetime import datetime
-from jinja2 import Environment
 
 
 def timestamp_to_datetime(value):
