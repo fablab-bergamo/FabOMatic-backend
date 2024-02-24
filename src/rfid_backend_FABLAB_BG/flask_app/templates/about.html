@@ -24,7 +24,7 @@
                     <div class="card bg-light text-black">
                     {% set text = "FREE" %}
                 {% endif %}
-                        <div class="card-header"><h5><a href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">{{ mac.machine_name }}</a></h5></div>
+                        <div class="card-header"><h5><a class="link-secondary" href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">{{ mac.machine_name }}</a></h5></div>
                         <div class="card-body">
                             <p class="card-title">Machine status: {{ text }}<br/>
                             {% if mac.active_user() != None %}
