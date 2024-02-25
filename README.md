@@ -175,3 +175,4 @@ pybabel compile -d translations
 |--|--|--|
 | 0.0.18 | January 2024 | first revision with Alembic for database version tracking to handle graceful updates |
 | 0.1.15 | February 2024 | improved UI on mobile, fixed duplicated uses, added grace period definition on machine types, added system page |
+| 0.2.0 | February 2024 | UI translations with flask-babel (IT, EN), added boards details in system page |
