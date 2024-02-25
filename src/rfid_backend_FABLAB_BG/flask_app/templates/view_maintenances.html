@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Maintenances</h1>
-    <h2>This system page configures the possible maintenances actions of the machines</h2>
-    <a href="{{ url_for('add_maintenance') }}" class="btn btn-primary mb-3">Add Maintenance</a>
+    <h1>{{ _("Maintenances") }}</h1>
+    <h2>{{ _("This system page configures the possible maintenances actions of the machines") }}</h2>
+    <a href="{{ url_for('add_maintenance') }}" class="btn btn-primary mb-3">{{ _("Add Maintenance") }}</a>
     <form method="GET" action="{{ url_for('maintenances') }}">
         <div class="form-group">
-            <label for="machineFilter">Filter Machines:</label>
+            <label for="machineFilter">{{ _("Filter Machines") }}:</label>
             <select id="machineFilter" name="machine" class="form-control">
-                <option value="">--Select Machine--</option>
+                <option value="">{{ _("--Select Machine--") }}</option>
                 {% for machine in machines %}
                 <option value="{{ machine.machine_id }}" {% if request.args.get('machine')|int==machine.machine_id
                     %}selected{% endif %}>{{ machine.machine_name }}</option>
@@ -17,30 +17,30 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="descriptionFilter">Filter Description:</label>
+            <label for="descriptionFilter">{{ _("Filter Description") }}:</label>
             <input type="text" id="descriptionFilter" name="description" class="form-control"
                 value="{{ request.args.get('description', '') }}">
         </div>
-        <button type="submit" class="btn btn-info">Apply Filters</button>
+        <button type="submit" class="btn btn-info">{{ _("Apply Filters") }}</button>
     </form>
     <ul class="list-group">
         {% for maintenance in maintenances %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
-                Hours Between: {{ maintenance.hours_between }}<br>
-                Description: {{ maintenance.description }}<br>
-                Machine : {{ maintenance.machine.machine_name }}
+                {{ _("Hours Between") }}: {{ maintenance.hours_between }}<br>
+                {{ _("Description") }}: {{ maintenance.description }}<br>
+                {{ _("Machine") }} {{ maintenance.machine.machine_name }}
             </div>
             {% if maintenance.attachment %}
             <div>
-                <a href="{{ url_for('download_attachment', filename=maintenance.attachment) }}">Attachment</a>
+                <a href="{{ url_for('download_attachment', filename=maintenance.attachment) }}">{{ _("Attachment") }}</a>
             </div>
             {% endif %}
             <div>
                 <a href="{{ url_for('edit_maintenance', maintenance_id=maintenance.maintenance_id) }}"
-                    class="btn btn-warning">Edit</a>
+                    class="btn btn-warning">{{ _("Edit") }}</a>
                 <a href="{{ url_for('delete_maintenance', maintenance_id=maintenance.maintenance_id) }}"
-                    class="btn btn-danger">Delete</a>
+                    class="btn btn-danger">{{ _("Delete") }}</a>
             </div>
         </li>
         {% endfor %}

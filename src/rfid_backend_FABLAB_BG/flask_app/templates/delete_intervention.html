@@ -2,11 +2,11 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Delete Intervention</h1>
-    <p>Are you sure you want to delete the intervention with ID '{{ intervention.intervention_id }}'?</p>
+    <h1>{{ _("Delete Intervention") }}</h1>
+    <p>{{ _("Are you sure you want to delete the intervention with ID") }} '{{ intervention.intervention_id }}'?</p>
     <form method="POST" action="{{ url_for('delete_intervention', intervention_id=intervention.intervention_id) }}">
-        <input type="submit" value="Yes, delete intervention" class="btn btn-danger">
+        <input type="submit" value="{{ _("Yes, delete intervention") }}" class="btn btn-danger">
     </form>
-    <a href="{{ url_for('view_interventions') }}" class="btn btn-primary">No, go back</a>
+    <a href="{{ url_for('view_interventions') }}" class="btn btn-primary">{{ _("No, go back") }}</a>
 </div>
 {% endblock %}

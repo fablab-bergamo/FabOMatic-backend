@@ -6,6 +6,7 @@ import re
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import User, Role, UnknownCard
 from rfid_backend_FABLAB_BG.web.authentication import send_reset_email
 from .webapplication import DBSession, app, excel
@@ -35,11 +36,11 @@ def reset_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
     if not user:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
     if request.method == "POST":
         send_reset_email(user)
-        flash("An email has been sent with instructions to reset password.", "info")
+        flash(gettext("An email has been sent with instructions to reset password."), "info")
         return redirect(url_for("view_users"))
 
     return render_template("reset_user.html", user=user)
@@ -52,14 +53,14 @@ def create_user():
     user_data = request.form
     card_UUID = user_data.get("card_UUID", None)
 
-    if card_UUID == "":  # If the card_UUID is empty, set it to None
+    if card_UUID == "" or card_UUID == "None":  # If the card_UUID is empty, set it to None
         card_UUID = None
 
     if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
-        flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
+        flash(gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error")
         return redirect(url_for("view_users"))
 
-    check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+    check_user = session.query(User).filter(User.card_UUID.isnot(None)).filter_by(card_UUID=card_UUID).one_or_none()
     if check_user:
         flash(
             f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
@@ -84,7 +85,9 @@ def create_user():
 
     if new_user.role.backend_admin and len(new_user.email) == 0:
         flash(
-            "You have created a backend admin user without an email address. User will not be able to log on.",
+            gettext(
+                "You have created a backend admin user without an email address. User will not be able to log on."
+            ),
             "warning",
         )
     return redirect(url_for("view_users"))
@@ -99,7 +102,7 @@ def edit_user(user_id):
     if user:
         return render_template("edit_user.html", user=user, roles=roles)
     else:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
 
 @app.route("/users/update", methods=["POST"])
@@ -113,15 +116,20 @@ def update_user():
         card_UUID = user_data.get("card_UUID", None)
 
         if card_UUID and not re.match(r"^[0-9A-Fa-f]{8}$", card_UUID):
-            flash("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty.", "error")
+            flash(
+                gettext("Invalid card UUID. Please enter either 8 hexadecimal characters or leave it empty."), "error"
+            )
             return redirect(url_for("edit_user", user_id=user.user_id))
-        if card_UUID == "":
+        if card_UUID == "" or card_UUID == "None":
             card_UUID = None
 
-        check_user = session.query(User).filter_by(card_UUID=card_UUID).one_or_none()
+        check_user = (
+            session.query(User).filter(User.card_UUID.isnot(None)).filter_by(card_UUID=card_UUID).one_or_none()
+        )
         if check_user and check_user.user_id != user.user_id:
             flash(
-                f"This card ID ({card_UUID}) is already assigned to another user ({check_user.name} {check_user.surname})",
+                gettext("This card ID is already assigned to another user")
+                + f" ({check_user.name} {check_user.surname})",
                 "error",
             )
             return redirect(url_for("edit_user", user_id=user.user_id))
@@ -134,7 +142,7 @@ def update_user():
         session.commit()
         return redirect(url_for("view_users"))
     else:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
 
 @app.route("/users/delete/<int:user_id>", methods=["GET", "POST"])
@@ -143,7 +151,7 @@ def delete_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
     if not user:
-        return "User not found", 404
+        return gettext("User not found"), 404
 
     if request.method == "POST":
         user.deleted = True

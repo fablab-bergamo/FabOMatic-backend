@@ -4,6 +4,7 @@
 
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import MachineType
 from .webapplication import DBSession, app
 
@@ -25,12 +26,19 @@ def add_machinetype():
         timeout_min = request.form["type_timeout_min"]
         grace_period_min = request.form["grace_period_min"]
 
+        if not timeout_min.isnumeric() or not grace_period_min.isnumeric():
+            flash(gettext("Invalid values for timeout or grace period."))
+            return redirect(url_for("add_machinetype"))
+        else:
+            timeout_min = int(timeout_min)
+            grace_period_min = int(grace_period_min)
+
         if timeout_min < 0 or timeout_min > 65535:
-            flash("Invalid values for timeout")
+            flash(gettext("Invalid values for timeout"))
             return redirect(url_for("add_machinetype"))
 
         if grace_period_min < 0 or grace_period_min > 65535:
-            flash("Invalid values for grace period.")
+            flash(gettext("Invalid values for grace period."))
             return redirect(url_for("add_machinetype"))
 
         machine_type = MachineType(
@@ -53,13 +61,13 @@ def edit_machinetype(type_id):
         machine_type.type_timeout_min = int(request.form["type_timeout_min"])
 
         if machine_type.type_timeout_min < 0 or machine_type.type_timeout_min > 65535:
-            flash("Invalid values for timeout")
+            flash(gettext("Invalid values for timeout"))
             return redirect(url_for("edit_machinetype", type_id=type_id))
 
         machine_type.grace_period_min = int(request.form["grace_period_min"])
 
         if machine_type.type_timeout_min < 0 or machine_type.grace_period_min > 65535:
-            flash("Invalid values for grace period.")
+            flash(gettext("Invalid values for grace period."))
             return redirect(url_for("edit_machinetype", type_id=type_id))
 
         session.add(machine_type)
@@ -75,10 +83,10 @@ def delete_machinetype(type_id):
     session = DBSession()
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
     if not machine_type:
-        return "Machine Type not found", 404
+        return gettext("Machine Type not found"), 404
     if request.method == "POST":
         session.delete(machine_type)
         session.commit()
-        flash("Machine type deleted successfully.")
+        flash(gettext("Machine type deleted successfully."))
         return redirect(url_for("machinetypes"))
     return render_template("delete_machinetype.html", machine_type=machine_type)

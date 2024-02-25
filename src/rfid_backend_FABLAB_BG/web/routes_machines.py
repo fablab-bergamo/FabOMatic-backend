@@ -4,6 +4,7 @@
 
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
+from flask_babel import gettext
 from rfid_backend_FABLAB_BG.database.models import Machine, MachineType
 from rfid_backend_FABLAB_BG.database.repositories import MachineRepository
 from .webapplication import DBSession, app
@@ -43,10 +44,10 @@ def create_machine():
     # Input validation
     try:
         if float(machine_data["machine_hours"]) < 0:
-            flash("Hours must be a positive number.")
+            flash(gettext("Hours must be a positive number."))
             return redirect(url_for("add_machine"))
     except ValueError:
-        flash("Hours must be a number.")
+        flash(gettext("Hours must be a number."))
         return redirect(url_for("add_machine"))
 
     new_machine = Machine(
@@ -69,7 +70,7 @@ def edit_machine(machine_id):
     if machine:
         return render_template("edit_machine.html", machine=machine, machine_types=machine_types)
     else:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
 
 @app.route("/machines/update", methods=["POST"])
@@ -85,10 +86,10 @@ def update_machine():
         # Input validation
         try:
             if float(machine_data["machine_hours"]) < 0:
-                flash("Hours must be a positive number.")
+                flash(gettext("Hours must be a positive number."))
                 return redirect(url_for("edit_machine", machine_id=machine.machine_id))
         except ValueError:
-            flash("Hours must be a number.")
+            flash(gettext("Hours must be a number."))
             return redirect(url_for("edit_machine", machine_id=machine.machine_id))
 
         machine.machine_hours = float(machine_data["machine_hours"])
@@ -96,7 +97,7 @@ def update_machine():
         session.commit()
         return redirect(url_for("view_machines"))
     else:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])
@@ -105,7 +106,7 @@ def delete_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
     if not machine:
-        return "Machine not found", 404
+        return gettext("Machine not found"), 404
 
     if request.method == "POST":
         session.delete(machine)

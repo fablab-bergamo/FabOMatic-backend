@@ -2,10 +2,11 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Delete Machine Type</h1>
-    <p>Are you sure you want to delete the machine type {{ machine_type.type_name }}?</p>
+    <h1>{{ _("Delete Machine Type") }}</h1>
+    <p>{{ _("Are you sure you want to delete the machine type") }} {{ machine_type.type_name }}?</p>
     <form method="POST">
-        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="submit" class="btn btn-danger">{{ _("Delete") }}</button>
     </form>
+    <a href="{{ url_for('machinetypes') }}" class="btn btn-secondary">{{ _("No, go back") }}</a>
 </div>
 {% endblock %}

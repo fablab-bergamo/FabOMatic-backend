@@ -2,22 +2,22 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Add User</h1>
+    <h1>{{ _("Add User") }}</h1>
     <form method="POST" action="{{ url_for('create_user') }}">
         <div class="mb-3">
-            <label for="name" class="form-label">Name:</label>
+            <label for="name" class="form-label">{{ _("Name") }}:</label>
             <input type="text" id="name" name="name" class="form-control" required />
         </div>
         <div class="mb-3">
-            <label for="surname" class="form-label">Surname:</label>
+            <label for="surname" class="form-label">{{ _("Surname") }}:</label>
             <input type="text" id="surname" name="surname" class="form-control" required />
         </div>
         <div class="form-group">
-            <label for="email">Email (required for backend admins):</label>
+            <label for="email">{{ _("Email (required for backend admins)") }}:</label>
             <input type="email" id="email" name="email" class="form-control"/>
         </div>
         <div class="mb-3">
-            <label for="role_id" class="form-label">Role:</label>
+            <label for="role_id" class="form-label">{{ _("Role") }}:</label>
             <select id="role_id" name="role_id" class="form-select">
                 {% for role in roles %}
                 <option value="{{ role.role_id }}">{{ role.role_name }}</option>
@@ -25,14 +25,14 @@
             </select>
         </div>
         <div class="mb-3">
-            <label for="card_UUID" class="form-label">Card UUID:</label>
+            <label for="card_UUID" class="form-label">{{ _("Card UUID") }}:</label>
             <input type="text" id="card_UUID" name="card_UUID" class="form-control" pattern="[0-9A-Fa-f]{0}|[0-9A-Fa-f]{8}" value="{{card_UUID}}" />
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" id="disabled" name="disabled" class="form-check-input" />
-            <label for="disabled" class="form-check-label">User is disabled</label>
+            <label for="disabled" class="form-check-label">{{ _("User is disabled") }}</label>
         </div>
-        <input type="submit" value="Add User" class="btn btn-primary" />
+        <input type="submit" value="{{ _("Add User") }}" class="btn btn-primary" />
     </form>
 </div>
 {% endblock %}

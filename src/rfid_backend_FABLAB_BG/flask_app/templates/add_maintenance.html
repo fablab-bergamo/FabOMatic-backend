@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-  <h1>Add Maintenance</h1>
+  <h1>{{ _("Add Maintenance") }}</h1>
   <form method="POST" action="{{ url_for('add_maintenance') }}">
     <div class="mb-3">
-      <label for="description" class="form-label">Description of maintenance:</label>
+      <label for="description" class="form-label">{{ _("Description of maintenance")}}:</label>
       <input type="text" id="description" name="description" class="form-control" required />
     </div>
     <div class="mb-3">
-      <label for="machine_id" class="form-label">Machine to maintain:</label>
+      <label for="machine_id" class="form-label">{{ _("Machine to maintain") }}:</label>
       <select id="machine_id" name="machine_id" class="form-control" required>
         {% for machine in machines %}
         <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
@@ -17,14 +17,14 @@
       </select>
     </div>
     <div class="mb-3">
-      <label for="hours_between" class="form-label">Number of use hours to trigger:</label>
+      <label for="hours_between" class="form-label">{{ _("Number of use hours to trigger") }}:</label>
       <input type="number" id="hours_between" name="hours_between" class="form-control" required />
     </div>
     <div class="mb-3">
-      <label for="attachment" class="form-label">Attachment:</label>
+      <label for="attachment" class="form-label">{{ _("Attachment") }}:</label>
       <input type="file" id="attachment" name="attachment" class="form-control-file" accept="application/pdf">
     </div>
-    <input type="submit" value="Add Maintenance" class="btn btn-primary" />
+    <input type="submit" value="{{ _("Add Maintenance") }}" class="btn btn-primary" />
   </form>
 </div>
 {% endblock %}

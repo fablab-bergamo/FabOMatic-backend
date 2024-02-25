@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>Add Intervention</h1>
+    <h1>{{ _("Add Intervention") }}</h1>
     <form method="POST" action="{{ url_for('add_intervention') }}">
         <div class="form-group">
-            <label for="maintenance_id">Maintenance:</label>
+            <label for="maintenance_id">{{ _("Maintenance") }}:</label>
             <select id="maintenance_id" name="maintenance_id" class="form-control">
                 {% for maintenance in maintenances %}
                 <option value="{{ maintenance.maintenance_id }}">{{ maintenance.description }}</option>
@@ -13,7 +13,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="machine_id">Machine:</label>
+            <label for="machine_id">{{ _("Machine") }}:</label>
             <select id="machine_id" name="machine_id" class="form-control">
                 {% for machine in machines %}
                 <option value="{{ machine.machine_id }}">{{ machine.machine_name }}</option>
@@ -21,14 +21,14 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="user_id">User:</label>
+            <label for="user_id">{{ _("User") }}:</label>
             <select id="user_id" name="user_id" class="form-control">
                 {% for user in users %}
                 <option value="{{ user.user_id }}">{{ user.name }} {{ user.surname }}</option>
                 {% endfor %}
             </select>
         </div>
-        <input type="submit" value="Add Intervention" class="btn btn-primary">
+        <input type="submit" value="{{ _("Add Intervention") }}" class="btn btn-primary">
     </form>
 </div>
 {% endblock %}
