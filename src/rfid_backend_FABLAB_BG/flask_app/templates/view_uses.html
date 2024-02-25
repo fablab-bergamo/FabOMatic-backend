@@ -2,16 +2,16 @@
 
 {% block content %}
 <div class="container-fluid mt-0">
-  <h1>Usage History</h1>
-  <h3>Search for machine usage history</h3>
-  <a href="{{ url_for('add_use') }}" class="btn btn-primary mb-3">Manual registration</a>
+  <h1>{{ _("Usage History") }}</h1>
+  <h3>{{ _("Search for machine usage history") }}</h3>
+  <a href="{{ url_for('add_use') }}" class="btn btn-primary mb-3">{{ _("Manual registration") }}</a>
   <form method="GET" action="{{ url_for('view_uses') }}" class="mb-4">
     <div class="row">
       <div class="col-md-4">
         <div class="form-group">
           <label for="user_id">User:</label>
           <select id="user_id" name="user_id" class="form-control">
-            <option value="">All Users</option>
+            <option value="">{{ _("All Users") }}</option>
             {% for user in all_users %}
             <option value="{{ user.user_id }}" {% if user.user_id==selected_user_id %}selected{% endif %}>
               {{ user.name}} {{ user.surname}}</option>
@@ -21,9 +21,9 @@
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <label for="machine_id">Machine:</label>
+          <label for="machine_id">{{ _("Machine") }}:</label>
           <select id="machine_id" name="machine_id" class="form-control">
-            <option value="">All Machines</option>
+            <option value="">{{ _("All Machines") }}</option>
             {% for machine in all_machines %}
             <option value="{{ machine.machine_id }}" {% if machine.machine_id==selected_machine_id %}selected{% endif
               %}>{{ machine.machine_name }}</option>
@@ -33,25 +33,25 @@
       </div>
       <div class="col-md-4">
         <div class="form-group">
-          <label for="start_time">Start Time:</label>
+          <label for="start_time">{{ _("Start Time") }}:</label>
           <input type="datetime-local" id="start_time" name="start_time" class="form-control"
             value="{{ selected_start_time }}">
         </div>
       </div>
     </div>
-    <input type="submit" value="Filter" class="btn btn-info">
+    <input type="submit" value="{{ _("Filter") }}" class="btn btn-info">
   </form>
 
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Machine</th>
-        <th>User</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th class="d-none d-lg-table-cell">Duration (minutes)</th>
-        <th class="d-none d-lg-table-cell">Last update</th>
-        <th>Action</th>
+        <th>{{ _("Machine") }}</th>
+        <th>{{ _("User") }}</th>
+        <th>{{ _("Start Time") }}</th>
+        <th>{{ _("End Time") }}</th>
+        <th class="d-none d-lg-table-cell">{{ _("Duration (minutes)") }}</th>
+        <th class="d-none d-lg-table-cell">{{ _("Last update") }}</th>
+        <th>{{ _("Action") }}</th>
       </tr>
     </thead>
     <tbody>
@@ -60,7 +60,7 @@
         <td>{{ use.machine.machine_name }}</td>
         <td>
           {% if use.user.deleted %}
-          deleted user
+          {{ _("deleted user") }}
           {% else %}
           {{ use.user.name }} {{ use.user.surname }}
           {% endif %}
@@ -68,7 +68,7 @@
         <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
         <td>
           {% if use.end_timestamp is none %}
-          Still in use
+          {{ _("Still in use") }}
           {% else %}
           {{ use.end_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}
           {% endif %}
@@ -77,20 +77,20 @@
           {% if use.end_timestamp is not none %}
           {{ ((use.end_timestamp - use.start_timestamp) // 60) | round(0, 'ceil') }}
           {% else %}
-          In use
+          {{ _("In use") }}
           {% endif %}
         </td>
         <td class="d-none d-lg-table-cell">{{ use.last_seen|time_since }}</td>
         <td>
-          <a href="{{ url_for('delete_use', use_id=use.use_id) }}" class="btn btn-danger">Delete</a>
+          <a href="{{ url_for('delete_use', use_id=use.use_id) }}" class="btn btn-danger">{{ _("Delete") }}</a>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
   {% if uses|length >= 500 %}
-  <span class="small">Only first 500 records are displayed. Use filters if needed.</span>
+  <span class="small">{{ _("Only first 500 records are displayed. Use filters if needed.") }}</span>
   {% endif %}
-  <a href="{{ url_for('uses_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
+  <a href="{{ url_for('uses_export') }}" class="link-info"><i class="fas fa-file-excel"></i>{{ _("Export table") }}</a>
 </div>
 {% endblock %}

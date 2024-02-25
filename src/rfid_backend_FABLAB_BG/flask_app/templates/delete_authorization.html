@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Delete Authorization</h1>
-    <p>Are you sure you want to delete the authorization for '{{ authorization.user.name }}' to use '{{ authorization.machine.machine_name }}'?</p>
+    <h1>{{ _("Delete Authorization") }}</h1>
+    <p>{{ _("Are you sure you want to delete the authorization for") }} '{{ authorization.user.name }}' {{ _("UserToUse") }} '{{ authorization.machine.machine_name }}'?</p>
     <form method="POST">
-        <button type="submit" class="btn btn-danger">Yes, delete authorization</button>
+        <button type="submit" class="btn btn-danger">{{ _("Yes, delete authorization") }}</button>
     </form>
-    <a href="{{ url_for('view_authorizations') }}" class="btn btn-secondary">No, go back</a>
+    <a href="{{ url_for('view_authorizations') }}" class="btn btn-secondary">{{ _("No, go back") }}</a>
 {% endblock %}
