@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 from time import time
 
-from flask import Flask, render_template, request, send_from_directory, g
+from flask import Flask, render_template, request, send_from_directory, g, session
 from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -35,14 +35,17 @@ excel.init_excel(app)
 
 
 def get_locale():
-    # if a user is logged in, use the locale from the user settings
-    user = getattr(g, "user", None)
-    if user is not None:
-        return user.locale
-    # otherwise try to guess the language from the user accept
-    # header the browser transmits.  We support de/fr/en in this
-    # example.  The best match wins.
-    return request.accept_languages.best_match(["it", "en"])
+    # if the user has set up the language manually it will be stored in the session,
+    # so we use the locale from the user settings
+    try:
+        language = session["language"]
+    except KeyError:
+        language = None
+    if language is not None:
+        return language
+
+    translations = [str(translation) for translation in babel.list_translations()]
+    return request.accept_languages.best_match(translations)
 
 
 def get_timezone():
