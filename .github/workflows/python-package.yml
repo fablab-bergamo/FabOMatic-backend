@@ -30,6 +30,13 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Restore cache to speedup build
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -56,7 +63,7 @@ jobs:
     - name: Prepare Babel translations for distribution
       run: |
         cd src/rfid_backend_FABLAB_BG
-        python -m babel compile -d translations
+        pybabel compile -d translations
     - name: Test with pytest
       run: |
         pytest -v
