@@ -1,7 +1,7 @@
-# Italian translations for PROJECT.
-# Copyright (C) 2024 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+# Italian translations for rfid_backend_FABLAB_BG.
+# Copyright (C) 2024 FABLAB BERGAMO
+# This file is distributed under the same license as the rfid_backend_FABLAB_BG project.
+# Pascal Brunot, 2024.
 #
 msgid ""
 msgstr ""
