@@ -53,6 +53,10 @@ jobs:
     - name: Install local package as tests use absolute imports
       run: |
         python -m pip install -e .
+    - name: Prepare Babel translations for distribution
+      run: |
+        cd src/rfid_backend_FABLAB_BG
+        python -m babel compile -d translations
     - name: Test with pytest
       run: |
         pytest -v
