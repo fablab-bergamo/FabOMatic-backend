@@ -57,20 +57,22 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">Board ID</th>
-                <th scope="col">Machine (ID)</th>
+                <th scope="col">{{ _("Serial number") }}</th>
+                <th scope="col">{{ _("Machine (ID)") }}</th>
                 <th scope="col">{{ _("IP address") }}</th>
-                <th scope="col">FW Version</th>
+                <th scope="col">{{ _("FW Version") }}</th>
+                <th scope="col">{{_("Free heap") }}</th>
                 <th scope="col">{{ _("Last seen") }}</th>
             </tr>
         </thead>
         <tbody>
             {% for board in boards %}
             <tr>
-                <td>{{ board.board_id }}</td>
+                <td>{{ board.serial }}</td>
                 <td>{{ board.machine.machine_name }} ({{ board.machine_id }})</td>
                 <td>{{ board.ip_address }}</td>
                 <td>{{ board.fw_version }}</td>
+                <td>{{ board.heap }}</td>
                 <td>{{ board.last_seen | time_since }}</td>
             </tr>
             {% endfor %}

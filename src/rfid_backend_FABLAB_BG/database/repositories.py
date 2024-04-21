@@ -682,12 +682,14 @@ class BoardsRepository(BaseRepository):
     def get_all(self) -> List[Board]:
         return self.db_session.query(Board).order_by(Board.board_id).all()
 
-    def registerBoard(self, ip: str, version: str, machine: Machine) -> int:
+    def registerBoard(self, ip: str, version: str, serial: str, heap: int, machine: Machine) -> int:
         """Register a board that was used on a machine.
 
         Args:
             ip (str): IP address of the board
             version (str): Firmware version of the board
+            serial (str): Serial number of the board
+            heap (int): Free heap size of the board
             machine (Machine): Machine where the board was used
 
         Returns:
@@ -701,16 +703,25 @@ class BoardsRepository(BaseRepository):
         if record is not None:
             record.ip_address = ip
             record.fw_version = version
+            record.serial = serial
+            record.heap = heap
             record.last_seen = time()
             self.update(record)
             self.db_session.commit()
             logging.debug(
-                f"Updated board #{record.board_id} for machine {machine.machine_id} (IP: {ip}, FW: {version})"
+                f"Updated board #{record.board_id} for machine {machine.machine_id} (IP: {ip}, FW: {version}, Serial: {serial})"
             )
             return record.board_id
 
         # Create a new record
-        record = Board(ip_address=ip, fw_version=version, machine_id=machine.machine_id, last_seen=time())
+        record = Board(
+            ip_address=ip,
+            fw_version=version,
+            machine_id=machine.machine_id,
+            serial=serial,
+            heap=heap,
+            last_seen=time(),
+        )
         self.create(record)
         self.db_session.commit()
         logging.info(

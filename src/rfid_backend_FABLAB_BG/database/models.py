@@ -374,6 +374,9 @@ class Board(Base):
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
     ip_address = Column(String, unique=False, nullable=False)
     fw_version = Column(String, unique=False, nullable=False)
+    serial = Column(String, unique=False, nullable=True, default="?")
+    heap = Column(Integer, unique=False, nullable=True, default=0)
+
     last_seen = Column(Float, nullable=False)
 
     machine = relationship("Machine", back_populates="boards")
@@ -385,6 +388,8 @@ class Board(Base):
             "machine_id": self.machine_id,
             "ip_address": self.ip_address,
             "fw_version": self.fw_version,
+            "serial": self.serial,
+            "heap": self.heap,
             "last_seen": self.last_seen,
         }
 
