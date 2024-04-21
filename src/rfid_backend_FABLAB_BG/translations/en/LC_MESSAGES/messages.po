@@ -1,13 +1,14 @@
 # Italian translations for rfid_backend_FABLAB_BG.
 # Copyright (C) 2024 FABLAB BERGAMO
-# This file is distributed under the same license as the rfid_backend_FABLAB_BG project.
+# This file is distributed under the same license as the
+# rfid_backend_FABLAB_BG project.
 # Pascal Brunot, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-25 16:23+0100\n"
+"POT-Creation-Date: 2024-04-21 13:43+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -579,7 +580,7 @@ msgid "Maintenance plan"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:64
+#: flask_app/templates/view_system.html:65
 msgid "Last seen"
 msgstr ""
 
@@ -655,7 +656,7 @@ msgid "Backend admin?"
 msgstr ""
 
 #: flask_app/templates/view_roles.html:14
-msgid "Maintener?"
+msgid "Maintainer?"
 msgstr ""
 
 #: flask_app/templates/view_roles.html:15
@@ -726,8 +727,24 @@ msgstr "Application info"
 msgid "Boards list"
 msgstr "Boards list"
 
+#: flask_app/templates/view_system.html:60
+msgid "Serial number"
+msgstr ""
+
+#: flask_app/templates/view_system.html:61
+msgid "Machine (ID)"
+msgstr ""
+
 #: flask_app/templates/view_system.html:62
 msgid "IP address"
+msgstr ""
+
+#: flask_app/templates/view_system.html:63
+msgid "FW Version"
+msgstr ""
+
+#: flask_app/templates/view_system.html:64
+msgid "Free heap"
 msgstr ""
 
 #: flask_app/templates/view_users.html:6
@@ -957,5 +974,8 @@ msgid "Registration added successfully."
 msgstr ""
 
 #~ msgid "Maintenance?"
+#~ msgstr ""
+
+#~ msgid "Maintener?"
 #~ msgstr ""
 

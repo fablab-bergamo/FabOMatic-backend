@@ -95,7 +95,7 @@ class MachineLogic:
         with MachineLogic.database.getSession() as session:
             board_repo = MachineLogic.database.getBoardsRepository(session)
             machine = MachineLogic.database.getMachineRepository(session).get_by_id(self._machine_id)
-            board_repo.registerBoard(alive.ip, alive.version, machine)
+            board_repo.registerBoard(alive.ip, alive.version, alive.serial, alive.heap, machine)
             self.updateMachineLastSeen()
 
     def isAuthorized(self, card_uuid: str) -> UserResponse:

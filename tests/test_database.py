@@ -755,13 +755,13 @@ class TestDB(unittest.TestCase):
             board_repo = simple_db.getBoardsRepository(session)
             machine_repo = simple_db.getMachineRepository(session)
             for mac in machine_repo.get_all():
-                board_repo.registerBoard(f"1.2.3.{mac.machine_id}", "0.1.2", mac)
+                board_repo.registerBoard(f"1.2.3.{mac.machine_id}", "0.1.2", f"SN{mac.machine_id}", 300000, mac)
 
             # check if boards were added
             self.assertEqual(len(board_repo.get_all()), len(machine_repo.get_all()))
 
             for mac in machine_repo.get_all():
-                board_repo.registerBoard(f"1.3.4.{mac.machine_id}", "0.1.3", mac)
+                board_repo.registerBoard(f"1.3.4.{mac.machine_id}", "0.1.3", f"SN{mac.machine_id}", 300000, mac)
 
             # check no duplicates were created
             self.assertEqual(len(board_repo.get_all()), len(machine_repo.get_all()))
