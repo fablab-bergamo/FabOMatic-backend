@@ -80,6 +80,11 @@ class AliveQuery(BaseJson):
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
+        # Serial and Heaps have been added in FW revision 0.6.7
+        if data.get("serial") is None:
+            data["serial"] = ""
+        if data.get("heap") is None:
+            data["heap"] = 0
         return AliveQuery(data["version"], data["ip"], data["serial"], data["heap"])
 
 
