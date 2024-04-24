@@ -52,19 +52,15 @@ def add_maintenance():
 
         description = request.form["description"]
         machine_id = request.form["machine_id"]
-        attachment = None
-
-        if "attachment" in request.files:
-            file = request.files["attachment"]
-            if file.filename != "" and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                attachment = filename
-            else:
-                logging.warning(f"Invalid file uploaded {file.filename}")
+        lcd_message = request.form["lcd_message"]
+        url = request.form["instructions_url"]
 
         maintenance = Maintenance(
-            hours_between=hours_between, description=description, machine_id=machine_id, attachment=attachment
+            hours_between=hours_between,
+            description=description,
+            machine_id=machine_id,
+            lcd_message=lcd_message,
+            instructions_url=url,
         )
         session.add(maintenance)
         session.commit()
@@ -83,7 +79,8 @@ def edit_maintenance(maintenance_id):
         hours_between = request.form["hours_between"]
         maintenance.description = request.form["description"]
         maintenance.machine_id = request.form["machine_id"]
-        maintenance.attachment = None
+        maintenance.lcd_message = request.form["lcd_message"]
+        maintenance.instructions_url = request.form["instructions_url"]
         try:
             if float(hours_between) <= 0:
                 flash(gettext("Hours between must be a positive number."))
@@ -95,14 +92,6 @@ def edit_maintenance(maintenance_id):
 
         maintenance.hours_between = hours_between
 
-        if "attachment" in request.files:
-            file = request.files["attachment"]
-            if file.filename != "" and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(UPLOAD_FOLDER, filename))
-                maintenance.attachment = filename
-            else:
-                logging.warning(f"Invalid file uploaded {file.filename}")
         session.add(maintenance)
         session.commit()
         return redirect(url_for("maintenances"))

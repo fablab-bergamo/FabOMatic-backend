@@ -131,12 +131,6 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/download_attachment/<filename>")
-@login_required
-def download_attachment(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
-
-
 @app.route("/about")
 def about():
     with DBSession() as session:
