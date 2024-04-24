@@ -454,7 +454,7 @@ class MachineRepository(BaseRepository):
 
         relative_time = sum([use.end_timestamp - use.start_timestamp for use in uses], 0)
         logging.debug(
-            f"Machine {machine_id} Maintenance [{maintenance.description} - {maintenance.maintenance_id}], last_intervention {last_intervention} relative time = {relative_time} seconds ({len(uses)} uses)"
+            f"Machine {machine_id} Maintenance [{maintenance.description} - {maintenance.lcd_message}], last_intervention {last_intervention} relative time = {relative_time} seconds ({len(uses)} uses)"
         )
         return relative_time
 
@@ -486,7 +486,7 @@ class MachineRepository(BaseRepository):
         for maintenance in machine.maintenances:
             if self.getRelativeUseTimeByMaintenance(machine_id, maintenance) > maintenance.hours_between * 3600.0:
                 logging.debug(f"Machine {machine_id} needs maintenance [{maintenance.description}]")
-                return (True, maintenance.description)
+                return (True, maintenance.lcd_message)
 
         return (False, "")
 

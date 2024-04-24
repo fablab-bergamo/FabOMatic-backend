@@ -502,7 +502,13 @@ class TestDB(unittest.TestCase):
             MAINTENANCES_DESC = ["change oil", "clean mirror", "empty bin"]
             for mac in machine_repo.get_all():
                 for _, md in enumerate(MAINTENANCES_DESC):
-                    maint = Maintenance(description=md, hours_between=10, machine_id=mac.machine_id, lcd_message ="pulire", instructions_url="https://www.google.com")
+                    maint = Maintenance(
+                        description=md,
+                        hours_between=10,
+                        machine_id=mac.machine_id,
+                        lcd_message="pulire",
+                        instructions_url="https://www.google.com",
+                    )
                     maint_repo.create(maint)
 
             self.assertEqual(
@@ -735,7 +741,7 @@ class TestDB(unittest.TestCase):
             self.assertTrue(mac_repo.getMachineMaintenanceNeeded(machine_id=1)[0], "Machine shall need maintenance")
             self.assertEqual(
                 mac_repo.getMachineMaintenanceNeeded(machine_id=1)[1],
-                maint.description,
+                maint.lcd_message,
                 "Correct maintenance description shall be returned",
             )
 
