@@ -175,8 +175,9 @@ class Maintenance(Base):
     maintenance_id = Column(Integer, primary_key=True, autoincrement=True)
     hours_between = Column(Float, nullable=False)
     description = Column(String, nullable=False)
+    lcd_message = Column(String, nullable=True, default="")
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
-    attachment = Column(String, nullable=True)
+    instructions_url = Column(String, nullable=True, default="")
 
     machine = relationship("Machine", back_populates="maintenances")
     interventions = relationship("Intervention", back_populates="maintenance")
@@ -187,25 +188,15 @@ class Maintenance(Base):
             "maintenance_id": self.maintenance_id,
             "hours_between": self.hours_between,
             "description": self.description,
+            "lcd_message": self.lcd_message,
             "machine_id": self.machine_id,
+            "instructions_url": self.instructions_url,
         }
 
     @classmethod
     def from_dict(cls, dict_data):
         """Deserialize data from Dictionary."""
         return cls(**dict_data)
-
-    @property
-    def attachment_path(self):
-        """Get the file attachment path."""
-        if self.attachment:
-            return os.path.join("upload", self.attachment)
-        return None
-
-    @property
-    def has_attachment(self):
-        """Check if the intervention has an attachment."""
-        return bool(self.attachment)
 
 
 class Intervention(Base):

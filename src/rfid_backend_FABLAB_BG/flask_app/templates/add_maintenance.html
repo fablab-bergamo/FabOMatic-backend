@@ -9,6 +9,10 @@
       <input type="text" id="description" name="description" class="form-control" required />
     </div>
     <div class="mb-3">
+      <label for="lcd_message" class="form-label">{{ _("LCD Message")}}:</label>
+      <input type="text" id="lcd_message" name="lcd_message" class="form-control" required maxlength="16"/>
+    </div>
+    <div class="mb-3">
       <label for="machine_id" class="form-label">{{ _("Machine to maintain") }}:</label>
       <select id="machine_id" name="machine_id" class="form-control" required>
         {% for machine in machines %}
@@ -21,8 +25,8 @@
       <input type="number" id="hours_between" name="hours_between" class="form-control" required />
     </div>
     <div class="mb-3">
-      <label for="attachment" class="form-label">{{ _("Attachment") }}:</label>
-      <input type="file" id="attachment" name="attachment" class="form-control-file" accept="application/pdf">
+      <label for="instructions_url" class="form-label">{{ _("instructions_url") }}:</label>
+      <input type="url" id="instructions_url" name="instructions_url" class="form-control" >
     </div>
     <input type="submit" value="{{ _("Add Maintenance") }}" class="btn btn-primary" />
   </form>

@@ -95,7 +95,11 @@ def seed_test_db() -> DatabaseBackend:
         empty_db.getMachineRepository(session).create(m1)
 
         maint1 = Maintenance(
-            hours_between=10, description="sample maintenance - clean machine", machine_id=m1.machine_id
+            hours_between=10,
+            description="sample maintenance - clean machine",
+            machine_id=m1.machine_id,
+            lcd_message="allineare",
+            instructions_url="https://www.fablabbergamo.it/",
         )
         empty_db.getMaintenanceRepository(session).create(maint1)
 
@@ -220,16 +224,30 @@ def get_simple_db() -> DatabaseBackend:
             temp_machines.append(temp_machine)
             empty_db.getMachineRepository(session).create(temp_machine)
 
-        maint1 = Maintenance(hours_between=10, description="replace engine", machine_id=m1.machine_id)
+        maint1 = Maintenance(
+            hours_between=10,
+            description="replace engine",
+            machine_id=m1.machine_id,
+            lcd_message="sostituire motore",
+            instructions_url="https://www.fablabbergamo.it/",
+        )
         empty_db.getMaintenanceRepository(session).create(maint1)
 
-        maint2 = Maintenance(hours_between=10, description="replace brushes", machine_id=m2.machine_id)
+        maint2 = Maintenance(
+            hours_between=10,
+            description="replace brushes",
+            machine_id=m2.machine_id,
+            lcd_message="pulire lente",
+            instructions_url="https://www.fablabbergamo.it/",
+        )
         empty_db.getMaintenanceRepository(session).create(maint2)
 
         for i in range(1, 10):
             temp_maint = Maintenance(
                 hours_between=random.choice(range(1, 30)),
                 description="Maintenance" + str(i),
+                lcd_message="Message" + str(i),
+                instructions_url="https://www.fablabbergamo.it/",
                 machine_id=random.choice(temp_machines).machine_id,
             )
             empty_db.getMaintenanceRepository(session).create(temp_maint)

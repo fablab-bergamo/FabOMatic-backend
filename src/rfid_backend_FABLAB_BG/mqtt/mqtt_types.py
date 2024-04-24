@@ -162,6 +162,7 @@ class MachineResponse:
         type_id: int,
         timeout_min: int = 0,
         grace_period_min: int = 0,
+        description: str = "",
     ):
         self.request_ok = request_ok
         self.is_valid = is_valid
@@ -171,6 +172,7 @@ class MachineResponse:
         self.logoff = timeout_min
         self.type = type_id
         self.grace = grace_period_min
+        self.description = description
 
     def serialize(self) -> str:
         return json.dumps(self.__dict__)

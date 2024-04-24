@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-21 13:43+0200\n"
+"POT-Creation-Date: 2024-04-24 22:52+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -69,10 +69,10 @@ msgstr "Utente"
 #: flask_app/templates/add_intervention.html:16
 #: flask_app/templates/add_use.html:17
 #: flask_app/templates/edit_authorization.html:15
-#: flask_app/templates/edit_maintenance.html:19
+#: flask_app/templates/edit_maintenance.html:29
 #: flask_app/templates/view_authorizations.html:32
 #: flask_app/templates/view_interventions.html:37
-#: flask_app/templates/view_maintenances.html:32
+#: flask_app/templates/view_maintenances.html:33
 #: flask_app/templates/view_users.html:61 flask_app/templates/view_uses.html:24
 #: flask_app/templates/view_uses.html:48
 msgid "Machine"
@@ -145,7 +145,7 @@ msgid "Submit"
 msgstr "Conferma"
 
 #: flask_app/templates/add_maintenance.html:5
-#: flask_app/templates/add_maintenance.html:27
+#: flask_app/templates/add_maintenance.html:31
 #: flask_app/templates/view_maintenances.html:7
 msgid "Add Maintenance"
 msgstr "Aggiungi manutenzione"
@@ -155,17 +155,22 @@ msgid "Description of maintenance"
 msgstr "Descrizione operazione"
 
 #: flask_app/templates/add_maintenance.html:12
+#: flask_app/templates/edit_maintenance.html:14
+msgid "LCD Message"
+msgstr ""
+
+#: flask_app/templates/add_maintenance.html:16
 msgid "Machine to maintain"
 msgstr "Machina da mantenere"
 
-#: flask_app/templates/add_maintenance.html:20
+#: flask_app/templates/add_maintenance.html:24
 msgid "Number of use hours to trigger"
 msgstr "Ore macchina per scatto procedura"
 
-#: flask_app/templates/add_maintenance.html:24
-#: flask_app/templates/view_maintenances.html:36
-msgid "Attachment"
-msgstr "Allegato"
+#: flask_app/templates/add_maintenance.html:28
+#, fuzzy
+msgid "instructions_url"
+msgstr "Interventi"
 
 #: flask_app/templates/add_role.html:5 flask_app/templates/add_role.html:23
 #: flask_app/templates/view_roles.html:6
@@ -368,7 +373,7 @@ msgstr "Sei sicuro di volere cancellare la tipologia di macchine"
 #: flask_app/templates/view_interventions.html:55
 #: flask_app/templates/view_machines.html:53
 #: flask_app/templates/view_machinetypes.html:39
-#: flask_app/templates/view_maintenances.html:43
+#: flask_app/templates/view_maintenances.html:42
 #: flask_app/templates/view_roles.html:55
 #: flask_app/templates/view_users.html:45 flask_app/templates/view_uses.html:85
 msgid "Delete"
@@ -436,15 +441,20 @@ msgstr "Modifica manutenzione"
 
 #: flask_app/templates/edit_maintenance.html:9
 #: flask_app/templates/view_maintenances.html:30
-msgid "Hours Between"
-msgstr "Periodo in ore"
-
-#: flask_app/templates/edit_maintenance.html:14
-#: flask_app/templates/view_maintenances.html:31
 msgid "Description"
 msgstr "Descrizione"
 
-#: flask_app/templates/edit_maintenance.html:27
+#: flask_app/templates/edit_maintenance.html:19
+#: flask_app/templates/view_maintenances.html:32
+msgid "Hours Between"
+msgstr "Periodo in ore"
+
+#: flask_app/templates/edit_maintenance.html:24
+#, fuzzy
+msgid "URL for instructions"
+msgstr "Registrazione manuale"
+
+#: flask_app/templates/edit_maintenance.html:37
 msgid "Update Maintenance"
 msgstr "Aggiorna manutenzione"
 
@@ -525,7 +535,7 @@ msgstr "Azione"
 #: flask_app/templates/view_interventions.html:53
 #: flask_app/templates/view_machines.html:51
 #: flask_app/templates/view_machinetypes.html:37
-#: flask_app/templates/view_maintenances.html:41
+#: flask_app/templates/view_maintenances.html:40
 #: flask_app/templates/view_roles.html:54
 #: flask_app/templates/view_users.html:44
 msgid "Edit"
@@ -645,6 +655,15 @@ msgstr "Filtra Macchine"
 #: flask_app/templates/view_maintenances.html:20
 msgid "Filter Description"
 msgstr "Filtra Descrizione"
+
+#: flask_app/templates/view_maintenances.html:31
+msgid "Lcd message"
+msgstr "Messaggio corto per LCD"
+
+#: flask_app/templates/view_maintenances.html:35
+#, fuzzy
+msgid "Instructions URL"
+msgstr "URL per le istruzioni"
 
 #: flask_app/templates/view_roles.html:5
 msgid "This page configures the possible roles of FabLab users."
@@ -895,19 +914,19 @@ msgstr "Tipologia di macchina non trovata."
 msgid "Machine type deleted successfully."
 msgstr "Tipologia di macchina cancellata con successo."
 
-#: web/routes_maintenance.py:46 web/routes_maintenance.py:89
+#: web/routes_maintenance.py:46 web/routes_maintenance.py:86
 msgid "Hours between must be a positive number."
 msgstr "Il campo Ore deve essere un numero positivo."
 
-#: web/routes_maintenance.py:50 web/routes_maintenance.py:93
+#: web/routes_maintenance.py:50 web/routes_maintenance.py:90
 msgid "Hours between must be a number."
 msgstr "Il campo Ore deve essere un numero."
 
-#: web/routes_maintenance.py:124
+#: web/routes_maintenance.py:113
 msgid "Maintenance not found"
 msgstr "Macchina non trovata."
 
-#: web/routes_maintenance.py:129
+#: web/routes_maintenance.py:118
 msgid "Maintenance deleted successfully."
 msgstr "Manutenzione cancellata con successo."
 
