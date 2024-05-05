@@ -390,7 +390,12 @@ class TestDB(unittest.TestCase):
             # create machines for each type
             for i in range(1, TYPES + 1):
                 NAME = random_string(10)
-                mtype = MachineType(type_name=NAME)
+                mtype = MachineType(
+                    type_name=NAME,
+                    type_timeout_min=10,
+                    grace_period_min=5,
+                    access_management=MachineType.MANAGEMENT_WITH_AUTHORIZATION,
+                )
                 mtypeRepo.create(mtype)
                 self.assertEqual(len(mtypeRepo.get_all()), i, "Machine type not added correctly")
                 for _ in range(1, MACHINES + 1):
@@ -410,6 +415,13 @@ class TestDB(unittest.TestCase):
                 # reload machine
                 machine = machineRepo.get_by_id(current_id)
                 self.assertEqual(machine.machine_hours, hours, "Hours not updated correctly")
+                self.assertEqual(machine.machine_type.type_timeout_min, 10, "Machine Type type_timeout_min is wrong")
+                self.assertEqual(machine.machine_type.grace_period_min, 5, "Machine Type grace_period_min is wrong")
+                self.assertEqual(
+                    machine.machine_type.access_management,
+                    MachineType.MANAGEMENT_WITH_AUTHORIZATION,
+                    "Machine Type timeout is wrong",
+                )
 
             for current_id in range(1, MACHINES * TYPES + 1):
                 machine = machineRepo.get_by_id(current_id)
