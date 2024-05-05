@@ -1,6 +1,6 @@
 from time import time
 import unittest
-from rfid_backend_FABLAB_BG.database.models import Use
+from rfid_backend_FABLAB_BG.database.models import Authorization, MachineType, Use
 
 from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
     UserQuery,
@@ -228,3 +228,58 @@ class TestLogic(unittest.TestCase):
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = RegisterMaintenanceQuery("DEADBEEF")
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
+
+    def test_machine_auth(self):
+        db = get_simple_db()
+        with db.getSession() as session:
+            MachineLogic.database = db
+            mac = db.getMachineRepository(session).get_all()[0]
+            user = db.getUserRepository(session).get_all()[0]
+            user.card_UUID = "1234"
+            db.getUserRepository(session).update(user)
+
+            ml = MachineLogic(mac.machine_id)
+            status = ml.machineStatus()
+            self.assertTrue(status.is_valid, "Machine is not valid")
+            self.assertTrue(status.request_ok, "Request is not ok")
+            self.assertFalse(status.maintenance, "Machine is in maintenance")
+            self.assertTrue(status.allowed, "Machine is not allowed")
+
+            mac.blocked = False
+            db.getMachineRepository(session).update(mac)
+
+            mac.machine_type.access_management = MachineType.MANAGEMENT_WITH_AUTHORIZATION
+            db.getMachineTypeRepository(session).update(mac.machine_type)
+
+            # Test success
+            response = ml.isAuthorized("1234")
+            self.assertTrue(response.request_ok, "isAuthorized failed")
+            self.assertTrue(response.is_valid, "isAuthorized returns invalid with authorized user")
+
+            try:
+                authorization = (
+                    session.query(Authorization).filter_by(user_id=user.user_id, machine_id=mac.machine_id).one()
+                )
+                session.delete(authorization)
+                session.commit()
+            except:
+                pass
+
+            user.role.authorize_all = False
+            db.getRoleRepository(session).update(user.role)
+
+            # Test failure
+            response = ml.isAuthorized("1234")
+            self.assertTrue(response.request_ok, "isAuthorized failed")
+            self.assertFalse(response.is_valid, "isAuthorized returns true without authorization by machine type")
+
+            # Authorize all
+            mac.machine_type.access_management = MachineType.MANAGEMENT_WITHOUT_AUTHORIZATION
+            db.getMachineTypeRepository(session).update(mac.machine_type)
+
+            # Test success without authorization
+            response = ml.isAuthorized("1234")
+            self.assertTrue(response.request_ok, "isAuthorized failed")
+            self.assertTrue(
+                response.is_valid, "isAuthorized returns invalid while machine type has no authorization required"
+            )
