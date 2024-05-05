@@ -12,6 +12,7 @@
                 <th>{{ _("Machine type") }}</th>
                 <th>{{ _("Auto-logoff") }}</th>
                 <th>{{ _("Power-off") }}</th>
+                <th>{{ _("Access control") }}</th>
                 <th>{{ _("Action") }}</th>
             </tr>
         </thead>
@@ -30,6 +31,14 @@
                     {{ machine_type.grace_period_min }} min
                     {% else %}
                     <i>{{ _("disabled") }}</i>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if machine_type.access_management == machine_type.MANAGEMENT_WITH_AUTHORIZATION %}
+                    {{ _("Machines need to be authorized for user") }}
+                    {% endif %}
+                    {% if machine_type.access_management == machine_type.MANAGEMENT_WITHOUT_AUTHORIZATION %}
+                    {{ _("No authorization required for machines") }}
                     {% endif %}
                 </td>
                 <td>
