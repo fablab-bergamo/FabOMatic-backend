@@ -202,6 +202,9 @@ class UserRepository(BaseRepository):
         if machine.blocked:
             return False
 
+        if machine.machine_type.access_management == MachineType.MANAGEMENT_WITHOUT_AUTHORIZATION:
+            return True
+
         authorizations = self.db_session.query(Authorization).filter_by(user_id=user.user_id).all()
         machine_ids = [a.machine_id for a in authorizations]
 

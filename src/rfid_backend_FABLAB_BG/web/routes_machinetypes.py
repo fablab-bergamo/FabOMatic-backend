@@ -25,13 +25,15 @@ def add_machinetype():
         type_name = request.form["type_name"]
         timeout_min = request.form["type_timeout_min"]
         grace_period_min = request.form["grace_period_min"]
+        access_management = request.form["access_control"]
 
-        if not timeout_min.isnumeric() or not grace_period_min.isnumeric():
-            flash(gettext("Invalid values for timeout or grace period."))
+        if not timeout_min.isnumeric() or not grace_period_min.isnumeric() or not access_management.isnumeric():
+            flash(gettext("Invalid values for timeout or grace period or access control."))
             return redirect(url_for("add_machinetype"))
         else:
             timeout_min = int(timeout_min)
             grace_period_min = int(grace_period_min)
+            access_management = int(access_management)
 
         if timeout_min < 0 or timeout_min > 65535:
             flash(gettext("Invalid values for timeout"))
@@ -42,13 +44,16 @@ def add_machinetype():
             return redirect(url_for("add_machinetype"))
 
         machine_type = MachineType(
-            type_name=type_name, type_timeout_min=timeout_min, grace_period_min=grace_period_min
+            type_name=type_name,
+            type_timeout_min=timeout_min,
+            grace_period_min=grace_period_min,
+            access_management=access_management,
         )
         session.add(machine_type)
         session.commit()
         return redirect(url_for("machinetypes"))
     else:
-        return render_template("add_machinetype.html")
+        return render_template("add_machinetype.html", MachineType=MachineType)
 
 
 @app.route("/machinetypes/edit/<int:type_id>", methods=["GET", "POST"])
@@ -57,14 +62,26 @@ def edit_machinetype(type_id):
     session = DBSession()
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
     if request.method == "POST":
+        grace_period_min = request.form["grace_period_min"]
+        timeout_min = request.form["type_timeout_min"]
+        access_management = request.form["access_control"]
+
+        if not timeout_min.isnumeric() or not grace_period_min.isnumeric() or not access_management.isnumeric():
+            flash(gettext("Invalid values for timeout or grace period or access control."))
+            return redirect(url_for("edit_machinetype", type_id=type_id))
+        else:
+            timeout_min = int(timeout_min)
+            grace_period_min = int(grace_period_min)
+            access_management = int(access_management)
+
+        machine_type.type_timeout_min = timeout_min
+        machine_type.grace_period_min = grace_period_min
+        machine_type.access_management = access_management
         machine_type.type_name = request.form["type_name"]
-        machine_type.type_timeout_min = int(request.form["type_timeout_min"])
 
         if machine_type.type_timeout_min < 0 or machine_type.type_timeout_min > 65535:
             flash(gettext("Invalid values for timeout"))
             return redirect(url_for("edit_machinetype", type_id=type_id))
-
-        machine_type.grace_period_min = int(request.form["grace_period_min"])
 
         if machine_type.type_timeout_min < 0 or machine_type.grace_period_min > 65535:
             flash(gettext("Invalid values for grace period."))

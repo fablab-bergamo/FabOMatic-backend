@@ -229,11 +229,14 @@ class MachineType(Base):
     """Dataclass handling a machine type."""
 
     __tablename__ = "machine_types"
+    MANAGEMENT_WITH_AUTHORIZATION = 0
+    MANAGEMENT_WITHOUT_AUTHORIZATION = 1
 
     type_id = Column(Integer, primary_key=True, autoincrement=True)
     type_name = Column(String, unique=True, nullable=False)
     type_timeout_min = Column(Integer, unique=False, nullable=False, default=DEFAULT_TIMEOUT_MINUTES)
     grace_period_min = Column(Integer, unique=False, nullable=True, default=2)
+    access_management = Column(Integer, unique=False, nullable=True, default=MANAGEMENT_WITH_AUTHORIZATION)
     machines = relationship("Machine", back_populates="machine_type")
     __table_args__ = (Index("idx_machine_types_type_name_unique", "type_name", unique=True),)
 
@@ -266,7 +269,7 @@ class Machine(Base):
     maintenances = relationship("Maintenance", back_populates="machine")
     interventions = relationship("Intervention", back_populates="machine")
     authorizations = relationship("Authorization", back_populates="machine")
-    machine_type = relationship("MachineType", back_populates="machines")
+    machine_type = relationship("MachineType", back_populates="machines", lazy=False)
     uses = relationship("Use", back_populates="machine")
     cards = relationship("UnknownCard", back_populates="machine")
     boards = relationship("Board", back_populates="machine")
