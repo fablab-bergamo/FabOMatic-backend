@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rfid_backend_FABLAB_BG"
-version = "0.2.13"
+version = "0.2.14"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -19,21 +19,21 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "SQLAlchemy",
-    "toml",
+    "SQLAlchemy==2.0.25",
+    "toml==0.10.2",
     "paho-mqtt<2.0.0",
     "colorlog",
-    "flask",
-    "flask-login",
-    "pyopenssl",
-    "flask-mail",
+    "flask==2.3.2",
+    "flask-login==0.6.3",
+    "pyopenssl==24.0.0",
+    "flask-mail==0.9.1",
     "itsdangerous",
     "alembic",
     "psutil",
     "flask-excel",
     "pyexcel-xlsx",
-    "requests",
-    "Flask-Babel",
+    "requests==2.30.0",
+    "Flask-Babel==4.0.0",
 ]
 
 [project.optional-dependencies]
