@@ -71,7 +71,7 @@
                 <td>{{ card.card_UUID }}</td>
                 <td>{{ card.timestamp|time_since }}</td>
                 <td>
-                    <a href="{{ url_for('add_user', card_uuid = card.card_UUID) }}" class="btn btn-warning">Convert to new user</a>
+                    <a href="{{ url_for('add_user', card_uuid = card.card_UUID) }}" class="btn btn-warning">{{ _("Convert to new user") }}</a>
                 </td>
             </tr>
             {% endfor %}

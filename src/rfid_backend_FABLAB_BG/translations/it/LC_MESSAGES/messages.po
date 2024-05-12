@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-05-12 11:46+0200\n"
+"POT-Creation-Date: 2024-05-12 13:02+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -830,6 +830,10 @@ msgstr "Elenco delle ultime 20 tessere sconosciute"
 #: flask_app/templates/view_users.html:63
 msgid "Time of attempt"
 msgstr "Ora tentativo"
+
+#: flask_app/templates/view_users.html:74
+msgid "Convert to new user"
+msgstr "Converti in nuovo utente"
 
 #: flask_app/templates/view_uses.html:5
 msgid "Usage History"
