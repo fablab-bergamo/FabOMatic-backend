@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-04-24 22:52+0200\n"
+"POT-Creation-Date: 2024-05-12 11:46+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -138,9 +138,23 @@ msgstr "(minuti)"
 msgid "Power-off grace period"
 msgstr "Spegnimento macchina dopo"
 
-#: flask_app/templates/add_machinetype.html:25
+#: flask_app/templates/add_machinetype.html:26
+#: flask_app/templates/edit_machinetype.html:26
+#: flask_app/templates/view_machinetypes.html:15
+msgid "Access control"
+msgstr "Controllo autorizzazioni"
+
+#: flask_app/templates/add_machinetype.html:28
+msgid "Machine need to be authorized for users"
+msgstr "Le macchine devono essere autorizzate per singolo utente"
+
+#: flask_app/templates/add_machinetype.html:29
+msgid "No specific authorization required for users"
+msgstr "Non verificare autorizzazioni per singolo utente"
+
+#: flask_app/templates/add_machinetype.html:32
 #: flask_app/templates/add_use.html:33
-#: flask_app/templates/edit_machinetype.html:25
+#: flask_app/templates/edit_machinetype.html:32
 msgid "Submit"
 msgstr "Conferma"
 
@@ -372,7 +386,7 @@ msgstr "Sei sicuro di volere cancellare la tipologia di macchine"
 #: flask_app/templates/view_authorizations.html:44
 #: flask_app/templates/view_interventions.html:55
 #: flask_app/templates/view_machines.html:53
-#: flask_app/templates/view_machinetypes.html:39
+#: flask_app/templates/view_machinetypes.html:48
 #: flask_app/templates/view_maintenances.html:42
 #: flask_app/templates/view_roles.html:55
 #: flask_app/templates/view_users.html:45 flask_app/templates/view_uses.html:85
@@ -435,6 +449,16 @@ msgstr "Sì, cancella utente"
 msgid "Edit Machine Type"
 msgstr "Modifica tipologia"
 
+#: flask_app/templates/edit_machinetype.html:28
+#: flask_app/templates/view_machinetypes.html:38
+msgid "Machines need to be authorized for user"
+msgstr "Controllare le autorizzazioni utente per le macchine"
+
+#: flask_app/templates/edit_machinetype.html:29
+#: flask_app/templates/view_machinetypes.html:41
+msgid "No authorization required for machines"
+msgstr "Nessuna autorizzazione richiesta per le macchine"
+
 #: flask_app/templates/edit_maintenance.html:5
 msgid "Edit Maintenance"
 msgstr "Modifica manutenzione"
@@ -450,9 +474,8 @@ msgid "Hours Between"
 msgstr "Periodo in ore"
 
 #: flask_app/templates/edit_maintenance.html:24
-#, fuzzy
 msgid "URL for instructions"
-msgstr "Registrazione manuale"
+msgstr "URL istruzioni"
 
 #: flask_app/templates/edit_maintenance.html:37
 msgid "Update Maintenance"
@@ -524,7 +547,7 @@ msgstr "Applica Filtri"
 
 #: flask_app/templates/view_authorizations.html:33
 #: flask_app/templates/view_interventions.html:40
-#: flask_app/templates/view_machinetypes.html:15
+#: flask_app/templates/view_machinetypes.html:16
 #: flask_app/templates/view_roles.html:16
 #: flask_app/templates/view_users.html:18
 #: flask_app/templates/view_users.html:64 flask_app/templates/view_uses.html:54
@@ -534,7 +557,7 @@ msgstr "Azione"
 #: flask_app/templates/view_authorizations.html:43
 #: flask_app/templates/view_interventions.html:53
 #: flask_app/templates/view_machines.html:51
-#: flask_app/templates/view_machinetypes.html:37
+#: flask_app/templates/view_machinetypes.html:46
 #: flask_app/templates/view_maintenances.html:40
 #: flask_app/templates/view_roles.html:54
 #: flask_app/templates/view_users.html:44
@@ -593,7 +616,7 @@ msgid "Maintenance plan"
 msgstr "Manutenzione"
 
 #: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:65
+#: flask_app/templates/view_system.html:72
 msgid "Last seen"
 msgstr "Ultimo contatto"
 
@@ -633,8 +656,8 @@ msgstr "Log-off automatico dopo"
 msgid "Power-off"
 msgstr "Spegnimento automatico dopo"
 
-#: flask_app/templates/view_machinetypes.html:26
-#: flask_app/templates/view_machinetypes.html:32
+#: flask_app/templates/view_machinetypes.html:27
+#: flask_app/templates/view_machinetypes.html:33
 msgid "disabled"
 msgstr "disattivato"
 
@@ -661,7 +684,6 @@ msgid "Lcd message"
 msgstr "Messaggio corto per LCD"
 
 #: flask_app/templates/view_maintenances.html:35
-#, fuzzy
 msgid "Instructions URL"
 msgstr "URL per le istruzioni"
 
@@ -697,71 +719,87 @@ msgstr "Database"
 msgid "Database size (KB)"
 msgstr "Dimensioni database (KB)"
 
-#: flask_app/templates/view_system.html:17
+#: flask_app/templates/view_system.html:15
 msgid "Download DB"
 msgstr "Scarica database"
 
-#: flask_app/templates/view_system.html:25
+#: flask_app/templates/view_system.html:18
+msgid "Restore database"
+msgstr ""
+
+#: flask_app/templates/view_system.html:21
+msgid "Upload DB"
+msgstr "Carica backup"
+
+#: flask_app/templates/view_system.html:31
 msgid "System info"
 msgstr "Info sistema"
 
-#: flask_app/templates/view_system.html:29
+#: flask_app/templates/view_system.html:35
 msgid "Machine info"
 msgstr "Informazioni server"
 
-#: flask_app/templates/view_system.html:30
+#: flask_app/templates/view_system.html:36
 msgid "Disk free space"
 msgstr "Spazio disco disponibile"
 
-#: flask_app/templates/view_system.html:31
+#: flask_app/templates/view_system.html:37
 msgid "Memory free space"
 msgstr "Memoria RAM disponibile"
 
-#: flask_app/templates/view_system.html:32
+#: flask_app/templates/view_system.html:38
+msgid "Backend log file"
+msgstr "Log applicativo"
+
+#: flask_app/templates/view_system.html:38
+msgid "Download"
+msgstr "Scarica"
+
+#: flask_app/templates/view_system.html:39
 msgid "Reboot system"
 msgstr "Riavvia host"
 
-#: flask_app/templates/view_system.html:40
+#: flask_app/templates/view_system.html:47
 msgid "Application info"
 msgstr "Info applicativo"
 
-#: flask_app/templates/view_system.html:44
+#: flask_app/templates/view_system.html:51
 msgid "Version installed"
 msgstr "Versione installata"
 
-#: flask_app/templates/view_system.html:45
+#: flask_app/templates/view_system.html:52
 msgid "Version available"
 msgstr "Versione disponibile"
 
-#: flask_app/templates/view_system.html:46
+#: flask_app/templates/view_system.html:53
 msgid "Update application (pip)"
 msgstr "Aggiorna applicativo (pip)"
 
-#: flask_app/templates/view_system.html:48
+#: flask_app/templates/view_system.html:55
 msgid "Restart application"
 msgstr "Riavvio applicativo"
 
-#: flask_app/templates/view_system.html:55
+#: flask_app/templates/view_system.html:62
 msgid "Boards list"
 msgstr "Elenco boards"
 
-#: flask_app/templates/view_system.html:60
+#: flask_app/templates/view_system.html:67
 msgid "Serial number"
 msgstr "Indirizzo MAC"
 
-#: flask_app/templates/view_system.html:61
+#: flask_app/templates/view_system.html:68
 msgid "Machine (ID)"
 msgstr "Macchina (ID)"
 
-#: flask_app/templates/view_system.html:62
+#: flask_app/templates/view_system.html:69
 msgid "IP address"
 msgstr "Indirizzo IP"
 
-#: flask_app/templates/view_system.html:63
+#: flask_app/templates/view_system.html:70
 msgid "FW Version"
 msgstr "Versione firmware"
 
-#: flask_app/templates/view_system.html:64
+#: flask_app/templates/view_system.html:71
 msgid "Free heap"
 msgstr "Memoria heap libera"
 
@@ -894,23 +932,25 @@ msgstr "Il campo Ore deve essere un numero."
 msgid "Machine not found"
 msgstr "Macchina non trovata."
 
-#: web/routes_machinetypes.py:30
-msgid "Invalid values for timeout or grace period."
-msgstr "Valore scorretto per il periodo di spegnimento"
+#: web/routes_machinetypes.py:31 web/routes_machinetypes.py:70
+msgid "Invalid values for timeout or grace period or access control."
+msgstr ""
+"Valore scorretto per il periodo di spegnimento o controllo accesso o "
+"autologoff"
 
-#: web/routes_machinetypes.py:37 web/routes_machinetypes.py:64
+#: web/routes_machinetypes.py:39 web/routes_machinetypes.py:83
 msgid "Invalid values for timeout"
 msgstr "Valore scorretto per il periodo di auto-logoff."
 
-#: web/routes_machinetypes.py:41 web/routes_machinetypes.py:70
+#: web/routes_machinetypes.py:43 web/routes_machinetypes.py:87
 msgid "Invalid values for grace period."
 msgstr "Valore scorretto per il periodo di spegnimento"
 
-#: web/routes_machinetypes.py:86
+#: web/routes_machinetypes.py:103
 msgid "Machine Type not found"
 msgstr "Tipologia di macchina non trovata."
 
-#: web/routes_machinetypes.py:90
+#: web/routes_machinetypes.py:107
 msgid "Machine type deleted successfully."
 msgstr "Tipologia di macchina cancellata con successo."
 
@@ -941,6 +981,14 @@ msgstr "Impossibile modificare ruolo riservato."
 #: web/routes_roles.py:86
 msgid "Role deleted successfully."
 msgstr "Ruolo cancellato con successo."
+
+#: web/routes_system.py:82
+msgid "File must have sqldb extension"
+msgstr "Il file deve avere un'estensione .sqldb"
+
+#: web/routes_system.py:93
+msgid "Database was replaced. Previous copy can be found at "
+msgstr "Il database è stato sostituito. La copia precedente può essere trovata in "
 
 #: web/routes_users.py:39 web/routes_users.py:105 web/routes_users.py:145
 #: web/routes_users.py:154

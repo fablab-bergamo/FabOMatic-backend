@@ -11,10 +11,16 @@
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">{{ _("Database size (KB)") }}: {{ db_size }}</li>
+                    <li class="list-group-item">{{ _("Database size (KB)") }}: {{ db_size }} <a href="{{ url_for('download_db') }}"
+                        class="btn btn-info">{{ _("Download DB") }}</a></li>
                     <li class="list-group-item">Database file : {{ db_file }}</li>
-                    <li class="list-group-item"><a href="{{ url_for('download_db') }}"
-                            class="btn btn-info">{{ _("Download DB") }}</a></li>
+                    <li class="list-group-item">
+                        {{ _("Restore database") }}:
+                        <form action="{{ url_for('upload_db') }}" method="post" enctype="multipart/form-data">
+                            <input class="form-control" type="file" name="db_file" accept=".sqldb" maxlength="1000000">
+                            <button type="submit" class="btn btn-primary">{{ _("Upload DB") }}</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -29,6 +35,7 @@
                     <li class="list-group-item">{{ _("Machine info") }}: {{ machine_info }}</li>
                     <li class="list-group-item">{{ _("Disk free space") }} (MB): {{ disk_free }}</li>
                     <li class="list-group-item">{{ _("Memory free space") }} (MB): {{ ram_free }}</li>
+                    <li class="list-group-item">{{ _("Backend log file") }}: <a href="{{ url_for('download_logs') }}" class="btn btn-info">{{ _("Download") }}</a></li>
                     <li class="list-group-item"><a href="{{ url_for('reboot') }}" class="btn btn-danger">{{ _("Reboot system") }}</a></li>
                 </ul>
             </div>

@@ -2,8 +2,9 @@
 
 # pylint: disable=C0116
 
-from flask import render_template, Response, send_file
+from flask import flash, redirect, render_template, Response, request, send_file, url_for
 from flask_login import login_required
+from flask_babel import gettext
 from importlib.metadata import version
 
 from rfid_backend_FABLAB_BG.database.DatabaseBackend import getDatabaseUrl
@@ -60,6 +61,37 @@ def download_db():
     # Returns of copy of the SQLite database to the user
     db_file = getDatabaseUrl().replace("sqlite:///", "")
     return send_file(db_file, as_attachment=True)
+
+
+@app.route("/download_logs")
+@login_required
+def download_logs():
+    log_dir = os.path.expanduser("~/log")
+    log_file = os.path.join(log_dir, "log.txt")
+    return send_file(log_file, as_attachment=True)
+
+
+@app.route("/upload_db", methods=["POST"])
+@login_required
+def upload_db():
+    if "db_file" not in request.files:
+        return redirect(request.url)
+
+    new_db_file = request.files["db_file"]
+    if not new_db_file.filename.lower().endswith(".sqldb"):
+        flash(gettext("File must have sqldb extension"), "error")
+        redirect(url_for("system"))
+
+    # Backup existing file
+    actual_db_file = getDatabaseUrl().replace("sqlite:///", "")
+    backup_copy = actual_db_file + ".bak"
+    shutil.copyfile(actual_db_file, backup_copy)
+
+    # Save the uploaded file over the existing
+    new_db_file.save(actual_db_file)
+    # Redirect to the home page after uploading
+    flash(gettext("Database was replaced. Previous copy can be found at ") + backup_copy)
+    return redirect(url_for("system"))
 
 
 @app.route("/update_app")
