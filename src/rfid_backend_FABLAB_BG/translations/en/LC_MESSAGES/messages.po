@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-05-12 11:46+0200\n"
+"POT-Creation-Date: 2024-05-12 13:02+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -829,6 +829,10 @@ msgstr ""
 
 #: flask_app/templates/view_users.html:63
 msgid "Time of attempt"
+msgstr ""
+
+#: flask_app/templates/view_users.html:74
+msgid "Convert to new user"
 msgstr ""
 
 #: flask_app/templates/view_uses.html:5
