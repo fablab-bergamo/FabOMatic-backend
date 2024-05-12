@@ -155,3 +155,4 @@ src/rfid_backend_FABLAB_BG/log.txt
 *.sqldb-journal
 *.sqldb
 log/fablab.txt
+database.sqldb.bak

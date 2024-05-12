@@ -19,7 +19,7 @@
 * An external MQTT Broker. Mosquitto has been used for testing.
 * SQLAlchemy supports several, but this has been tested with SQLite only.
 
-## Installation instructions on Raspberry Pi Zero
+## Pre-requisites for Raspberry Pi Zero
 
 * Install prerequisites (python 3.10+, rustc for cryptography, mosquitto, pip). It takes 3-4 hours on Raspberry Pi Zero to complete installation.
 
@@ -30,6 +30,20 @@ sudo apt install python3-apt
 sudo curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 sudo apt install mosquitto
 ```
+
+## Pre-requisites for Linux machines
+
+* On other Linux systems, the following requisites shall be enough:
+
+```shell
+sudo apt install python3-apt
+sudo apt install rustc
+sudo apt install mosquitto
+sudo apt install dbus-user-session
+```
+
+## Installation instructions
+
 * Install from test pypi repository
 
 ```shell
@@ -38,12 +52,10 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 
 * Change defaults in conf/settings.toml (see below)
 
-* Copy alembic.ini file to user home folder (TODO: add to installation script)
-
-* Run it with
+* Test it with
 
 ```shell
-python -m rfid_backend_FABLAB_BG
+python -m rfid_backend_FABLAB_BG 5
 ```
 
 * After installation login with default admin email in settings file and "admin" password.
@@ -68,7 +80,7 @@ pip install -i https://test.pypi.org/simple/ rfid_backend_FABLAB_BG --upgrade
 
 * Database upgrades are applied by Alembic at start of the backend and shall not need user interaction.
 
-## Configuration file
+## Configuration file defaults
 
 * See file conf\settings.toml to setup MQTT server, database connections, SMTP for "forgot password" email. Example below
 
@@ -176,3 +188,4 @@ pybabel compile -d translations
 | 0.0.18 | January 2024 | first revision with Alembic for database version tracking to handle graceful updates |
 | 0.1.15 | February 2024 | improved UI on mobile, fixed duplicated uses, added grace period definition on machine types, added system page |
 | 0.2.0 | February 2024 | UI translations with flask-babel (IT, EN), added boards details in system page |
+| 0.3.0 | May 2024 | User authorizations can be disabled by Machine type, Maintenance URL field added, System page improvements (DB reload, log files)  |
