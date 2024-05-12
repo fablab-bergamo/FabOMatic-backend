@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rfid_backend_FABLAB_BG"
-version = "0.3.0"
+version = "0.3.2"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -56,3 +56,13 @@ testpaths = [
 
 [tool.black]
 line-length = 119
+
+[tool.hatch.build.targets.sdist]
+artifacts = [
+  "*.mo",
+]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+  "*.mo",
+]
