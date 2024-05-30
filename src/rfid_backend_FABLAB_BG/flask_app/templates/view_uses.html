@@ -47,7 +47,8 @@
       <tr>
         <th>{{ _("Machine") }}</th>
         <th>{{ _("User") }}</th>
-        <th>{{ _("Start Time") }}</th>
+        <th>{{ _("Start Time") }}
+        </th>
         <th>{{ _("End Time") }}</th>
         <th class="d-none d-lg-table-cell">{{ _("Duration (minutes)") }}</th>
         <th class="d-none d-lg-table-cell">{{ _("Last update") }}</th>
@@ -65,7 +66,11 @@
           {{ use.user.name }} {{ use.user.surname }}
           {% endif %}
         </td>
-        <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}</td>
+        <td>{{ use.start_timestamp|datetimeformat('%b %d, %Y %I:%M %p') }}
+          {% if use.replay %}
+          <i class="bi bi-arrow-counterclockwise"></i>
+          {% endif %}
+        </td>
         <td>
           {% if use.end_timestamp is none %}
           {{ _("Still in use") }}

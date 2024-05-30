@@ -89,26 +89,32 @@ class AliveQuery(BaseJson):
 
 
 class StartUseQuery(BaseJson):
-    def __init__(self, card_uid: str):
+    def __init__(self, card_uid: str, replay: bool = False):
         self.uid = card_uid
         self.action = "startuse"
+        self.replay = replay
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return StartUseQuery(data["uid"])
+        if data.get("replay") is None:
+            data["replay"] = False
+        return StartUseQuery(data["uid"], data["replay"])
 
 
 class EndUseQuery(BaseJson):
-    def __init__(self, card_uid: str, duration_s: int):
+    def __init__(self, card_uid: str, duration_s: int, replay: bool = False):
         self.uid = card_uid
         self.duration = duration_s
         self.action = "stopuse"
+        self.replay = replay
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return EndUseQuery(data["uid"], data["duration"])
+        if data.get("replay") is None:
+            data["replay"] = False
+        return EndUseQuery(data["uid"], data["duration"], data["replay"])
 
 
 class InUseQuery(BaseJson):
@@ -124,14 +130,17 @@ class InUseQuery(BaseJson):
 
 
 class RegisterMaintenanceQuery(BaseJson):
-    def __init__(self, card_uid: str):
+    def __init__(self, card_uid: str, replay: bool = False):
         self.uid = card_uid
         self.action = "maintenance"
+        self.replay = replay
 
     @staticmethod
     def deserialize(json_data: str):
         data = json.loads(json_data)
-        return RegisterMaintenanceQuery(data["uid"])
+        if data.get("replay") is None:
+            data["replay"] = False
+        return RegisterMaintenanceQuery(data["uid"], data["replay"])
 
 
 class UserResponse:

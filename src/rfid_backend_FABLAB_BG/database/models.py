@@ -209,6 +209,7 @@ class Intervention(Base):
     machine_id = Column(Integer, ForeignKey("machines.machine_id"), nullable=False)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     timestamp = Column(Float, nullable=False)
+    replay = Column(Boolean, nullable=True)
 
     machine = relationship("Machine", back_populates="interventions")
     maintenance = relationship("Maintenance", back_populates="interventions")
@@ -222,6 +223,7 @@ class Intervention(Base):
             "machine_id": self.machine_id,
             "user_id": self.user_id,
             "timestamp": self.timestamp,
+            "replay": self.replay,
         }
 
 
@@ -313,6 +315,7 @@ class Use(Base):
     start_timestamp = Column(Float, nullable=False)
     last_seen = Column(Float, nullable=False)
     end_timestamp = Column(Float, nullable=True)
+    replay = Column(Boolean, nullable=True)
 
     machine = relationship("Machine", back_populates="uses")
     user = relationship("User", back_populates="uses")
@@ -326,6 +329,7 @@ class Use(Base):
             "start_timestamp": self.start_timestamp,
             "end_timestamp": self.end_timestamp,
             "last_seen": self.last_seen,
+            "replay": self.replay,
         }
 
     def __str__(self):

@@ -57,7 +57,7 @@ class MsgMapper:
         return response.serialize()
 
     def handleStartUseQuery(self, machine_logic: MachineLogic, startUse: StartUseQuery) -> str:
-        response = machine_logic.startUse(startUse.uid)
+        response = machine_logic.startUse(startUse.uid, startUse.replay)
         logging.info(
             "[Machine %d] Start use query: %s -> response: %s",
             machine_logic.getMachineId(),
@@ -77,7 +77,7 @@ class MsgMapper:
         return response.serialize()
 
     def handleEndUseQuery(self, machine_logic: MachineLogic, stopUse: EndUseQuery) -> str:
-        response = machine_logic.endUse(stopUse.uid, stopUse.duration)
+        response = machine_logic.endUse(stopUse.uid, stopUse.duration, stopUse.replay)
         logging.info(
             "[Machine %d] End use query: %s -> response: %s",
             machine_logic.getMachineId(),
@@ -87,7 +87,7 @@ class MsgMapper:
         return response.serialize()
 
     def handleMaintenanceQuery(self, machine_logic: MachineLogic, maintenance: RegisterMaintenanceQuery) -> str:
-        response = machine_logic.registerMaintenance(maintenance.uid)
+        response = machine_logic.registerMaintenance(maintenance.uid, maintenance.replay)
         logging.info(
             "[Machine %d] Start use query: %s -> response: %s",
             machine_logic.getMachineId(),
