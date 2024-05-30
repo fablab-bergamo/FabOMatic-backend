@@ -132,7 +132,7 @@ class MachineLogic:
             logging.error("isAuthorized exception %s", str(e), exc_info=True)
             return UserResponse(False, False, "", USER_LEVEL.INVALID, True)
 
-    def startUse(self, card_uuid: str) -> SimpleResponse:
+    def startUse(self, card_uuid: str, replay: bool) -> SimpleResponse:
         """
         Starts the use of the machine by a user.
 
@@ -151,7 +151,7 @@ class MachineLogic:
                     return SimpleResponse(False, "Invalid card")
 
                 use_repo = MachineLogic.database.getUseRepository(session)
-                result = use_repo.startUse(self._machine_id, user, time())
+                result = use_repo.startUse(self._machine_id, user, time(), replay)
 
                 return SimpleResponse(result, "")
         except Exception as e:
@@ -185,7 +185,7 @@ class MachineLogic:
             logging.error("inuse exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")
 
-    def endUse(self, card_uuid: str, duration_s: int) -> SimpleResponse:
+    def endUse(self, card_uuid: str, duration_s: int, replay: bool) -> SimpleResponse:
         """
         Ends the use of the machine by a user.
 
@@ -205,19 +205,20 @@ class MachineLogic:
                     return SimpleResponse(False, "Invalid card")
 
                 use_repo = MachineLogic.database.getUseRepository(session)
-                duration_s = use_repo.endUse(self._machine_id, user, duration_s)
+                duration_s = use_repo.endUse(self._machine_id, user, duration_s, replay)
 
                 return SimpleResponse(True, f"Duration {duration_s} seconds")
         except Exception as e:
             logging.error("enduse exception %s", str(e), exc_info=True)
             return SimpleResponse(False, "BACKEND EXCEPTION")
 
-    def registerMaintenance(self, card_uuid: str) -> SimpleResponse:
+    def registerMaintenance(self, card_uuid: str, replay: bool) -> SimpleResponse:
         """
         Registers a maintenance intervention for the machine.
 
         Args:
             card_uuid (str): The UUID of the user's card.
+            replay (bool): If this message has been buffered and sent later on
 
         Returns:
             SimpleResponse: The simple response object indicating the success or failure of the operation.

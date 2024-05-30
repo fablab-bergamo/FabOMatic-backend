@@ -33,22 +33,25 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(machine_query.action, "checkmachine")
         self.assertEqual(machine_query.__class__, MachineQuery)
 
-        json_start_use_query = '{"action": "startuse", "uid": "1234"}'
+        json_start_use_query = '{"action": "startuse", "uid": "1234", "replay":true}'
         start_use_query = StartUseQuery.deserialize(json_start_use_query)
         self.assertEqual(start_use_query.uid, "1234")
         self.assertEqual(start_use_query.action, "startuse")
         self.assertEqual(start_use_query.__class__, StartUseQuery)
+        self.assertEqual(start_use_query.replay, True)
 
-        json_stop_use_query = '{"action": "stopuse", "uid": "1234", "duration": 123}'
+        json_stop_use_query = '{"action": "stopuse", "uid": "1234", "duration": 123, "replay":true}'
         stop_use_query = EndUseQuery.deserialize(json_stop_use_query)
         self.assertEqual(stop_use_query.uid, "1234")
         self.assertEqual(stop_use_query.duration, 123)
         self.assertEqual(stop_use_query.action, "stopuse")
+        self.assertEqual(stop_use_query.replay, True)
 
-        json_RegisterMaintenanceQuery = '{"action": "maintenance", "uid": "1234"}'
+        json_RegisterMaintenanceQuery = '{"action": "maintenance", "uid": "1234", "replay":true}'
         register_maintenance_query = RegisterMaintenanceQuery.deserialize(json_RegisterMaintenanceQuery)
         self.assertEqual(register_maintenance_query.uid, "1234")
         self.assertEqual(register_maintenance_query.action, "maintenance")
+        self.assertEqual(register_maintenance_query.replay, True)
         self.assertEqual(register_maintenance_query.__class__, RegisterMaintenanceQuery)
 
         json_alive_query = '{"action": "alive", "ip": "1.2.3.4", "version": "1.2.3", "serial": "1234", "heap": 300000}'

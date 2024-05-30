@@ -59,7 +59,7 @@ class TestLogic(unittest.TestCase):
             session.commit()
 
             # Finally close the record
-            response = ml.endUse("1234", 30)  # duration will override the previous calculated start
+            response = ml.endUse("1234", 30, True)  # duration will override the previous calculated start
             self.assertTrue(response.request_ok, "endUse failed")
 
             session.commit()
@@ -103,7 +103,7 @@ class TestLogic(unittest.TestCase):
                     self.assertEqual(len(use_repo.get_all()), 1, "Usage has been duplicated")
 
                 # Call again with another duration
-                response = ml.startUse("1234")
+                response = ml.startUse("1234", False)
                 self.assertTrue(response.request_ok, "startUse failed")
 
                 session.commit()
@@ -128,7 +128,7 @@ class TestLogic(unittest.TestCase):
                 )
                 self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (2)")
 
-                response = ml.endUse("1234", 1)
+                response = ml.endUse("1234", 1, False)
                 self.assertTrue(response.request_ok, "endUse failed")
 
                 session.commit()
@@ -181,16 +181,19 @@ class TestLogic(unittest.TestCase):
             self.assertTrue(response.request_ok, "isAuthorized must succeed with invalid card")
             self.assertFalse(response.is_valid, "isAuthorized must return invalid with invalid card")
 
-            response = ml.startUse("1234")
+            response = ml.startUse("1234", True)
             self.assertTrue(response.request_ok, "startUse failed")
 
             response = ml.inUse("1234", 1)
             self.assertTrue(response.request_ok, "inUse failed")
 
-            response = ml.endUse("1234", 123)
+            response = ml.endUse("1234", 123, True)
             self.assertTrue(response.request_ok, "endUse failed")
 
-            ml.registerMaintenance("1234")
+            ml.registerMaintenance("1234", False)
+            self.assertTrue(response.request_ok, "registerMaintenance failed")
+
+            ml.registerMaintenance("1234", True)
             self.assertTrue(response.request_ok, "registerMaintenance failed")
 
     def test_msg_mapper(self):
@@ -208,25 +211,25 @@ class TestLogic(unittest.TestCase):
         self.assertFalse(mapper.messageReceived("1", query), "Alive message has no response")
         query = MachineQuery()
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = StartUseQuery("1234")
+        query = StartUseQuery("1234", False)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = InUseQuery("1234", 123)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = EndUseQuery("1234", 123)
+        query = EndUseQuery("1234", 123, False)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = RegisterMaintenanceQuery("1234")
+        query = RegisterMaintenanceQuery("1234", False)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
 
         # Try all with invalid card
         query = UserQuery("DEADBEEF")
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = StartUseQuery("DEADBEEF")
+        query = StartUseQuery("DEADBEEF", False)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
         query = InUseQuery("DEADBEEF", 123)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = EndUseQuery("DEADBEEF", 123)
+        query = EndUseQuery("DEADBEEF", 123, False)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
-        query = RegisterMaintenanceQuery("DEADBEEF")
+        query = RegisterMaintenanceQuery("DEADBEEF", True)
         self.assertTrue(mapper.messageReceived("1", query), "Message not processed")
 
     def test_machine_auth(self):

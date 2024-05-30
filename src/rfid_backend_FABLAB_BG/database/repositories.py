@@ -502,12 +502,7 @@ class UseRepository(BaseRepository):
     def __init__(self, db_session: Session):
         super().__init__(db_session)
 
-    def startUse(
-        self,
-        machine_id: int,
-        user: User,
-        timestamp: float = None,
-    ) -> bool:
+    def startUse(self, machine_id: int, user: User, timestamp: float = None, is_replay: bool = False) -> bool:
         """Start a new Use of a Machine by a User.
 
         Args:
@@ -532,11 +527,17 @@ class UseRepository(BaseRepository):
             Use.machine_id == machine.machine_id, Use.end_timestamp.is_(None)
         ):
             logging.warning("Missed stopUse event in previous record, forcing stopUse")
-            self.endUse(rec.machine_id, rec.user, int(rec.last_seen - rec.start_timestamp))
+            self.endUse(rec.machine_id, rec.user, int(rec.last_seen - rec.start_timestamp), is_replay)
 
         # Register start of new use
         self.db_session.add(
-            Use(user_id=user.user_id, machine_id=machine.machine_id, start_timestamp=timestamp, last_seen=timestamp)
+            Use(
+                user_id=user.user_id,
+                machine_id=machine.machine_id,
+                start_timestamp=timestamp,
+                last_seen=timestamp,
+                replay=is_replay,
+            )
         )
         self.db_session.commit()
 
@@ -580,7 +581,7 @@ class UseRepository(BaseRepository):
 
         return True
 
-    def endUse(self, machine_id: int, user: User, duration_s: int) -> int:
+    def endUse(self, machine_id: int, user: User, duration_s: int, is_replay: bool) -> int:
         """End a use that was previously started.
 
         Args:
@@ -609,6 +610,7 @@ class UseRepository(BaseRepository):
                 start_timestamp=(end - duration_s),
                 last_seen=end,
                 end_timestamp=end,
+                replay=is_replay,
             )
 
             # Check that there is no duplicate (could happen if a client sends several identical stopUse requests)
