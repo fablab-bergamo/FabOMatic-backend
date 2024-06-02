@@ -1,10 +1,10 @@
-# FAB-O-MATIC : backend
+# Fab-O-Matic back-end
 
 [![Build, test and package](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/build.yml/badge.svg)](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/build.yml)
 
 ## What is this project?
 
-* This is a web application to handle a FabLab machines access through RFID arduino boards (see arduino project : [RFID Arduino](https://github.com/fablab-bergamo/rfid-arduino) )
+* This is a web application to handle a FabLab machines access by Fab-O-Matic boards connected to the machines (see ESP32 project : [Fab-O-Matic](https://github.com/fablab-bergamo/Fab-O-matic) )
 
 * Homescreen example, with real-time machine status:
 
@@ -14,10 +14,25 @@
 
 * This Python 3.10 application runs a MQTT client and a Flask HTTPS application.
 
+## Features
+
+* Web admin portal with user authentication over https
+
+* Holds the member cards RFID database with their status (active, inactive). Easy registration of new members (swipe card on existing Fab-O-Matic and convert to new user).
+
+* Machine maintenance plans based on actual hours with display on Fab-O-Matic LCD
+
+* Permissions by user and machine (can be disabled)
+
+* Machine history (usage and maintenance)
+
+* Real-time dashboard of machines status
+
 ## Backend runtime requirements
 
 * An external MQTT Broker. Mosquitto has been used for testing.
-* SQLAlchemy supports several, but this has been tested with SQLite only.
+
+* SQLAlchemy supports several database engines, but this has been tested with SQLite only.
 
 ## Pre-requisites for Raspberry Pi Zero
 
@@ -40,6 +55,14 @@ sudo apt install python3-apt
 sudo apt install rustc
 sudo apt install mosquitto
 sudo apt install dbus-user-session
+```
+
+## Pre-requisites for firmware updates
+
+* Espressif's ESPOTA tool is used to apply Over-the-air firmware updates to Fab-O-Matic boards.
+
+```shell
+wget https://raw.githubusercontent.com/espressif/arduino-esp32/master/tools/espota.py
 ```
 
 ## Installation instructions
@@ -143,7 +166,7 @@ python -m build
 python -m twine upload --repository testpypi dist/*
 ```
 
-* To handle schema changes with existing installations, changes the database/models.py, check that the changes are properly captured by alembic, then generate a migration script, and apply it. Then commit all files and publish a new revision. 
+* To handle schema changes with existing installations, changes the database/models.py, check that the changes are properly captured by alembic, then generate a migration script, and apply it. Then commit all files and publish a new revision.
 
 ```shell
 alembic check
@@ -189,3 +212,4 @@ pybabel compile -d translations
 | 0.1.15 | February 2024 | improved UI on mobile, fixed duplicated uses, added grace period definition on machine types, added system page |
 | 0.2.0 | February 2024 | UI translations with flask-babel (IT, EN), added boards details in system page |
 | 0.3.0 | May 2024 | User authorizations can be disabled by Machine type, Maintenance URL field added, System page improvements (DB reload, log files)  |
+| 0.4.0 | June 2024 | Buffered messages sent by Fab-O-Matic boards are flagged with a clock icon. |
