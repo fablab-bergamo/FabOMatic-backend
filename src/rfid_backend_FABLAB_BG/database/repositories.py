@@ -627,6 +627,7 @@ class UseRepository(BaseRepository):
             if existing_record is None:
                 logging.warning("Missing startUse detected, creating new record on the fly.")
                 self.create(record)
+                machine.machine_hours += (record.end_timestamp - record.start_timestamp) / 3600.0
             else:
                 logging.warning("Duplicate stopUse detected, ignoring client request")
         else:
