@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-05-12 13:02+0200\n"
+"POT-Creation-Date: 2024-06-08 12:01+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -60,7 +60,7 @@ msgstr "Aggiungi permesso"
 #: flask_app/templates/add_intervention.html:24
 #: flask_app/templates/add_use.html:8
 #: flask_app/templates/view_authorizations.html:31
-#: flask_app/templates/view_interventions.html:38
+#: flask_app/templates/view_interventions.html:36
 #: flask_app/templates/view_uses.html:49
 msgid "User"
 msgstr "Utente"
@@ -71,7 +71,7 @@ msgstr "Utente"
 #: flask_app/templates/edit_authorization.html:15
 #: flask_app/templates/edit_maintenance.html:29
 #: flask_app/templates/view_authorizations.html:32
-#: flask_app/templates/view_interventions.html:37
+#: flask_app/templates/view_interventions.html:35
 #: flask_app/templates/view_maintenances.html:33
 #: flask_app/templates/view_users.html:61 flask_app/templates/view_uses.html:24
 #: flask_app/templates/view_uses.html:48
@@ -85,7 +85,7 @@ msgstr "Aggiungi intervento"
 
 #: flask_app/templates/add_intervention.html:8
 #: flask_app/templates/base_body.html:27
-#: flask_app/templates/view_interventions.html:36
+#: flask_app/templates/view_interventions.html:34
 msgid "Maintenance"
 msgstr "Manutenzione"
 
@@ -344,7 +344,6 @@ msgstr "Sì, cancella permesso"
 #: flask_app/templates/delete_machinetype.html:10
 #: flask_app/templates/delete_maintenance.html:10
 #: flask_app/templates/delete_role.html:10
-#: flask_app/templates/delete_use.html:10
 #: flask_app/templates/delete_user.html:10
 #: flask_app/templates/reset_user.html:10
 msgid "No, go back"
@@ -384,12 +383,12 @@ msgstr "Sei sicuro di volere cancellare la tipologia di macchine"
 
 #: flask_app/templates/delete_machinetype.html:8
 #: flask_app/templates/view_authorizations.html:44
-#: flask_app/templates/view_interventions.html:55
+#: flask_app/templates/view_interventions.html:57
 #: flask_app/templates/view_machines.html:53
 #: flask_app/templates/view_machinetypes.html:48
 #: flask_app/templates/view_maintenances.html:42
 #: flask_app/templates/view_roles.html:55
-#: flask_app/templates/view_users.html:45 flask_app/templates/view_uses.html:85
+#: flask_app/templates/view_users.html:45 flask_app/templates/view_uses.html:90
 msgid "Delete"
 msgstr "Cancella"
 
@@ -416,22 +415,6 @@ msgstr "Sei sicuro di volere cancellare il ruolo"
 #: flask_app/templates/delete_role.html:8
 msgid "Yes, delete role"
 msgstr "Sì, cancella ruolo"
-
-#: flask_app/templates/delete_use.html:5
-msgid "Delete history"
-msgstr "Cancella storico"
-
-#: flask_app/templates/delete_use.html:6
-msgid "Are you sure you want to delete the use"
-msgstr "Sei sicuro di volere cancellare l'utilizzo"
-
-#: flask_app/templates/delete_use.html:6
-msgid "on machine"
-msgstr "sulla macchina"
-
-#: flask_app/templates/delete_use.html:8
-msgid "Yes, delete use"
-msgstr "Sì, cancella utilizzo"
 
 #: flask_app/templates/delete_user.html:5
 msgid "Delete User"
@@ -535,7 +518,7 @@ msgid "Filter Machines:"
 msgstr "Filtra Macchine:"
 
 #: flask_app/templates/view_authorizations.html:19
-#: flask_app/templates/view_interventions.html:19
+#: flask_app/templates/view_interventions.html:18
 #: flask_app/templates/view_maintenances.html:12
 msgid "--Select Machine--"
 msgstr "--Seleziona Macchina--"
@@ -546,16 +529,16 @@ msgid "Apply Filters"
 msgstr "Applica Filtri"
 
 #: flask_app/templates/view_authorizations.html:33
-#: flask_app/templates/view_interventions.html:40
+#: flask_app/templates/view_interventions.html:38
 #: flask_app/templates/view_machinetypes.html:16
 #: flask_app/templates/view_roles.html:16
 #: flask_app/templates/view_users.html:18
-#: flask_app/templates/view_users.html:64 flask_app/templates/view_uses.html:54
+#: flask_app/templates/view_users.html:64 flask_app/templates/view_uses.html:55
 msgid "Action"
 msgstr "Azione"
 
 #: flask_app/templates/view_authorizations.html:43
-#: flask_app/templates/view_interventions.html:53
+#: flask_app/templates/view_interventions.html:55
 #: flask_app/templates/view_machines.html:51
 #: flask_app/templates/view_machinetypes.html:46
 #: flask_app/templates/view_maintenances.html:40
@@ -565,7 +548,7 @@ msgid "Edit"
 msgstr "Modifica"
 
 #: flask_app/templates/view_authorizations.html:50
-#: flask_app/templates/view_uses.html:94
+#: flask_app/templates/view_uses.html:99
 msgid "Export table"
 msgstr "Esporta tabella"
 
@@ -577,18 +560,18 @@ msgstr "Registra manualmente uso macchina"
 msgid "You can filter the results below with this form"
 msgstr "Si possono filtrare i risultati sotto con questo form"
 
-#: flask_app/templates/view_interventions.html:27
+#: flask_app/templates/view_interventions.html:25
 #: flask_app/templates/view_uses.html:42
 msgid "Filter"
 msgstr "Filtra"
 
-#: flask_app/templates/view_interventions.html:39
+#: flask_app/templates/view_interventions.html:37
 msgid "Timestamp"
 msgstr "Data-ora"
 
-#: flask_app/templates/view_interventions.html:63
+#: flask_app/templates/view_interventions.html:65
 #: flask_app/templates/view_machine_use_history.html:28
-#: flask_app/templates/view_uses.html:92
+#: flask_app/templates/view_uses.html:97
 msgid "Only first 500 records are displayed. Use filters if needed."
 msgstr ""
 "Solo i primi 500 elementi vengono visualizzati. Usa i filtri se "
@@ -632,7 +615,7 @@ msgstr "SCADUTA"
 msgid "OK"
 msgstr "OK"
 
-#: flask_app/templates/view_machines.html:42
+#: flask_app/templates/view_machines.html:42 web/webapplication.py:99
 msgid "hours"
 msgstr "ore"
 
@@ -859,27 +842,27 @@ msgstr "Tutte le macchine"
 msgid "Start Time"
 msgstr "Inizio"
 
-#: flask_app/templates/view_uses.html:51
+#: flask_app/templates/view_uses.html:52
 msgid "End Time"
 msgstr "Fine"
 
-#: flask_app/templates/view_uses.html:52
+#: flask_app/templates/view_uses.html:53
 msgid "Duration (minutes)"
 msgstr "Durata (in minuti)"
 
-#: flask_app/templates/view_uses.html:53
+#: flask_app/templates/view_uses.html:54
 msgid "Last update"
 msgstr "Ultimo contatto"
 
-#: flask_app/templates/view_uses.html:63
+#: flask_app/templates/view_uses.html:64
 msgid "deleted user"
 msgstr "Seleziona utenti"
 
-#: flask_app/templates/view_uses.html:71
+#: flask_app/templates/view_uses.html:76
 msgid "Still in use"
 msgstr "Ancora in uso"
 
-#: flask_app/templates/view_uses.html:80
+#: flask_app/templates/view_uses.html:85
 msgid "In use"
 msgstr "In uso"
 
@@ -932,7 +915,7 @@ msgid "Hours must be a number."
 msgstr "Il campo Ore deve essere un numero."
 
 #: web/routes_machines.py:73 web/routes_machines.py:100
-#: web/routes_machines.py:109 web/routes_uses.py:22 web/routes_uses.py:159
+#: web/routes_machines.py:109 web/routes_uses.py:22 web/routes_uses.py:171
 msgid "Machine not found"
 msgstr "Macchina non trovata."
 
@@ -1021,27 +1004,83 @@ msgstr ""
 msgid "This card ID is already assigned to another user"
 msgstr "Questa tessera è già assegnata ad un altro utente"
 
-#: web/routes_uses.py:39
+#: web/routes_uses.py:47
 msgid "Use deleted successfully."
 msgstr "Uso cancellato con successo."
 
-#: web/routes_uses.py:108
+#: web/routes_uses.py:116
 msgid "Invalid start timestamp."
 msgstr "Data-ora inizio non valida."
 
-#: web/routes_uses.py:118
+#: web/routes_uses.py:126
 msgid "End timestamp cannot be before start timestamp."
 msgstr "La data-ora fine non può essere anteriore alla data-ora inizio."
 
-#: web/routes_uses.py:124
+#: web/routes_uses.py:132
 msgid "Machine not found."
 msgstr "Macchina non trovata."
 
-#: web/routes_uses.py:130
+#: web/routes_uses.py:138
 msgid "User not found."
 msgstr "Utente non trovato."
 
-#: web/routes_uses.py:142
+#: web/routes_uses.py:154
 msgid "Registration added successfully."
 msgstr "Uso registrato con successo."
+
+#: web/webapplication.py:101
+msgid "hour"
+msgstr "ora"
+
+#: web/webapplication.py:104
+msgid "minutes"
+msgstr "minuti"
+
+#: web/webapplication.py:106
+msgid "minute"
+msgstr "minuto"
+
+#: web/webapplication.py:132
+msgid "seconds ago"
+msgstr "secondi fa"
+
+#: web/webapplication.py:134
+msgid "second ago"
+msgstr "secondo fa"
+
+#: web/webapplication.py:137
+msgid "minutes ago"
+msgstr "minuti fa"
+
+#: web/webapplication.py:139
+msgid "minute ago"
+msgstr "minuto fa"
+
+#: web/webapplication.py:142
+msgid "hours ago"
+msgstr "ore fa"
+
+#: web/webapplication.py:144
+msgid "hour ago"
+msgstr "ora fa"
+
+#: web/webapplication.py:147
+msgid "days ago"
+msgstr "giorni fa"
+
+#: web/webapplication.py:149
+msgid "day ago"
+msgstr "giorno fa"
+
+#~ msgid "Delete history"
+#~ msgstr "Cancella storico"
+
+#~ msgid "Are you sure you want to delete the use"
+#~ msgstr "Sei sicuro di volere cancellare l'utilizzo"
+
+#~ msgid "on machine"
+#~ msgstr "sulla macchina"
+
+#~ msgid "Yes, delete use"
+#~ msgstr "Sì, cancella utilizzo"
 

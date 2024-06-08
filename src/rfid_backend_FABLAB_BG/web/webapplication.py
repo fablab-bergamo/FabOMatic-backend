@@ -8,6 +8,7 @@ from time import time
 
 from flask import Flask, render_template, request, send_from_directory, g, session
 from flask_login import login_required
+from flask_babel import gettext
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from rfid_backend_FABLAB_BG.database.models import Base
@@ -93,12 +94,23 @@ def format_hours(value):
 
     hours = int(value)
     minutes = int((value % 1) * 60)
+
+    if hours > 1:
+        hour_text = gettext("hours")
+    else:
+        hour_text = gettext("hour")
+
+    if minutes > 1:
+        minutes_text = gettext("minutes")
+    else:
+        minutes_text = gettext("minute")
+
     if hours == 0:
         if minutes == 0:
             return "-"
-        else:
-            return f"{minutes} minute{'' if minutes == 1 else 's'}"
-    return f"{hours} hour{'' if hours == 1 else 's'} {minutes} minute{'' if minutes == 1 else 's'}"
+        return f"{minutes} {minutes_text}"
+
+    return f"{hours} {hour_text} {minutes} {minutes_text}"
 
 
 @app.template_filter("time_since")
@@ -116,13 +128,25 @@ def time_since(dt):
     seconds = int(abs(diff.total_seconds()))
 
     if seconds < 60:
-        return f"{seconds} second{'' if seconds == 1 else 's'} ago"
+        if seconds > 1:
+            return f"{seconds} " + gettext("seconds ago")
+        else:
+            return f"{seconds} " + gettext("second ago")
     elif seconds < 3600:
-        return f"{seconds // 60} minute{'' if seconds // 60 == 1 else 's'} ago"
+        if seconds // 60 > 1:
+            return f"{seconds // 60} " + gettext("minutes ago")
+        else:
+            return f"{seconds // 60} " + gettext("minute ago")
     elif seconds < 86400:
-        return f"{seconds // 3600} hour{'' if seconds // 3600 == 1 else 's'} ago"
+        if seconds // 3600 > 1:
+            return f"{seconds // 3600} " + gettext("hours ago")
+        else:
+            return f"{seconds // 3600} " + gettext("hour ago")
     else:
-        return f"{seconds // 86400} day{'' if seconds // 86400 == 1 else 's'} ago"
+        if seconds // 86400 > 1:
+            return f"{seconds // 86400} " + gettext("days ago")
+
+    return f"{seconds // 86400} " + gettext("day ago")
 
 
 # Define routes
