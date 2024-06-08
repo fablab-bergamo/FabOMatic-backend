@@ -5,8 +5,19 @@
     <h1>{{ _("Delete history") }}</h1>
     <p>{{ _("Are you sure you want to delete the use") }} '{{ use.user.name }} {{ _("on machine") }} {{ use.machine.description }}'?</p>
     <form method="POST" action="{{ url_for('delete_use', use_id=use.use_id) }}">
-        <input type="submit" value="{{ _("Yes, delete use") }}" class="btn btn-danger" />
+        {% if use.end_timestamp > 0  %}
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="correctTotal" name="correctTotal" checked>
+            <label class="form-check-label" for="correctTotal">
+                {{ _("Tick to decrease machine cumulated hours") }}
+            </label> 
+        </div>
+        {% endif %}
+        <div class="form-submit">
+            <input type="submit" value="{{ _("Yes, delete use") }}" class="btn btn-danger" />
+        </div>
     </form>
+    <br/>
     <a href="{{ url_for('view_uses') }}" class="btn btn-secondary">{{ _("No, go back") }}</a>
 </div>
 {% endblock %}

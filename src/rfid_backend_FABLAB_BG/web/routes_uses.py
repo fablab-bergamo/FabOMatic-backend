@@ -34,6 +34,14 @@ def delete_use(use_id):
         return render_template("delete_use.html", use=use)
 
     if use:
+        # Correct machine cumulated hours if requested.
+        correct = request.form.get("correctTotal", type=str, default="")
+        if correct == "on":
+            duration = use.end_timestamp - use.start_timestamp
+            machine = session.query(Machine).filter_by(machine_id=use.machine_id).one()
+            if machine and duration > 0:
+                machine.machine_hours -= duration / 3600.0
+
         session.delete(use)
         session.commit()
         flash(gettext("Use deleted successfully."))
@@ -137,6 +145,10 @@ def add_use_post():
             last_seen=start_timestamp,
             end_timestamp=end_timestamp,
         )
+
+        # Update machine usage
+        machine.machine_hours += (end_timestamp - start_timestamp) / 3600.0
+
         session.add(new_use)
         session.commit()
         flash(gettext("Registration added successfully."))
