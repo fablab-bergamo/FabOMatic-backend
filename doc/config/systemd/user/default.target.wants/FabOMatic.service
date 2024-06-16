@@ -1,0 +1,14 @@
+[Unit]
+Description=FabOMatic backend service
+After=multi-user.target
+After=network.target
+
+[Service]
+Type=exec
+Delegate=true
+KillMode=process
+ExecStartPre=pip install FabOMatic --upgrade
+ExecStart=python -m FabOMatic
+
+[Install]
+WantedBy=default.target	

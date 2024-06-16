@@ -1,3 +1,3 @@
-systemctl --user enable --now fablab.service
+systemctl --user enable --now FabOMatic.service
 loginctl enable-linger
-systemctl --user status fablab.service
+systemctl --user status FabOMatic.service

@@ -3,14 +3,14 @@ requires = ["hatchling", "SQLAlchemy", "toml", "paho-mqtt", "colorlog", "flask",
 build-backend = "hatchling.build"
 
 [project]
-name = "rfid_backend_FABLAB_BG"
-version = "0.4.1"
+name = "FabOMatic"
+version = "0.4.2"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
     { name="Valerio Nappi", email="valerionappi995@gmail.com" }
 ]
-description = "RFID backend for FabLab BG"
+description = "Backend for Fab-O-Matic RFID boards"
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [

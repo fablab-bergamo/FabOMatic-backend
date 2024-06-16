@@ -1,1 +1,1 @@
-include src/rfid_backend_FABLAB_BG/translations/**/*.mo
+include src/FabOMatic/translations/**/*.mo
