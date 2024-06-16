@@ -34,7 +34,7 @@ def system():
 
     # check if there is an updated pypi package
     package = "FabOMatic"  # replace with the package you want to check
-    response = requests.get(f"https://test.pypi.org/pypi/{package}/json")
+    response = requests.get(f"https://pypi.org/pypi/{package}/json")
     latest_version = response.json()["info"]["version"]
 
     # Get the boards from the database repository
@@ -98,7 +98,7 @@ def upload_db():
 @login_required
 def update_app():
     upgrade_output = subprocess.run(
-        ["pip", "install", "-i", "https://test.pypi.org/simple/", "FabOMatic", "--upgrade"],
+        ["pip", "install", "-i", "https://pypi.org/simple/", "FabOMatic", "--upgrade"],
         check=True,
         text=True,
         capture_output=True,
