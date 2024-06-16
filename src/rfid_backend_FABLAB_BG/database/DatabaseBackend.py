@@ -257,6 +257,11 @@ class DatabaseBackend:
             if len(self.getUserRepository(session).get_all()) == 0:
                 self.seedDatabase()
 
+        if self.getUserRepository(session).get_anonymous() is None:
+            logging.warning("Adding anonymous role and user to existing database")
+            role = self.seedAnonymousRole(session)
+            self.seedAnonymousUser(session, role)
+
     def seedDatabase(self) -> None:
         """Seed the database with initial data."""
         logging.warning("Seeding empty database %s", self._url)
@@ -275,6 +280,10 @@ class DatabaseBackend:
             )
             self.getRoleRepository(session).create(r2)
 
+            r4 = self.seedAnonymousRole(session)
+            self.seedAnonymousUser(session, r4)
+
+            # Create default admin user
             u1 = User(
                 name="admin",
                 surname="admin",
@@ -282,13 +291,29 @@ class DatabaseBackend:
                 card_UUID="12345678",
                 email=getSetting("web", "default_admin_email"),
             )
-
             u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
-
             self.getUserRepository(session).create(u1)
 
             m1 = Machine(machine_name="MACHINE1", machine_type_id=mt1.type_id)
             self.getMachineRepository(session).create(m1)
+
+    def seedAnonymousRole(self, session) -> Role:
+        anrole = Role(
+            role_name="Anonymous", authorize_all=False, reserved=True, maintenance=False, backend_admin=False
+        )
+        self.getRoleRepository(session).create(anrole)
+        return anrole
+
+    def seedAnonymousUser(self, session, role) -> User:
+        anon = User(
+            name="Anonymous",
+            surname="",
+            role_id=role.role_id,
+            card_UUID=None,
+            email="",
+        )
+        self.getUserRepository(session).create(anon)
+        return anon
 
     def dropContents(self) -> None:
         """Drop all contents of the database."""
