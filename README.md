@@ -204,6 +204,33 @@ Compile the changes
 pybabel compile -d translations
 ```
 
+## GDPR compliance ⚖️
+
+Members' RFID card will be tied to a physical person and therefore, you *must* collect written consent of this person as part of membership agreement.
+
+### Suggested GDPR agreement
+
+* The reason for data collection is *to control FabLab equipment usage for better maintenance of equipment and physical safety of the FabLab users*.
+* The data conservation period for RFID master data is for the duration of the membership to the FabLab with a minimum of *one year*.
+* The data conservation period of historical records, including user name, time of use, machine used, maintenance operation performed is *one year*.
+* After 1 year, the historical nominative data is automatically replaced with an anonymous user data.
+* The system may collect RFID tags ID from nearby cards, not tied to the FabLab RFID master data. Such information will be deleted after *one month*.
+* The responsible persons for data treatment are the Fab-O-Matic administrative users.
+* The collected information is not shared outside Fab-O-Matic system or disclosed outside Fab-O-Matic admins.
+
+### What you need to do
+
+* You *need* to secure access to the Fab-O-Matic backend webserver and physical hosts (use a proper password policy).
+* You *need* to schedule a daily cron job in order to ensure data is deleted from database and logfiles
+
+```shell
+python -m FabOMatic --purge
+journalctl --vacuum-time=1y
+```
+
+* To garantee data access requests, you can use the Excel export feature filtering data by the user.
+* To garantee right to deletion, you can use the Delete buttons on Use, Interventions and User pages.
+
 ## Main revision log
 
 | Version | When | Release notes |
@@ -213,3 +240,4 @@ pybabel compile -d translations
 | 0.2.0 | February 2024 | UI translations with flask-babel (IT, EN), added boards details in system page |
 | 0.3.0 | May 2024 | User authorizations can be disabled by Machine type, Maintenance URL field added, System page improvements (DB reload, log files)  |
 | 0.4.0 | June 2024 | Buffered messages sent by Fab-O-Matic boards are flagged with a clock icon. |
+| 0.5.0 | June 2024 | First release on PyPi. Renamed to FabOMatic. Added GDPR compliance (purge function) |

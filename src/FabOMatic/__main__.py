@@ -2,6 +2,8 @@
 
 import logging
 import threading
+import argparse
+
 from time import sleep
 
 from FabOMatic.database.DatabaseBackend import DatabaseBackend
@@ -49,6 +51,10 @@ class Backend:
     def publishStats(self):
         self._mqtt.publishStats()
 
+    def purge_data(self):
+        """Purge data from the database."""
+        self._db.purge_data()
+
 
 _flaskThread: threading.Thread = None
 
@@ -81,5 +87,22 @@ def start(loglevel):
         sleep(5)
 
 
+def main():
+    parser = argparse.ArgumentParser(description="Fab-O-Matic Backend server.")
+    parser.add_argument("-p", "--purge", action="store_true", help="Purge data and exit")
+    parser.add_argument("-l", "--loglevel", type=int, default=10, help="Set log level (default: 10)")
+
+    args = parser.parse_args()
+
+    if args.purge:
+        configure_logger(args.loglevel)
+        logging.info("Executing purge operation...")
+        back = Backend()
+        back.purge_data()
+        logging.info("Purge operation completed. Exiting.")
+    else:
+        start(args.loglevel)
+
+
 if __name__ == "__main__":
-    start(10)
+    main()

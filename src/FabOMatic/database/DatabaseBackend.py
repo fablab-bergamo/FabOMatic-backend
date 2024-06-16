@@ -5,6 +5,7 @@ from os import path
 from os.path import dirname, abspath
 import logging
 import toml
+from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -335,3 +336,37 @@ class DatabaseBackend:
 
         copyfile(self._url.replace("sqlite:///", ""), destination)
         logging.info("Copied database from %s to %s", self._name, destination)
+
+    def purge_data(self, max_days: int = 365) -> bool:
+        try:
+            with self._session() as session:
+                # Get the anonymous user who will replace old data
+                user_repo = self.getUserRepository(session)
+                anon = user_repo.get_anonymous()
+                if anon is None:
+                    logging.error("Anonymous user not found, cannot purge")
+                    return False
+
+                # Calculate the cut-off date for one year ago
+                today = datetime.today()
+                onemonth_ago = today - timedelta(days=30)
+                oneyear_ago = today - timedelta(days=max_days)
+
+                # Get the usage records who are more than 1y old
+                use_repo = self.getUseRepository(session)
+                nb_deleted = use_repo.purge_records(anon, oneyear_ago)
+
+                # Replace the intervention records who are more than 1y old
+                int_repo = self.getInterventionRepository(session)
+                nb_deleted += int_repo.purge_records(anon, oneyear_ago)
+
+                # Delete the Failed authentication after 1 month
+                failed_repo = self.getUnknownCardsRepository(session)
+                nb_deleted += failed_repo.purge_records(onemonth_ago)
+
+            logging.info(f"{nb_deleted} records deleted or anonymized.")
+            return True
+        except Exception as e:
+            # Log any exception that occurs and roll back the transaction
+            logging.error(f"Error purging records: {e}")
+            return False

@@ -1,10 +1,11 @@
 """ Database repositories for the FabOMatic application."""
 
 import logging
-
+from datetime import datetime
 from time import time
 from typing import List, Optional, Tuple
 
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 
 from .models import (
@@ -333,6 +334,42 @@ class InterventionRepository(BaseRepository):
                 )
                 self.db_session.add(intervention)
         self.db_session.commit()
+
+    def purge_records(self, anon: User, cut_off: datetime) -> int:
+        """Purge intervention records older than the cutoff date by anonymizing them.
+
+        Args:
+            anon (User): The anonymous user to replace old data with.
+            cut_off (datetime): The cutoff date. Records older than this date will be anonymized.
+
+        Returns:
+            int: Number of records anonymized.
+        """
+        try:
+            # Convert cutoff datetime to UNIX timestamp (float)
+            cutoff_timestamp = cut_off.timestamp()
+
+            # Query to find records older than the cutoff date
+            old_records_query = self.db_session.query(Intervention).filter(Intervention.timestamp < cutoff_timestamp)
+
+            # Count the number of records to be anonymized
+            num_records_to_anonymize = old_records_query.count()
+
+            if num_records_to_anonymize > 0:
+                # Perform the anonymization (update user_id to anonymous user's ID)
+                self.db_session.execute(
+                    update(Intervention).where(Intervention.timestamp < cutoff_timestamp).values(user_id=anon.user_id)
+                )
+                # Commit the transaction
+                self.db_session.commit()
+                logging.info(f"Anonymized {num_records_to_anonymize} old Intervention records.")
+
+            return num_records_to_anonymize
+        except Exception as e:
+            # Log any exception that occurs and roll back the transaction
+            logging.error(f"Error anonymizing records: {e}")
+            self.db_session.rollback()
+            return 0
 
 
 class MachineRepository(BaseRepository):
@@ -669,6 +706,42 @@ class UseRepository(BaseRepository):
         """
         return self.db_session.query(Use).order_by(Use.use_id).all()
 
+    def purge_records(self, anon: User, cut_off: datetime) -> int:
+        """Purge use records older than the cutoff date by anonymizing them.
+
+        Args:
+            anon (User): The anonymous user to replace old data with.
+            cut_off (datetime): The cutoff date. Records older than this date will be anonymized.
+
+        Returns:
+            int: Number of records anonymized.
+        """
+        try:
+            # Convert cutoff datetime to UNIX timestamp (float)
+            cutoff_timestamp = cut_off.timestamp()
+
+            # Query to find records older than the cutoff date
+            old_records_query = self.db_session.query(Use).filter(Use.last_seen < cutoff_timestamp)
+
+            # Count the number of records to be anonymized
+            num_records_to_anonymize = old_records_query.count()
+
+            if num_records_to_anonymize > 0:
+                # Perform the anonymization (update user_id to anonymous user's ID)
+                self.db_session.execute(
+                    update(Use).where(Use.last_seen < cutoff_timestamp).values(user_id=anon.user_id)
+                )
+                # Commit the transaction
+                self.db_session.commit()
+                logging.info(f"Anonymized {num_records_to_anonymize} old Use records.")
+
+            return num_records_to_anonymize
+        except Exception as e:
+            # Log any exception that occurs and roll back the transaction
+            logging.error(f"Error anonymizing records: {e}")
+            self.db_session.rollback()
+            return 0
+
 
 class UnknownCardsRepository(BaseRepository):
     def __init__(self, db_session: Session):
@@ -691,6 +764,35 @@ class UnknownCardsRepository(BaseRepository):
         self.create(record)
         self.db_session.commit()
         return record.id
+
+    def purge_records(self, cutoff: datetime) -> int:
+        """Purge unknown card records older than the cutoff date.
+
+        Args:
+            cutoff (datetime): The cutoff date. Records older than this date will be deleted.
+
+        Returns:
+            int: Number of records deleted.
+        """
+        try:
+            # Convert cutoff datetime to UNIX timestamp (float)
+            cutoff_timestamp = cutoff.timestamp()
+
+            # Query to find records older than the cutoff date
+            old_records_query = self.db_session.query(UnknownCard).filter(UnknownCard.timestamp < cutoff_timestamp)
+            # Count the number of records to be deleted
+            num_deleted = old_records_query.count()
+            # Perform the deletion
+            old_records_query.delete(synchronize_session=False)
+            # Commit the transaction
+            self.db_session.commit()
+            logging.info(f"Deleted {num_deleted} old UnknownCard records.")
+            return num_deleted
+        except Exception as e:
+            # Log any exception that occurs and roll back the transaction
+            logging.error(f"Error purging records: {e}")
+            self.db_session.rollback()
+            return 0
 
 
 class BoardsRepository(BaseRepository):
