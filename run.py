@@ -1,7 +1,8 @@
 """ This is the main file of the project. It is used to run the project. """
+
 import getopt
 import sys
-import rfid_backend_FABLAB_BG
+import FabOMatic
 import logging
 
 
@@ -18,7 +19,7 @@ def getArgLoglevel():
 
 
 try:
-    rfid_backend_FABLAB_BG.start(getArgLoglevel())
+    FabOMatic.start(getArgLoglevel())
 except (KeyboardInterrupt, SystemExit):
     logging.info("Exiting...")
     sys.exit()

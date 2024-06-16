@@ -1,8 +1,8 @@
 from time import time
 import unittest
-from rfid_backend_FABLAB_BG.database.models import Authorization, MachineType, Use
+from FabOMatic.database.models import Authorization, MachineType, Use
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+from FabOMatic.mqtt.mqtt_types import (
     UserQuery,
     AliveQuery,
     MachineQuery,
@@ -12,9 +12,9 @@ from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
     InUseQuery,
 )
 
-from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
-from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
-from rfid_backend_FABLAB_BG.logic.MachineLogic import MachineLogic
+from FabOMatic.mqtt.MQTTInterface import MQTTInterface
+from FabOMatic.logic.MsgMapper import MsgMapper
+from FabOMatic.logic.MachineLogic import MachineLogic
 from tests.common import TEST_SETTINGS_PATH, get_simple_db
 
 

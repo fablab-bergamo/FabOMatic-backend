@@ -4,7 +4,7 @@
 
 import unittest
 
-from rfid_backend_FABLAB_BG.__main__ import Backend
+from FabOMatic.__main__ import Backend
 from tests.common import TEST_SETTINGS_PATH, add_test_data, get_simple_db
 
 

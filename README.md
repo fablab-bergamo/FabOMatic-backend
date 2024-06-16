@@ -70,7 +70,7 @@ wget https://raw.githubusercontent.com/espressif/arduino-esp32/master/tools/espo
 * Install from test pypi repository
 
 ```shell
-pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/simple rfid_backend_FABLAB_BG
+pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/simple FabOMatic
 ```
 
 * Change defaults in conf/settings.toml (see below)
@@ -78,7 +78,7 @@ pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/si
 * Test it with
 
 ```shell
-python -m rfid_backend_FABLAB_BG 5
+python -m FabOMatic 5
 ```
 
 * After installation login with default admin email in settings file and "admin" password.
@@ -96,7 +96,7 @@ See sample configuration example in doc/systemd
 * Use pip --upgrade :
 
 ```shell
-pip install -i https://test.pypi.org/simple/ rfid_backend_FABLAB_BG --upgrade
+pip install -i https://test.pypi.org/simple/ FabOMatic --upgrade
 ```
 
 * Review settings.toml file after installation.
@@ -180,7 +180,7 @@ alembic upgrade head
 
 * Translations with Babel
 
-Initial extract (run from src/rfid_backend_FABLAB_BG folder)
+Initial extract (run from src/FabOMatic folder)
 
 ```shell
 pybabel extract -F babel.cfg -o messages.pot ./
