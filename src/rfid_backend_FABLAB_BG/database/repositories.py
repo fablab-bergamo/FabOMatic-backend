@@ -229,6 +229,18 @@ class UserRepository(BaseRepository):
         """
         return self.db_session.query(User).filter_by(user_id=id).first()
 
+    def get_anonymous(self) -> Optional[User]:
+        """Get the anonymous user by their ID.
+
+        Returns:
+            Optional[User]: The user object if found, None otherwise.
+        """
+        role = self.db_session.query(Role).filter_by(role_name="Anonymous").first()
+        if role is None:
+            return None
+
+        return self.db_session.query(User).filter_by(role_id=role.role_id).first()
+
 
 class AuthorizationRepository(BaseRepository):
     """
