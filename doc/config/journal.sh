@@ -1,1 +1,1 @@
-journalctl --user -fu fablab.service
+journalctl --user -fu FabOMatic.service
