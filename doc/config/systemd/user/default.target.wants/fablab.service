@@ -7,8 +7,8 @@ After=network.target
 Type=exec
 Delegate=true
 KillMode=process
-ExecStartPre=pip install rfid_backend_FABLAB_BG --upgrade
-ExecStart=python -m rfid_backend_FABLAB_BG
+ExecStartPre=pip install FabOMatic --upgrade
+ExecStart=python -m FabOMatic
 
 [Install]
 WantedBy=default.target	

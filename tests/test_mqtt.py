@@ -4,7 +4,7 @@
 
 import unittest
 
-from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
+from FabOMatic.mqtt.mqtt_types import (
     MachineQuery,
     MachineResponse,
     SimpleResponse,
@@ -15,8 +15,8 @@ from rfid_backend_FABLAB_BG.mqtt.mqtt_types import (
     RegisterMaintenanceQuery,
     AliveQuery,
 )
-from rfid_backend_FABLAB_BG.mqtt.MQTTInterface import MQTTInterface
-from rfid_backend_FABLAB_BG.logic.MsgMapper import MsgMapper
+from FabOMatic.mqtt.MQTTInterface import MQTTInterface
+from FabOMatic.logic.MsgMapper import MsgMapper
 from tests.common import TEST_SETTINGS_PATH, get_simple_db
 
 

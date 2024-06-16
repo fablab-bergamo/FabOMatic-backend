@@ -10,8 +10,8 @@ from time import time
 
 from sqlalchemy.exc import IntegrityError
 
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import (
+from FabOMatic.database.DatabaseBackend import DatabaseBackend
+from FabOMatic.database.models import (
     Role,
     MachineType,
     User,
