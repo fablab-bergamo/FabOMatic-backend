@@ -1,5 +1,5 @@
 [Unit]
-Description=FabLab RFID service
+Description=FabOMatic backend service
 After=multi-user.target
 After=network.target
 
