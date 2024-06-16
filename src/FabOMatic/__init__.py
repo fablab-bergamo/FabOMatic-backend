@@ -1,1 +1,1 @@
-from .__main__ import start
+from .__main__ import main
