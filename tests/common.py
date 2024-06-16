@@ -8,8 +8,8 @@ from time import time
 
 from sqlalchemy import text
 
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend, getSetting
-from rfid_backend_FABLAB_BG.database.models import Machine, MachineType, Maintenance, Role, Use, User, Intervention
+from FabOMatic.database.DatabaseBackend import DatabaseBackend, getSetting
+from FabOMatic.database.models import Machine, MachineType, Maintenance, Role, Use, User, Intervention
 
 FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")

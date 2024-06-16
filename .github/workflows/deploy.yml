@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/rfid_backend_FABLAB_BG
+      url: https://test.pypi.org/p/FabOMatic
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     strategy:
@@ -58,7 +58,7 @@ jobs:
         python -m pip install -e .
     - name: Prepare Babel translations for distribution
       run: |
-        cd src/rfid_backend_FABLAB_BG
+        cd src/FabOMatic
         pybabel compile -d translations
     - name: Test with pytest
       run: |
@@ -80,5 +80,4 @@ jobs:
     - name: Publish package distributions to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        repository-url: https://test.pypi.org/legacy/
         skip-existing: true
