@@ -4,8 +4,8 @@
 
 import unittest
 
-from rfid_backend_FABLAB_BG.database.DatabaseBackend import DatabaseBackend
-from rfid_backend_FABLAB_BG.database.models import User, Role
+from FabOMatic.database.DatabaseBackend import DatabaseBackend
+from FabOMatic.database.models import User, Role
 from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, configure_logger
 
 
