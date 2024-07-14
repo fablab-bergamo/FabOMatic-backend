@@ -14,6 +14,8 @@
 
 * This Python 3.10 application runs a MQTT client and a Flask HTTPS application.
 
+* Articles describing the project are available on FabLab Bergamo website : <https://www.fablabbergamo.it/2024/07/14/fabomatic7/>
+
 ## Features
 
 * Web admin portal with user authentication over https
