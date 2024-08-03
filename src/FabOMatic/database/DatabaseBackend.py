@@ -378,13 +378,16 @@ class DatabaseBackend:
             MAX_DELAY_S = 60 * 60 * 1
             with self._session() as session:
                 uses_repo = self.getUseRepository(session)
-                orphans = uses_repo.filter_by_model(
-                    Use, Use.end_timestamp.is_(None), Use.last_seen < int(time() - MAX_DELAY_S)
+                current_time = int(time())
+                orphans = (
+                    session.query(Use)
+                    .filter(Use.end_timestamp.is_(None))
+                    .filter(Use.last_seen < current_time - MAX_DELAY_S)
+                    .all()
                 )
-
                 for o in orphans:
                     logging.warning(f"Closing orphan record on {o.serialize()}")
-                    uses_repo.endUse(o.machine_id, o.user, int(o.last_seen - o.start_timestamp), False)
+                    uses_repo.endUse(o.machine_id, o.user, int(o.last_seen - o.start_timestamp) + 1, False)
         except Exception as e:
             # Log any exception that occurs and roll back the transaction
             logging.error(f"Error closing orphans records: {e}")
