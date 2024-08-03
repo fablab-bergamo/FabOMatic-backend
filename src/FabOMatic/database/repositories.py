@@ -564,7 +564,7 @@ class UseRepository(BaseRepository):
         """
 
         if timestamp is None:
-            timestamp = time()
+            timestamp = int(time())
 
         machine_repo = MachineRepository(self.db_session)
         machine = machine_repo.get_by_id(machine_id)
@@ -586,6 +586,7 @@ class UseRepository(BaseRepository):
                 start_timestamp=timestamp,
                 last_seen=timestamp,
                 replay=is_replay,
+                end_timestamp=None,
             )
         )
         self.db_session.commit()
@@ -609,7 +610,7 @@ class UseRepository(BaseRepository):
             return False
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
-        end = time()
+        end = int(time())
 
         if record is None:
             # InUse received but no startUse was received before
@@ -650,7 +651,8 @@ class UseRepository(BaseRepository):
             duration_s = 1
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
-        end = time()
+        end = int(time())
+
         if record is None:
             # Create missing record on the fly since we have all required information
             record = Use(
@@ -677,6 +679,7 @@ class UseRepository(BaseRepository):
                 logging.warning("Missing startUse detected, creating new record on the fly.")
                 self.create(record)
                 machine.machine_hours += (record.end_timestamp - record.start_timestamp) / 3600.0
+                self.db_session.commit()
             else:
                 logging.warning("Duplicate stopUse detected, ignoring client request")
         else:
@@ -689,11 +692,12 @@ class UseRepository(BaseRepository):
             for rec in self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)):
                 duration_s += int(rec.last_seen - rec.start_timestamp)
                 rec.end_timestamp = rec.last_seen
-
-        self.db_session.commit()
+                self.db_session.commit()
 
         machine.machine_hours += duration_s / 3600.0
         machine_repo.update(machine)
+
+        self.db_session.commit()
 
         return duration_s
 
