@@ -51,6 +51,9 @@ class Backend:
     def publishStats(self):
         self._mqtt.publishStats()
 
+    def closeOrphans(self):
+        self._db.closeOrphans()
+
     def purge_data(self):
         """Purge data from the database."""
         self._db.purge_data()
