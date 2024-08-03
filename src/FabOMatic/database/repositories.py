@@ -564,7 +564,7 @@ class UseRepository(BaseRepository):
         """
 
         if timestamp is None:
-            timestamp = int(time())
+            timestamp = time()
 
         machine_repo = MachineRepository(self.db_session)
         machine = machine_repo.get_by_id(machine_id)
@@ -610,7 +610,7 @@ class UseRepository(BaseRepository):
             return False
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
-        end = int(time())
+        end = time()
 
         if record is None:
             # InUse received but no startUse was received before
@@ -651,7 +651,7 @@ class UseRepository(BaseRepository):
             duration_s = 1
 
         record = self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)).first()
-        end = int(time())
+        end = time()
 
         if record is None:
             # Create missing record on the fly since we have all required information
@@ -690,7 +690,7 @@ class UseRepository(BaseRepository):
 
             # Close eventual previous uses which were not closed
             for rec in self.db_session.query(Use).filter(Use.machine_id == machine_id, Use.end_timestamp.is_(None)):
-                duration_s += int(rec.last_seen - rec.start_timestamp)
+                duration_s += rec.last_seen - rec.start_timestamp
                 rec.end_timestamp = rec.last_seen
                 self.db_session.commit()
 

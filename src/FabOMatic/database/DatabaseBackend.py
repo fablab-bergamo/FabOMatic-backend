@@ -378,7 +378,7 @@ class DatabaseBackend:
             MAX_DELAY_S = 60 * 60 * 1
             with self._session() as session:
                 uses_repo = self.getUseRepository(session)
-                current_time = int(time())
+                current_time = time()
                 orphans = (
                     session.query(Use)
                     .filter(Use.end_timestamp.is_(None))
