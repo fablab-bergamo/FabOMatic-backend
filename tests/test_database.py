@@ -796,6 +796,10 @@ class TestDB(unittest.TestCase):
             for board in board_repo.get_all():
                 self.assertAlmostEqual(board.last_seen, time(), delta=1000)
 
+    def test_orphans(self):
+        simple_db = get_simple_db()
+        simple_db.closeOrphans()
+
 
 if __name__ == "__main__":
     configure_logger()

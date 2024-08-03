@@ -4,12 +4,13 @@ import os
 from os import path
 from os.path import dirname, abspath
 import logging
+from time import time
 import toml
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
 
-from FabOMatic.database.models import MachineType, Role, User, Machine, Maintenance
+from FabOMatic.database.models import MachineType, Role, Use, User, Machine, Maintenance
 
 from .repositories import (
     BoardsRepository,
@@ -369,4 +370,22 @@ class DatabaseBackend:
         except Exception as e:
             # Log any exception that occurs and roll back the transaction
             logging.error(f"Error purging records: {e}")
+            return False
+
+    def closeOrphans(self):
+        try:
+            # Close records from boards more than 1 hour old
+            MAX_DELAY_S = 60 * 60 * 1
+            with self._session() as session:
+                uses_repo = self.getUseRepository(session)
+                orphans = uses_repo.filter_by_model(
+                    Use, Use.end_timestamp.is_(None), Use.last_seen < int(time() - MAX_DELAY_S)
+                )
+
+                for o in orphans:
+                    logging.warning(f"Closing orphan record on {o.serialize()}")
+                    uses_repo.endUse(o.machine_id, o.user, int(o.last_seen - o.start_timestamp), False)
+        except Exception as e:
+            # Log any exception that occurs and roll back the transaction
+            logging.error(f"Error closing orphans records: {e}")
             return False
