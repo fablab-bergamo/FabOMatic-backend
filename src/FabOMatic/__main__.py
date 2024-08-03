@@ -87,6 +87,7 @@ def start(loglevel):
                 logging.error("Failed to connect to Database or MQTT broker")
         else:
             back.publishStats()
+            back.closeOrphans()
         sleep(5)
 
 
