@@ -6,7 +6,7 @@ import json
 from time import sleep
 import toml
 import paho.mqtt.client as mqtt
-from .mqtt_types import Parser
+from .mqtt_types import BaseJson, Parser
 
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_FILE = os.path.join(MODULE_DIR, "conf", "settings.toml")
@@ -56,6 +56,7 @@ class MQTTInterface:
         self._client_id = settings["client_id"]
         self._topic = settings["topic"]
         self._reply_subtopic = settings["reply_subtopic"]
+        self._request_subtopic = settings["request_subtopic"]
         self._statsTopic = settings["stats_topic"] + "/" + self._client_id
         logging.info("Loaded MQTT settings from file %s", self._settings_path)
 
@@ -84,9 +85,14 @@ class MQTTInterface:
         Args:
             *args: Variable length argument list.
         """
-        topic = args[2].topic
-        message = args[2].payload.decode("utf-8")
+        topic: str = args[2].topic
+        message: str = args[2].payload.decode("utf-8")
         self._msg_recv_count += 1
+
+        if topic.endswith(self._reply_subtopic) or topic.endswith(self._request_subtopic):
+            # ignore own answers
+            logging.debug("Ignoring notification on topic : %s", topic)
+            return
 
         machine = self._extractMachineFromTopic(topic)
         if not machine:
@@ -98,7 +104,7 @@ class MQTTInterface:
             return
 
         try:
-            query = Parser.parse(message)
+            query: BaseJson = Parser.parse(message)
             if query is not None and machine.isdigit():
                 self._messageCallback(int(machine), query)
         except ValueError:
@@ -110,7 +116,7 @@ class MQTTInterface:
         Publishes a query message to a specific machine.
 
         Args:
-            machine (str): The name of the machine.
+            machine (str): The ID of the machine.
             message (str): The query message.
 
         Returns:
@@ -118,19 +124,32 @@ class MQTTInterface:
         """
         return self._publish(f"{self._topic}{machine}", message)
 
+    def publishRequest(self, machine: str, message: str) -> bool:
+        """
+        Publishes a request message to a specific machine.
+
+        Args:
+            machine (str): The ID of the machine.
+            message (str): The request message as a JSON-string.
+
+        Returns:
+            bool: True if the message was published successfully, False otherwise.
+        """
+        return self._publish(f"{self._topic}/{machine}{self._request_subtopic}", message)
+
     def publishReply(self, machine: str, message: str) -> bool:
         """
         Publishes a reply message to a specific machine.
 
         Args:
-            machine (str): The name of the machine.
+            machine (str): The ID of the machine.
             message (str): The reply message.
 
         Returns:
             bool: True if the message was published successfully, False otherwise.
         """
         self._msg_send_count += 1
-        return self._publish(f"{self._topic}/{machine}/reply", message)
+        return self._publish(f"{self._topic}/{machine}{self._reply_subtopic}", message)
 
     def _publish(self, topic: str, message: str) -> bool:
         """
@@ -144,7 +163,7 @@ class MQTTInterface:
             bool: True if the message was published successfully, False otherwise.
         """
         if self.connected:
-            result = self._client.publish(topic, message)
+            result = self._client.publish(topic, message, qos=0, retain=False)
             logging.debug("Publishing %s : %s, result: %s", topic, message, result)
             return True
         logging.error("Not connected to MQTT broker %s", self._broker)

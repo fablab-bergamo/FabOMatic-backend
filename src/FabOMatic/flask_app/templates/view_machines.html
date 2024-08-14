@@ -14,6 +14,8 @@
                 <th>{{ _("Blocked for all?") }}</th>
                 <th>{{ _("Maintenance plan") }}</th>
                 <th class="d-none d-lg-table-cell">{{ _("Last seen") }}</th>
+                <th>{{ _("Remote login") }}</th>
+                <th>{{ _("Remote logoff") }}</th>
                 <th>{{ _("Actions") }}</th>
             </tr>
         </thead>
@@ -44,6 +46,13 @@
                     {% endfor %}
                 </td>
                 <td class="d-none d-lg-table-cell">{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
+                <td>
+                    
+                    <a href="{{ url_for('start_machine', machine_id=machine.machine_id) }}" class="btn btn-light"><i class="fa fa-play-circle"></i></a>
+                </td>
+                <td>
+                    <a href="{{ url_for('stop_machine', machine_id=machine.machine_id) }}" class="btn btn-light"><i class="fa fa-stop-circle"></i></a>
+                </td>
                 <td>
                     <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
                         class="btn btn-info">{{ _("View history") }}</a>

@@ -3,9 +3,10 @@
 # pylint: disable=C0116
 
 from flask import flash, render_template, request, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_babel import gettext
-from FabOMatic.database.models import Machine, MachineType
+from FabOMatic.__main__ import Backend
+from FabOMatic.database.models import Machine, MachineType, User
 from FabOMatic.database.repositories import MachineRepository
 from .webapplication import DBSession, app
 
@@ -73,6 +74,62 @@ def edit_machine(machine_id):
         return gettext("Machine not found"), 404
 
 
+@app.route("/machines/start/<int:machine_id>", methods=["GET"])
+@login_required
+def start_machine(machine_id):
+    session = DBSession()
+    machine = session.query(Machine).filter_by(machine_id=machine_id).one()
+    user: User = current_user
+    if user.card_UUID is None:
+        flash(gettext("Your user needs a valid CARD ID to use this function"))
+        return redirect(url_for("view_machines"))
+
+    if machine:
+        if not machine.isOnline():
+            flash(gettext("Machine is not online:") + machine.machine_name)
+            return redirect(url_for("view_machines"))
+
+        backend: Backend = app.backend
+        mapper = backend.getMapper()
+
+        if mapper.remoteStart(machine.machine_id, user.card_UUID):
+            flash(gettext("Remote start success"))
+        else:
+            flash(gettext("Remote start failure"))
+
+        return redirect(url_for("view_machines"))
+
+    return gettext("Machine not found"), 404
+
+
+@app.route("/machines/stop/<int:machine_id>", methods=["GET"])
+@login_required
+def stop_machine(machine_id):
+    session = DBSession()
+    machine = session.query(Machine).filter_by(machine_id=machine_id).one()
+    user: User = current_user
+    if user.card_UUID is None:
+        flash(gettext("Your user needs a valid CARD ID to use this function"))
+        return redirect(url_for("view_machines"))
+
+    if machine:
+        if not machine.isOnline():
+            flash(gettext("Machine is not online:") + machine.machine_name)
+            return redirect(url_for("view_machines"))
+
+        backend: Backend = app.backend
+        mapper = backend.getMapper()
+
+        if mapper.remoteStop(machine.machine_id, user.card_UUID):
+            flash(gettext("Remote stop success"))
+        else:
+            flash(gettext("Remote stop failure"))
+
+        return redirect(url_for("view_machines"))
+
+    return gettext("Machine not found"), 404
+
+
 @app.route("/machines/update", methods=["POST"])
 @login_required
 def update_machine():
@@ -96,8 +153,8 @@ def update_machine():
         machine.blocked = machine_data.get("blocked", "off") == "on"
         session.commit()
         return redirect(url_for("view_machines"))
-    else:
-        return gettext("Machine not found"), 404
+
+    return gettext("Machine not found"), 404
 
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])

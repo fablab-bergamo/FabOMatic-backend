@@ -17,7 +17,7 @@
                 {% elif mac.maintenance_needed %}
                     <div class="card bg-warning text-white">
                     {% set text = gettext("MAINTENANCE") %}
-                {% elif not mac.online %}
+                {% elif not mac.isOnline() %}
                     <div class="card bg-secondary text-white">
                     {% set text = gettext("OFFLINE") %}
                 {% else %}

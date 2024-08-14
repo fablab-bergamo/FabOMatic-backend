@@ -8,7 +8,9 @@ from FabOMatic.mqtt.mqtt_types import (
     MachineQuery,
     MachineResponse,
     SimpleResponse,
+    StartRequest,
     StartUseQuery,
+    StopRequest,
     UserQuery,
     UserResponse,
     EndUseQuery,
@@ -78,6 +80,14 @@ class TestMQTT(unittest.TestCase):
         response = SimpleResponse(True)
         json_response = response.serialize()
         self.assertEqual(json_response, '{"request_ok": true, "message": ""}')
+
+        start_req = StartRequest("5")
+        json_response = start_req.serialize()
+        self.assertEqual(json_response, '{"request_type": "start", "uid": "5"}')
+
+        stop_req = StopRequest("6")
+        json_response = stop_req.serialize()
+        self.assertEqual(json_response, '{"request_type": "stop", "uid": "6"}')
 
     def test_init(self):
         d = MQTTInterface(TEST_SETTINGS_PATH)
