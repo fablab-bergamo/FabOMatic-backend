@@ -50,16 +50,16 @@ class MQTTInterface:
         """
         Loads the MQTT settings from the settings file.
         """
-        settings:dict = toml.load(self._settings_path)["MQTT"]
+        settings: dict = toml.load(self._settings_path)["MQTT"]
         self._broker = settings["broker"]
         self._port = settings["port"]
         self._client_id = settings["client_id"]
         self._topic = settings["topic"]
         self._reply_subtopic = settings["reply_subtopic"]
-        
-        if ("request_subtopic" in settings.keys()):
+
+        if "request_subtopic" in settings.keys():
             self._request_subtopic = settings["request_subtopic"]
-        else
+        else:
             self._request_subtopic = "/request"
 
         self._statsTopic = settings["stats_topic"] + "/" + self._client_id
