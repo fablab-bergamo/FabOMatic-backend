@@ -4,7 +4,15 @@ import logging
 
 from time import time
 
-from FabOMatic.mqtt.mqtt_types import AliveQuery, MachineResponse, SimpleResponse, UserResponse
+from FabOMatic.mqtt import MQTTInterface
+from FabOMatic.mqtt.mqtt_types import (
+    AliveQuery,
+    MachineResponse,
+    SimpleResponse,
+    StartRequest,
+    StopRequest,
+    UserResponse,
+)
 from FabOMatic.database.DatabaseBackend import DatabaseBackend
 from FabOMatic.database.constants import DEFAULT_GRACE_PERIOD_MINUTES, DEFAULT_TIMEOUT_MINUTES, USER_LEVEL
 
@@ -243,3 +251,33 @@ class MachineLogic:
 
     def getMachineId(self) -> int:
         return self._machine_id
+
+    def remoteStart(self, card_uuid: str, mqtt: MQTTInterface.MQTTInterface) -> bool:
+        try:
+            with MachineLogic.database.getSession() as session:
+                user_repo = MachineLogic.database.getUserRepository(session)
+                user = user_repo.getUserByCardUUID(card_uuid)
+                if user is None:
+                    return SimpleResponse(False, "Wrong user card")
+                if user.disabled:
+                    return SimpleResponse(False, "Not authorized")
+            msg = StartRequest(card_uuid)
+            return mqtt.publishRequest(self.getMachineId(), msg.serialize())
+        except Exception as e:
+            logging.error("remoteStart exception %s", str(e), exc_info=True)
+            return False
+
+    def remoteStop(self, card_uuid: str, mqtt: MQTTInterface.MQTTInterface) -> bool:
+        try:
+            with MachineLogic.database.getSession() as session:
+                user_repo = MachineLogic.database.getUserRepository(session)
+                user = user_repo.getUserByCardUUID(card_uuid)
+                if user is None:
+                    return SimpleResponse(False, "Wrong user card")
+                if user.disabled:
+                    return SimpleResponse(False, "Not authorized")
+            msg = StopRequest(card_uuid)
+            return mqtt.publishRequest(self.getMachineId(), msg.serialize())
+        except Exception as e:
+            logging.error("remoteStop exception %s", str(e), exc_info=True)
+            return False

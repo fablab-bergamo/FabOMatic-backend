@@ -197,3 +197,25 @@ class SimpleResponse:
 
     def __str__(self):
         return self.serialize()
+
+
+class StartRequest(BaseJson):
+    def __init__(self, card_uid: str):
+        self.request_type = "start"
+        self.uid = card_uid
+
+    @staticmethod
+    def deserialize(json_data: str):
+        data = json.loads(json_data)
+        return StartRequest(data["uid"])
+
+
+class StopRequest(BaseJson):
+    def __init__(self, card_uid: str):
+        self.request_type = "stop"
+        self.uid = card_uid
+
+    @staticmethod
+    def deserialize(json_data: str):
+        data = json.loads(json_data)
+        return StopRequest(data["uid"])

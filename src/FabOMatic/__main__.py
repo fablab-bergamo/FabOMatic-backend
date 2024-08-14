@@ -58,19 +58,23 @@ class Backend:
         """Purge data from the database."""
         self._db.purge_data()
 
+    def getMapper(self) -> MsgMapper:
+        return self._mapper
+
 
 _flaskThread: threading.Thread = None
 
 
-def _startApp() -> None:
+def _startApp(back: Backend) -> None:
     from FabOMatic.web.webapplication import app
 
+    app.backend = back
     app.run(host="0.0.0.0", port=23336, debug=True, use_reloader=False, ssl_context="adhoc")
 
 
-def startServer() -> None:
+def startServer(back: Backend) -> None:
     global _flaskThread
-    _flaskThread = threading.Thread(target=lambda: _startApp(), daemon=True)
+    _flaskThread = threading.Thread(target=_startApp, args=(back,), daemon=True)
     _flaskThread.start()
 
 
@@ -79,7 +83,7 @@ def start(loglevel):
     configure_logger(loglevel)
     logging.info("Starting backend...")
     back = Backend()
-    startServer()
+    startServer(back)
 
     while True:
         if not back.connected:

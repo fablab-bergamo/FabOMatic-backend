@@ -162,8 +162,4 @@ def about():
         machines = machine_repo.get_all()
         for mac in machines:
             setattr(mac, "maintenance_needed", machine_repo.getMachineMaintenanceNeeded(mac.machine_id)[0])
-            if mac.last_seen is None:
-                setattr(mac, "online", False)
-            else:
-                setattr(mac, "online", time() - mac.last_seen < 180)
         return render_template("about.html", machines=machines)

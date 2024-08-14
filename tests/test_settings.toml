@@ -8,6 +8,7 @@ port = 1883                 # MQTT broker port
 client_id = "backend-2"     # Client name
 topic = "machine"           # Machine topic to be monitored. All subtopics with <topic>/<ID> will be subscribed. Do not include leading or trailing slashes.
 reply_subtopic = "/reply"   # appended to the machine topic for replies by backend. E.g. machine/1/reply
+request_subtopic = "/request"   # appended to the <topic>/<id> for requests by backend. E.g. machine/1/request
 stats_topic = "stats"       # Stats will be published in this topic on MQTT server.
 user = ""                   # Auth not used
 

@@ -2,6 +2,7 @@
 
 import sqlite3
 import os
+from time import time
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy import event, Engine, Index
@@ -302,6 +303,10 @@ class Machine(Base):
         if len(self.boards) > 0:
             return sorted(self.boards, key=lambda b: b.last_seen, reverse=True)[0]
         return None
+
+    def isOnline(self) -> bool:
+        """Indicates is the last machine communication is less than 90s ago"""
+        return time() - self.last_seen < 90
 
 
 class Use(Base):

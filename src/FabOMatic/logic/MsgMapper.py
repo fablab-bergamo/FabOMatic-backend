@@ -167,3 +167,21 @@ class MsgMapper:
 
     def _setHandler(self, query: type, handler: callable):
         self._handlers[query] = handler
+
+    def remoteStart(self, machine_id: int, card_uuid: str) -> bool:
+        machine_logic = self.getMachineLogic(machine_id)
+
+        if machine_logic is None:
+            logging.error(f"Failed to create MachineLogic instance for machine {machine_id}")
+            return False
+
+        return machine_logic.remoteStart(card_uuid, self._mqtt)
+
+    def remoteStop(self, machine_id: int, card_uuid: str) -> bool:
+        machine_logic = self.getMachineLogic(machine_id)
+
+        if machine_logic is None:
+            logging.error(f"Failed to create MachineLogic instance for machine {machine_id}")
+            return False
+
+        return machine_logic.remoteStop(card_uuid, self._mqtt)
