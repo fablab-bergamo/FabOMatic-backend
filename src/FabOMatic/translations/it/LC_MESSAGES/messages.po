@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-06-08 12:01+0200\n"
+"POT-Creation-Date: 2024-08-14 13:35+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -54,7 +54,7 @@ msgstr "In uso da:"
 #: flask_app/templates/add_authorization.html:3
 #: flask_app/templates/add_authorization.html:21
 msgid "Add Authorization"
-msgstr "Aggiungi permesso"
+msgstr "Aggiungi abilitazione"
 
 #: flask_app/templates/add_authorization.html:6
 #: flask_app/templates/add_intervention.html:24
@@ -142,15 +142,15 @@ msgstr "Spegnimento macchina dopo"
 #: flask_app/templates/edit_machinetype.html:26
 #: flask_app/templates/view_machinetypes.html:15
 msgid "Access control"
-msgstr "Controllo autorizzazioni"
+msgstr "Verifica abilitazioni"
 
 #: flask_app/templates/add_machinetype.html:28
 msgid "Machine need to be authorized for users"
-msgstr "Le macchine devono essere autorizzate per singolo utente"
+msgstr "Le macchine devono essere abilitate specificatamente per l'utente"
 
 #: flask_app/templates/add_machinetype.html:29
 msgid "No specific authorization required for users"
-msgstr "Non verificare autorizzazioni per singolo utente"
+msgstr "Nessuna verifica abilitazione"
 
 #: flask_app/templates/add_machinetype.html:32
 #: flask_app/templates/add_use.html:33
@@ -267,7 +267,7 @@ msgstr "Storico"
 #: flask_app/templates/base_body.html:24
 #: flask_app/templates/view_authorizations.html:3
 msgid "Authorizations"
-msgstr "Permessi"
+msgstr "Abilitazioni"
 
 #: flask_app/templates/base_body.html:30
 #: flask_app/templates/view_interventions.html:5
@@ -296,15 +296,15 @@ msgstr "Login"
 
 #: flask_app/templates/bulkadd_authorizations.html:3
 msgid "Bulk Authorization"
-msgstr "Permessi massicci"
+msgstr "Abilitazioni massicce"
 
 #: flask_app/templates/bulkadd_authorizations.html:5
 msgid ""
 "Only the checked users will be authorized for the chosen machines. "
 "Unselected users will keep their current authorizations."
 msgstr ""
-"Solo gli utenti selezionati saranno aggiunti sulla macchina scelta. Gli "
-"Utenti non selezionati manterranno i permessi già esistenti."
+"Solo gli utenti selezionati saranno abilitati sulla macchina scelta. Gli "
+"Utenti non selezionati manterranno le abilitazioni già esistenti."
 
 #: flask_app/templates/bulkadd_authorizations.html:10
 msgid "Select Machine"
@@ -316,19 +316,19 @@ msgstr "Seleziona utenti"
 
 #: flask_app/templates/bulkadd_authorizations.html:20
 msgid "Add All users..."
-msgstr "Aggiungi tutti gli utenti..."
+msgstr "Abilita tutti gli utenti..."
 
 #: flask_app/templates/bulkadd_authorizations.html:32
 msgid "Bulk add authorizations"
-msgstr "Aggiungi permessi massicci"
+msgstr "Aggiungi abilitazioni massicce"
 
 #: flask_app/templates/delete_authorization.html:3
 msgid "Delete Authorization"
-msgstr "Cancella permesso"
+msgstr "Cancella abilitazione"
 
 #: flask_app/templates/delete_authorization.html:4
 msgid "Are you sure you want to delete the authorization for"
-msgstr "Sei sicuro di volere cancellare il permesso di"
+msgstr "Sei sicuro di volere cancellare l'abilitazione di"
 
 #: flask_app/templates/delete_authorization.html:4
 msgid "UserToUse"
@@ -336,7 +336,7 @@ msgstr "ad usare"
 
 #: flask_app/templates/delete_authorization.html:6
 msgid "Yes, delete authorization"
-msgstr "Sì, cancella permesso"
+msgstr "Sì, cancella abilitazione"
 
 #: flask_app/templates/delete_authorization.html:8
 #: flask_app/templates/delete_intervention.html:10
@@ -344,6 +344,7 @@ msgstr "Sì, cancella permesso"
 #: flask_app/templates/delete_machinetype.html:10
 #: flask_app/templates/delete_maintenance.html:10
 #: flask_app/templates/delete_role.html:10
+#: flask_app/templates/delete_use.html:21
 #: flask_app/templates/delete_user.html:10
 #: flask_app/templates/reset_user.html:10
 msgid "No, go back"
@@ -384,7 +385,7 @@ msgstr "Sei sicuro di volere cancellare la tipologia di macchine"
 #: flask_app/templates/delete_machinetype.html:8
 #: flask_app/templates/view_authorizations.html:44
 #: flask_app/templates/view_interventions.html:57
-#: flask_app/templates/view_machines.html:53
+#: flask_app/templates/view_machines.html:62
 #: flask_app/templates/view_machinetypes.html:48
 #: flask_app/templates/view_maintenances.html:42
 #: flask_app/templates/view_roles.html:55
@@ -416,6 +417,26 @@ msgstr "Sei sicuro di volere cancellare il ruolo"
 msgid "Yes, delete role"
 msgstr "Sì, cancella ruolo"
 
+#: flask_app/templates/delete_use.html:5
+msgid "Delete history"
+msgstr "Cancella uso"
+
+#: flask_app/templates/delete_use.html:6
+msgid "Are you sure you want to delete the use"
+msgstr "Sei sicuro di volere cancellare l'uso"
+
+#: flask_app/templates/delete_use.html:6
+msgid "on machine"
+msgstr "sulla macchina"
+
+#: flask_app/templates/delete_use.html:12
+msgid "Tick to decrease machine cumulated hours"
+msgstr "Diminuire le ore macchine di conseguenza?"
+
+#: flask_app/templates/delete_use.html:17
+msgid "Yes, delete use"
+msgstr "Sì, cancella uso"
+
 #: flask_app/templates/delete_user.html:5
 msgid "Delete User"
 msgstr "Cancella utente"
@@ -435,12 +456,12 @@ msgstr "Modifica tipologia"
 #: flask_app/templates/edit_machinetype.html:28
 #: flask_app/templates/view_machinetypes.html:38
 msgid "Machines need to be authorized for user"
-msgstr "Controllare le autorizzazioni utente per le macchine"
+msgstr "Le macchine richiedono abilitazione specifica"
 
 #: flask_app/templates/edit_machinetype.html:29
 #: flask_app/templates/view_machinetypes.html:41
 msgid "No authorization required for machines"
-msgstr "Nessuna autorizzazione richiesta per le macchine"
+msgstr "Nessuna abilitazione richiesta per le macchine"
 
 #: flask_app/templates/edit_maintenance.html:5
 msgid "Edit Maintenance"
@@ -498,7 +519,7 @@ msgstr "Password dimenticata?"
 
 #: flask_app/templates/view_authorizations.html:4
 msgid "Add Authorization..."
-msgstr "Aggiungi permesso..."
+msgstr "Aggiungi abilitazione..."
 
 #: flask_app/templates/view_authorizations.html:5
 msgid "Add in bulk..."
@@ -539,7 +560,7 @@ msgstr "Azione"
 
 #: flask_app/templates/view_authorizations.html:43
 #: flask_app/templates/view_interventions.html:55
-#: flask_app/templates/view_machines.html:51
+#: flask_app/templates/view_machines.html:60
 #: flask_app/templates/view_machinetypes.html:46
 #: flask_app/templates/view_maintenances.html:40
 #: flask_app/templates/view_roles.html:54
@@ -604,22 +625,30 @@ msgid "Last seen"
 msgstr "Ultimo contatto"
 
 #: flask_app/templates/view_machines.html:17
+msgid "Remote login"
+msgstr "Login remoto"
+
+#: flask_app/templates/view_machines.html:18
+msgid "Remote logoff"
+msgstr "Logoff remoto"
+
+#: flask_app/templates/view_machines.html:19
 msgid "Actions"
 msgstr "Azioni"
 
-#: flask_app/templates/view_machines.html:37
+#: flask_app/templates/view_machines.html:39
 msgid "EXPIRED"
 msgstr "SCADUTA"
 
-#: flask_app/templates/view_machines.html:39
+#: flask_app/templates/view_machines.html:41
 msgid "OK"
 msgstr "OK"
 
-#: flask_app/templates/view_machines.html:42 web/webapplication.py:99
+#: flask_app/templates/view_machines.html:44 web/webapplication.py:99
 msgid "hours"
 msgstr "ore"
 
-#: flask_app/templates/view_machines.html:49
+#: flask_app/templates/view_machines.html:58
 msgid "View history"
 msgstr "Vedi storico"
 
@@ -664,11 +693,11 @@ msgstr "Filtra Descrizione"
 
 #: flask_app/templates/view_maintenances.html:31
 msgid "Lcd message"
-msgstr "Messaggio corto per LCD"
+msgstr "Messaggio per display LCD"
 
 #: flask_app/templates/view_maintenances.html:35
 msgid "Instructions URL"
-msgstr "URL per le istruzioni"
+msgstr "URL istruzioni"
 
 #: flask_app/templates/view_roles.html:5
 msgid "This page configures the possible roles of FabLab users."
@@ -712,7 +741,7 @@ msgstr ""
 
 #: flask_app/templates/view_system.html:21
 msgid "Upload DB"
-msgstr "Carica backup"
+msgstr "Ripristina database"
 
 #: flask_app/templates/view_system.html:31
 msgid "System info"
@@ -732,11 +761,11 @@ msgstr "Memoria RAM disponibile"
 
 #: flask_app/templates/view_system.html:38
 msgid "Backend log file"
-msgstr "Log applicativo"
+msgstr "Log file del backend"
 
 #: flask_app/templates/view_system.html:38
 msgid "Download"
-msgstr "Scarica"
+msgstr "Scarica database"
 
 #: flask_app/templates/view_system.html:39
 msgid "Reboot system"
@@ -768,7 +797,7 @@ msgstr "Elenco boards"
 
 #: flask_app/templates/view_system.html:67
 msgid "Serial number"
-msgstr "Indirizzo MAC"
+msgstr "Serial number"
 
 #: flask_app/templates/view_system.html:68
 msgid "Machine (ID)"
@@ -784,7 +813,7 @@ msgstr "Versione firmware"
 
 #: flask_app/templates/view_system.html:71
 msgid "Free heap"
-msgstr "Memoria heap libera"
+msgstr "Heap libero"
 
 #: flask_app/templates/view_users.html:6
 msgid "List of machines and web interface users"
@@ -816,7 +845,7 @@ msgstr "Ora tentativo"
 
 #: flask_app/templates/view_users.html:74
 msgid "Convert to new user"
-msgstr "Converti in nuovo utente"
+msgstr "Registra come nuovo utente"
 
 #: flask_app/templates/view_uses.html:5
 msgid "Usage History"
@@ -896,34 +925,57 @@ msgstr "La tua password è stata aggiornata! Ora puoi fare il log in"
 
 #: web/routes_authorizations.py:74 web/routes_authorizations.py:94
 msgid "Authorization not found"
-msgstr "Permesso non trovato"
+msgstr "Abilitazione non trovata"
 
 #: web/routes_authorizations.py:132
 msgid "Authorizations added successfully"
-msgstr "Permessi aggiunti con successo."
+msgstr "Abilitazioni aggiunte con successo."
 
 #: web/routes_interventions.py:112
 msgid "Intervention not found"
 msgstr "Interventi"
 
-#: web/routes_machines.py:47 web/routes_machines.py:89
+#: web/routes_machines.py:48 web/routes_machines.py:146
 msgid "Hours must be a positive number."
 msgstr "Il campo Ore deve essere un numero positivo"
 
-#: web/routes_machines.py:50 web/routes_machines.py:92
+#: web/routes_machines.py:51 web/routes_machines.py:149
 msgid "Hours must be a number."
 msgstr "Il campo Ore deve essere un numero."
 
-#: web/routes_machines.py:73 web/routes_machines.py:100
-#: web/routes_machines.py:109 web/routes_uses.py:22 web/routes_uses.py:171
+#: web/routes_machines.py:74 web/routes_machines.py:102
+#: web/routes_machines.py:130 web/routes_machines.py:157
+#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:171
 msgid "Machine not found"
 msgstr "Macchina non trovata."
 
+#: web/routes_machines.py:84 web/routes_machines.py:112
+msgid "Your user needs a valid CARD ID to use this function"
+msgstr "Il tuo utente deve avere un ID tessera associato per usare questa funzione."
+
+#: web/routes_machines.py:89 web/routes_machines.py:117
+msgid "Machine is not online:"
+msgstr "Macchina non connessa in questo momento."
+
+#: web/routes_machines.py:96
+msgid "Remote start success"
+msgstr "Login remoto: successo"
+
+#: web/routes_machines.py:98
+msgid "Remote start failure"
+msgstr "Login remoto: errore"
+
+#: web/routes_machines.py:124
+msgid "Remote stop success"
+msgstr "Logoff remoto: successo"
+
+#: web/routes_machines.py:126
+msgid "Remote stop failure"
+msgstr "Logoff remoto: errore"
+
 #: web/routes_machinetypes.py:31 web/routes_machinetypes.py:70
 msgid "Invalid values for timeout or grace period or access control."
-msgstr ""
-"Valore scorretto per il periodo di spegnimento o controllo accesso o "
-"autologoff"
+msgstr "Valore scorretto per il periodo di spegnimento o di controllo accessi"
 
 #: web/routes_machinetypes.py:39 web/routes_machinetypes.py:83
 msgid "Invalid values for timeout"
@@ -971,11 +1023,11 @@ msgstr "Ruolo cancellato con successo."
 
 #: web/routes_system.py:82
 msgid "File must have sqldb extension"
-msgstr "Il file deve avere un'estensione .sqldb"
+msgstr "Il file deve avere estensione sqldb"
 
 #: web/routes_system.py:93
 msgid "Database was replaced. Previous copy can be found at "
-msgstr "Il database è stato sostituito. La copia precedente può essere trovata in "
+msgstr "Database sostituito. La copia precendete è disponibile in "
 
 #: web/routes_users.py:39 web/routes_users.py:105 web/routes_users.py:145
 #: web/routes_users.py:154
@@ -1071,16 +1123,4 @@ msgstr "giorni fa"
 #: web/webapplication.py:149
 msgid "day ago"
 msgstr "giorno fa"
-
-#~ msgid "Delete history"
-#~ msgstr "Cancella storico"
-
-#~ msgid "Are you sure you want to delete the use"
-#~ msgstr "Sei sicuro di volere cancellare l'utilizzo"
-
-#~ msgid "on machine"
-#~ msgstr "sulla macchina"
-
-#~ msgid "Yes, delete use"
-#~ msgstr "Sì, cancella utilizzo"
 
