@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-06-08 12:01+0200\n"
+"POT-Creation-Date: 2024-08-14 13:35+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -342,6 +342,7 @@ msgstr ""
 #: flask_app/templates/delete_machinetype.html:10
 #: flask_app/templates/delete_maintenance.html:10
 #: flask_app/templates/delete_role.html:10
+#: flask_app/templates/delete_use.html:21
 #: flask_app/templates/delete_user.html:10
 #: flask_app/templates/reset_user.html:10
 msgid "No, go back"
@@ -382,7 +383,7 @@ msgstr ""
 #: flask_app/templates/delete_machinetype.html:8
 #: flask_app/templates/view_authorizations.html:44
 #: flask_app/templates/view_interventions.html:57
-#: flask_app/templates/view_machines.html:53
+#: flask_app/templates/view_machines.html:62
 #: flask_app/templates/view_machinetypes.html:48
 #: flask_app/templates/view_maintenances.html:42
 #: flask_app/templates/view_roles.html:55
@@ -412,6 +413,26 @@ msgstr ""
 
 #: flask_app/templates/delete_role.html:8
 msgid "Yes, delete role"
+msgstr ""
+
+#: flask_app/templates/delete_use.html:5
+msgid "Delete history"
+msgstr ""
+
+#: flask_app/templates/delete_use.html:6
+msgid "Are you sure you want to delete the use"
+msgstr ""
+
+#: flask_app/templates/delete_use.html:6
+msgid "on machine"
+msgstr ""
+
+#: flask_app/templates/delete_use.html:12
+msgid "Tick to decrease machine cumulated hours"
+msgstr ""
+
+#: flask_app/templates/delete_use.html:17
+msgid "Yes, delete use"
 msgstr ""
 
 #: flask_app/templates/delete_user.html:5
@@ -537,7 +558,7 @@ msgstr ""
 
 #: flask_app/templates/view_authorizations.html:43
 #: flask_app/templates/view_interventions.html:55
-#: flask_app/templates/view_machines.html:51
+#: flask_app/templates/view_machines.html:60
 #: flask_app/templates/view_machinetypes.html:46
 #: flask_app/templates/view_maintenances.html:40
 #: flask_app/templates/view_roles.html:54
@@ -600,22 +621,30 @@ msgid "Last seen"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:17
+msgid "Remote login"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:18
+msgid "Remote logoff"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:19
 msgid "Actions"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:37
+#: flask_app/templates/view_machines.html:39
 msgid "EXPIRED"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:39
+#: flask_app/templates/view_machines.html:41
 msgid "OK"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:42 web/webapplication.py:99
+#: flask_app/templates/view_machines.html:44 web/webapplication.py:99
 msgid "hours"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:49
+#: flask_app/templates/view_machines.html:58
 msgid "View history"
 msgstr ""
 
@@ -660,11 +689,11 @@ msgstr ""
 
 #: flask_app/templates/view_maintenances.html:31
 msgid "Lcd message"
-msgstr "LCD short message"
+msgstr ""
 
 #: flask_app/templates/view_maintenances.html:35
 msgid "Instructions URL"
-msgstr "Instructions URL"
+msgstr ""
 
 #: flask_app/templates/view_roles.html:5
 msgid "This page configures the possible roles of FabLab users."
@@ -906,17 +935,42 @@ msgstr ""
 msgid "Intervention not found"
 msgstr ""
 
-#: web/routes_machines.py:47 web/routes_machines.py:89
+#: web/routes_machines.py:48 web/routes_machines.py:146
 msgid "Hours must be a positive number."
 msgstr ""
 
-#: web/routes_machines.py:50 web/routes_machines.py:92
+#: web/routes_machines.py:51 web/routes_machines.py:149
 msgid "Hours must be a number."
 msgstr ""
 
-#: web/routes_machines.py:73 web/routes_machines.py:100
-#: web/routes_machines.py:109 web/routes_uses.py:22 web/routes_uses.py:171
+#: web/routes_machines.py:74 web/routes_machines.py:102
+#: web/routes_machines.py:130 web/routes_machines.py:157
+#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:171
 msgid "Machine not found"
+msgstr ""
+
+#: web/routes_machines.py:84 web/routes_machines.py:112
+msgid "Your user needs a valid CARD ID to use this function"
+msgstr ""
+
+#: web/routes_machines.py:89 web/routes_machines.py:117
+msgid "Machine is not online:"
+msgstr ""
+
+#: web/routes_machines.py:96
+msgid "Remote start success"
+msgstr ""
+
+#: web/routes_machines.py:98
+msgid "Remote start failure"
+msgstr ""
+
+#: web/routes_machines.py:124
+msgid "Remote stop success"
+msgstr ""
+
+#: web/routes_machines.py:126
+msgid "Remote stop failure"
 msgstr ""
 
 #: web/routes_machinetypes.py:31 web/routes_machinetypes.py:70
@@ -1087,5 +1141,110 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Yes, delete use"
+#~ msgstr ""
+
+#~ msgid "Access control"
+#~ msgstr ""
+
+#~ msgid "Machine need to be authorized for users"
+#~ msgstr ""
+
+#~ msgid "No specific authorization required for users"
+#~ msgstr ""
+
+#~ msgid "LCD Message"
+#~ msgstr ""
+
+#~ msgid "instructions_url"
+#~ msgstr ""
+
+#~ msgid "Machines need to be authorized for user"
+#~ msgstr ""
+
+#~ msgid "No authorization required for machines"
+#~ msgstr ""
+
+#~ msgid "URL for instructions"
+#~ msgstr ""
+
+#~ msgid "Lcd message"
+#~ msgstr "LCD short message"
+
+#~ msgid "Instructions URL"
+#~ msgstr "Instructions URL"
+
+#~ msgid "Maintainer?"
+#~ msgstr ""
+
+#~ msgid "Restore database"
+#~ msgstr ""
+
+#~ msgid "Upload DB"
+#~ msgstr ""
+
+#~ msgid "Backend log file"
+#~ msgstr ""
+
+#~ msgid "Download"
+#~ msgstr ""
+
+#~ msgid "Serial number"
+#~ msgstr ""
+
+#~ msgid "Machine (ID)"
+#~ msgstr ""
+
+#~ msgid "FW Version"
+#~ msgstr ""
+
+#~ msgid "Free heap"
+#~ msgstr ""
+
+#~ msgid "Convert to new user"
+#~ msgstr ""
+
+#~ msgid "Invalid values for timeout or grace period or access control."
+#~ msgstr ""
+
+#~ msgid "File must have sqldb extension"
+#~ msgstr ""
+
+#~ msgid "Database was replaced. Previous copy can be found at "
+#~ msgstr ""
+
+#~ msgid "hour"
+#~ msgstr ""
+
+#~ msgid "minutes"
+#~ msgstr ""
+
+#~ msgid "minute"
+#~ msgstr ""
+
+#~ msgid "seconds ago"
+#~ msgstr ""
+
+#~ msgid "second ago"
+#~ msgstr ""
+
+#~ msgid "minutes ago"
+#~ msgstr ""
+
+#~ msgid "minute ago"
+#~ msgstr ""
+
+#~ msgid "hours ago"
+#~ msgstr ""
+
+#~ msgid "hour ago"
+#~ msgstr ""
+
+#~ msgid "days ago"
+#~ msgstr ""
+
+#~ msgid "day ago"
+#~ msgstr ""
+
+#~ msgid "Attachment"
 #~ msgstr ""
 
