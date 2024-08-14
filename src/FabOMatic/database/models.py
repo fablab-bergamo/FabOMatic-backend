@@ -306,6 +306,9 @@ class Machine(Base):
 
     def isOnline(self) -> bool:
         """Indicates is the last machine communication is less than 90s ago"""
+        if self.last_seen is None:
+            return False
+
         return time() - self.last_seen < 90
 
 
