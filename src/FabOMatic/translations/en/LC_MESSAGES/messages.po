@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-14 13:35+0200\n"
+"POT-Creation-Date: 2024-08-16 14:50+0200\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -616,7 +616,7 @@ msgid "Maintenance plan"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:72
+#: flask_app/templates/view_system.html:73
 msgid "Last seen"
 msgstr ""
 
@@ -745,73 +745,78 @@ msgid "System info"
 msgstr "System info"
 
 #: flask_app/templates/view_system.html:35
+#, fuzzy
+msgid "MQTT Status"
+msgstr "System status"
+
+#: flask_app/templates/view_system.html:36
 msgid "Machine info"
 msgstr ""
 
-#: flask_app/templates/view_system.html:36
+#: flask_app/templates/view_system.html:37
 msgid "Disk free space"
 msgstr ""
 
-#: flask_app/templates/view_system.html:37
+#: flask_app/templates/view_system.html:38
 msgid "Memory free space"
 msgstr ""
 
-#: flask_app/templates/view_system.html:38
+#: flask_app/templates/view_system.html:39
 msgid "Backend log file"
 msgstr ""
 
-#: flask_app/templates/view_system.html:38
+#: flask_app/templates/view_system.html:39
 msgid "Download"
 msgstr ""
 
-#: flask_app/templates/view_system.html:39
+#: flask_app/templates/view_system.html:40
 #, fuzzy
 msgid "Reboot system"
 msgstr "System info"
 
-#: flask_app/templates/view_system.html:47
+#: flask_app/templates/view_system.html:48
 msgid "Application info"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:51
+#: flask_app/templates/view_system.html:52
 msgid "Version installed"
 msgstr ""
 
-#: flask_app/templates/view_system.html:52
+#: flask_app/templates/view_system.html:53
 msgid "Version available"
 msgstr ""
 
-#: flask_app/templates/view_system.html:53
+#: flask_app/templates/view_system.html:54
 #, fuzzy
 msgid "Update application (pip)"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:55
+#: flask_app/templates/view_system.html:56
 #, fuzzy
 msgid "Restart application"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:62
+#: flask_app/templates/view_system.html:63
 msgid "Boards list"
 msgstr "Boards list"
 
-#: flask_app/templates/view_system.html:67
+#: flask_app/templates/view_system.html:68
 msgid "Serial number"
 msgstr ""
 
-#: flask_app/templates/view_system.html:68
+#: flask_app/templates/view_system.html:69
 msgid "Machine (ID)"
 msgstr ""
 
-#: flask_app/templates/view_system.html:69
+#: flask_app/templates/view_system.html:70
 msgid "IP address"
 msgstr ""
 
-#: flask_app/templates/view_system.html:70
+#: flask_app/templates/view_system.html:71
 msgid "FW Version"
 msgstr ""
 
-#: flask_app/templates/view_system.html:71
+#: flask_app/templates/view_system.html:72
 msgid "Free heap"
 msgstr ""
 
@@ -1021,11 +1026,11 @@ msgstr ""
 msgid "Role deleted successfully."
 msgstr ""
 
-#: web/routes_system.py:82
+#: web/routes_system.py:83
 msgid "File must have sqldb extension"
 msgstr ""
 
-#: web/routes_system.py:93
+#: web/routes_system.py:94
 msgid "Database was replaced. Previous copy can be found at "
 msgstr ""
 

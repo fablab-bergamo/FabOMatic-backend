@@ -149,6 +149,10 @@ def time_since(dt):
     return f"{seconds // 86400} " + gettext("day ago")
 
 
+@app.context_processor
+def inject_object():
+    return {'backend': app.backend}
+
 # Define routes
 @app.route("/")
 def index():
