@@ -32,6 +32,13 @@
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ _("MQTT Status") }}: 
+                        {% if backend.connected %}
+                            <i class="fa fa-check-square text-success" aria-hidden="true">&nbsp;OK</i>
+                        {%else%} 
+                            <i class="fa fa-exclamation-triangle text-danger" aria-hidden="true">&nbsp;ERROR</i>
+                        {%endif%}
+                    </li>
                     <li class="list-group-item">{{ _("Machine info") }}: {{ machine_info }}</li>
                     <li class="list-group-item">{{ _("Disk free space") }} (MB): {{ disk_free }}</li>
                     <li class="list-group-item">{{ _("Memory free space") }} (MB): {{ ram_free }}</li>
