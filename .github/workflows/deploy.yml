@@ -5,7 +5,9 @@ name: Build, test, and publish on PyPi
 
 on:
   workflow_dispatch:
-    
+  push:
+    tags:
+      - '*'
 jobs:
   build:
 
