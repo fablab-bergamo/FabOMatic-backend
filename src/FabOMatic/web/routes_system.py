@@ -98,7 +98,7 @@ def upload_db():
 @login_required
 def update_app():
     upgrade_output = subprocess.run(
-        ["pip", "install", "-i", "https://pypi.org/simple/", "FabOMatic", "--upgrade"],
+        ["pip", "install", "FabOMatic", "--upgrade"],
         check=True,
         text=True,
         capture_output=True,
@@ -107,7 +107,7 @@ def update_app():
     # Restart the application using Systemd
     if platform.system() != "Windows":
         restart_output = subprocess.run(
-            ["systemctl", "--user", "restart", "fablab"], check=True, text=True, capture_output=True
+            ["systemctl", "--user", "restart", "FabOMatic.service"], check=True, text=True, capture_output=True
         )
         restart_output = f"Restart output:\n{restart_output.stdout}"
     else:
