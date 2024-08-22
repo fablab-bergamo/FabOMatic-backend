@@ -37,6 +37,9 @@ def delete_use(use_id):
         # Correct machine cumulated hours if requested.
         correct = request.form.get("correctTotal", type=str, default="")
         if correct == "on":
+            # We may delete a use record which is not yet closed.
+            if use.end_timestamp is None:
+                use.end_timestamp = use.last_seen
             duration = use.end_timestamp - use.start_timestamp
             machine = session.query(Machine).filter_by(machine_id=use.machine_id).one()
             if machine and duration > 0:
