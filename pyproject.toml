@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
     "SQLAlchemy>=2.0.25",
     "toml==0.10.2",
-    "paho-mqtt<2.0.0",
+    "paho-mqtt==2.1.0",
     "colorlog",
     "flask>=2.3.0",
     "flask-login",
