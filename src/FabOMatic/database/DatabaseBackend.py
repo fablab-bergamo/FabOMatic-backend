@@ -5,12 +5,11 @@ from os import path
 from os.path import dirname, abspath
 import logging
 from time import time
-import toml
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.orm.exc import NoResultFound
-
-from FabOMatic.database.models import MachineType, Role, Use, User, Machine, Maintenance
+from FabOMatic.conf import FabConfig
+from FabOMatic.database.models import MachineType, Role, Use, User, Machine
 
 from .repositories import (
     BoardsRepository,
@@ -28,62 +27,24 @@ from .repositories import (
 )
 
 MODULE_DIR = dirname(dirname(abspath(__file__)))
-CONFIG_FILE = path.join(MODULE_DIR, "conf", "settings.toml")
 MIGRATIONS_DIR = path.join(MODULE_DIR, "alembic")
-
-
-def getSetting(section: str, setting: str, settings_path: str = CONFIG_FILE) -> str:
-    """Return setting from settings.toml.
-
-    Args:
-        setting (str): Setting to return
-        section (str): Section of setting
-        settings_path (str, optional): Path to settings.toml. Defaults to CONFIG_FILE.
-    """
-    settings = toml.load(settings_path)
-    return settings[section][setting]
-
-
-def getDatabaseUrl(settings_path: str = CONFIG_FILE) -> str:
-    # Get the database URL
-    db_url = getSetting("database", "url", settings_path)
-
-    # Check if it's a SQLite URL
-    if db_url.startswith("sqlite:///"):
-        # Remove the prefix to get the file path
-        file_path = db_url[len("sqlite:///") :]
-
-        # Get the absolute path
-        absolute_path = os.path.abspath(file_path)
-
-        # Add the prefix back to get the absolute URL
-        absolute_url = "sqlite:///" + absolute_path
-    else:
-        # If it's not a SQLite URL, just use it as is
-        absolute_url = db_url
-    return absolute_url
 
 
 class DatabaseBackend:
     """Class handling the connection from and to the database."""
 
-    def __init__(self, settings_path=CONFIG_FILE) -> None:
-        """Create instance of Database.
+    def __init__(self) -> None:
+        """Create instance of Database."""
 
-        Args:
-            settings_path (str, optional): TOML file settings. Defaults to CONFIG_FILE
-        """
-        self._settings_path = settings_path
         self._settings = None
-
         self._loadSettings()
         self._connect()
 
     def _loadSettings(self) -> None:
         """Load settings from TOML file."""
-        self._settings = toml.load(self._settings_path)
-        self._url = getDatabaseUrl(self._settings_path)
-        self._name = self._settings["database"]["name"]
+        self._settings = FabConfig.loadSettings()
+        self._url = FabConfig.getDatabaseUrl()
+        self._name = FabConfig.getSetting("database", "name")
 
     def _connect(self) -> None:
         """Connect to the database."""
@@ -291,7 +252,7 @@ class DatabaseBackend:
                 surname="admin",
                 role_id=r1.role_id,
                 card_UUID="12345678",
-                email=getSetting("web", "default_admin_email"),
+                email=FabConfig.getSetting("web", "default_admin_email"),
             )
             u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
             self.getUserRepository(session).create(u1)
