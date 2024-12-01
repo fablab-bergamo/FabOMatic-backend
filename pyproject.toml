@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "FabOMatic"
-version = "0.7.0"
+version = "0.7.1"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -19,20 +19,20 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "SQLAlchemy==2.0.25",
+    "SQLAlchemy==2.0.36",
     "toml==0.10.2",
     "paho-mqtt<2.0.0",
     "colorlog",
-    "flask==2.3.2",
+    "flask==2.3.3",
     "flask-login==0.6.3",
-    "pyopenssl==24.0.0",
-    "flask-mail==0.9.1",
+    "pyopenssl==24.3.0",
+    "flask-mail==0.10.0",
     "itsdangerous",
     "alembic",
     "psutil",
     "flask-excel",
     "pyexcel-xlsx",
-    "requests==2.30.0",
+    "requests==2.32.3",
     "Flask-Babel==4.0.0",
 ]
 
