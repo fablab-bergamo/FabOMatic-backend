@@ -19,21 +19,21 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "SQLAlchemy==2.0.36",
+    "SQLAlchemy>=2.0.25",
     "toml==0.10.2",
     "paho-mqtt<2.0.0",
     "colorlog",
-    "flask==2.3.3",
-    "flask-login==0.6.3",
-    "pyopenssl==24.3.0",
-    "flask-mail==0.10.0",
+    "flask>=2.3.0",
+    "flask-login",
+    "pyopenssl>=24.0",
+    "flask-mail",
     "itsdangerous",
     "alembic",
     "psutil",
     "flask-excel",
     "pyexcel-xlsx",
-    "requests==2.32.3",
-    "Flask-Babel==4.0.0",
+    "requests",
+    "Flask-Babel",
 ]
 
 [project.optional-dependencies]
