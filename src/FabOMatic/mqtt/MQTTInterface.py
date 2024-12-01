@@ -199,7 +199,10 @@ class MQTTInterface:
         """
         Connects to the MQTT broker.
         """
-        self._client = mqtt.Client(self._client_id, clean_session=False)
+        self._client = mqtt.Client(
+            callback_api_version=mqtt.CallbackAPIVersion.VERSION1, client_id=self._client_id, clean_session=False
+        )
+
         self._client.on_message = self._onMessage
         self._client.on_disconnect = self._onDisconnect
         self._client.on_connect = self._onConnect
