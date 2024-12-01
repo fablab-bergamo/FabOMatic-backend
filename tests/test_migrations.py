@@ -8,8 +8,9 @@ import os
 # Import Module
 import shutil
 
-from FabOMatic.database.DatabaseBackend import DatabaseBackend, getDatabaseUrl
-from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, configure_logger
+from FabOMatic.database.DatabaseBackend import DatabaseBackend
+from FabOMatic.conf import FabConfig
+from tests.common import get_empty_test_db, configure_logger
 
 
 class TestMigrations(unittest.TestCase):
@@ -17,7 +18,7 @@ class TestMigrations(unittest.TestCase):
         src_dir = os.path.join(os.path.dirname(__file__), "databases")
         for file in os.listdir(src_dir):
             source = os.path.abspath(os.path.join(src_dir, file))
-            dest = getDatabaseUrl(TEST_SETTINGS_PATH)
+            dest = FabConfig.getDatabaseUrl()
             if dest.startswith("sqlite:///"):
                 # Remove the prefix to get the file path
                 dest = dest[len("sqlite:///") :]
@@ -30,7 +31,7 @@ class TestMigrations(unittest.TestCase):
             self.performUpgrade(file)
 
     def performUpgrade(self, file: str):
-        backend = DatabaseBackend(TEST_SETTINGS_PATH)
+        backend = DatabaseBackend()
         print("Testing upgrade for file : ", file)
         try:
             backend.createAndUpdateDatabase()

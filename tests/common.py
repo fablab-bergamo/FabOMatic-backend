@@ -8,11 +8,11 @@ from time import time
 
 from sqlalchemy import text
 
-from FabOMatic.database.DatabaseBackend import DatabaseBackend, getSetting
+from FabOMatic.database.DatabaseBackend import DatabaseBackend
 from FabOMatic.database.models import Machine, MachineType, Maintenance, Role, Use, User, Intervention
+from FabOMatic.conf import FabConfig
 
-FIXTURE_DIR = os.path.dirname(os.path.realpath(__file__))
-TEST_SETTINGS_PATH = os.path.join(FIXTURE_DIR, "test_settings.toml")
+FabConfig.useTestSettings = True
 
 
 def configure_logger():
@@ -47,7 +47,7 @@ def get_empty_test_db() -> DatabaseBackend:
     Returns:
         DatabaseBackend: An instance of DatabaseBackend with an empty database.
     """
-    d = DatabaseBackend(TEST_SETTINGS_PATH)
+    d = DatabaseBackend()
     d.deleteExistingDatabase()
     d.createAndUpdateDatabase()
     d.dropContents()
@@ -61,7 +61,7 @@ def seed_test_db() -> DatabaseBackend:
     Returns:
         DatabaseBackend: The seeded database instance.
     """
-    empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
+    empty_db = DatabaseBackend()
     empty_db.deleteExistingDatabase()
     empty_db.createAndUpdateDatabase()
     empty_db.dropContents()
@@ -84,7 +84,7 @@ def seed_test_db() -> DatabaseBackend:
             surname="admin",
             role_id=r1.role_id,
             card_UUID="12345678",
-            email=getSetting("web", "default_admin_email"),
+            email=FabConfig.getSetting("web", "default_admin_email"),
         )
 
         u1.set_password(User.DEFAULT_ADMIN_PASSWORD)
@@ -166,7 +166,7 @@ def get_simple_db() -> DatabaseBackend:
     Returns:
         DatabaseBackend: An instance of the created database.
     """
-    empty_db = DatabaseBackend(TEST_SETTINGS_PATH)
+    empty_db = DatabaseBackend()
     empty_db.deleteExistingDatabase()
     empty_db.createAndUpdateDatabase()
     empty_db.dropContents()

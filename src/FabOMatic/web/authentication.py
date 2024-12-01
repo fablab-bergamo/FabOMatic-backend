@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required
 from flask import render_template, request, redirect, url_for, flash
 from .webapplication import DBSession, app
 from FabOMatic.database.models import User
-from FabOMatic.database.DatabaseBackend import getSetting
+from FabOMatic.conf import FabConfig
 from flask_mail import Mail, Message
 from flask_babel import gettext
 
@@ -11,11 +11,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-app.config["MAIL_SERVER"] = getSetting("email", "server")
-app.config["MAIL_PORT"] = getSetting("email", "port")
-app.config["MAIL_USE_TLS"] = getSetting("email", "use_tls")
-app.config["MAIL_USERNAME"] = getSetting("email", "username")
-app.config["MAIL_PASSWORD"] = getSetting("email", "password")
+app.config["MAIL_SERVER"] = FabConfig.getSetting("email", "server")
+app.config["MAIL_PORT"] = FabConfig.getSetting("email", "port")
+app.config["MAIL_USE_TLS"] = FabConfig.getSetting("email", "use_tls")
+app.config["MAIL_USERNAME"] = FabConfig.getSetting("email", "username")
+app.config["MAIL_PASSWORD"] = FabConfig.getSetting("email", "password")
 
 mail = Mail(app)
 

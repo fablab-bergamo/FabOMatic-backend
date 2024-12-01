@@ -1,15 +1,11 @@
 """ A module for the MQTTInterface class. """
 
 import logging
-import os
 import json
 from time import sleep
-import toml
 import paho.mqtt.client as mqtt
 from .mqtt_types import BaseJson, Parser
-
-MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_FILE = os.path.join(MODULE_DIR, "conf", "settings.toml")
+from FabOMatic.conf import FabConfig
 
 
 class MQTTInterface:
@@ -31,18 +27,19 @@ class MQTTInterface:
         _msg_recv_count (int): The count of received messages.
     """
 
-    def __init__(self, path=CONFIG_FILE):
+    def __init__(self):
         """
         Initializes an instance of the MQTTInterface class.
 
         Args:
             path (str, optional): The path to the MQTT settings file. Defaults to CONFIG_FILE.
         """
-        self._settings_path = path
+        self._settings = FabConfig.loadSubSettings("MQTT")
+        self._loadSettings()
+
         self._messageCallback = None
         self._connected = False
         self._handlers = {}
-        self._loadSettings()
         self._msg_send_count = 0
         self._msg_recv_count = 0
 
@@ -50,20 +47,19 @@ class MQTTInterface:
         """
         Loads the MQTT settings from the settings file.
         """
-        settings: dict = toml.load(self._settings_path)["MQTT"]
-        self._broker = settings["broker"]
-        self._port = settings["port"]
-        self._client_id = settings["client_id"]
-        self._topic = settings["topic"]
-        self._reply_subtopic = settings["reply_subtopic"]
+        self._broker = self._settings["broker"]
+        self._port = self._settings["port"]
+        self._client_id = self._settings["client_id"]
+        self._topic = self._settings["topic"]
+        self._reply_subtopic = self._settings["reply_subtopic"]
 
-        if "request_subtopic" in settings.keys():
-            self._request_subtopic = settings["request_subtopic"]
+        if "request_subtopic" in self._settings.keys():
+            self._request_subtopic = self._settings["request_subtopic"]
         else:
             self._request_subtopic = "/request"
 
-        self._statsTopic = settings["stats_topic"] + "/" + self._client_id
-        logging.info("Loaded MQTT settings from file %s", self._settings_path)
+        self._statsTopic = self._settings["stats_topic"] + "/" + self._client_id
+        logging.info("Loaded MQTT settings")
 
     def _extractMachineFromTopic(self, topic: str) -> str:
         """
