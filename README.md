@@ -75,7 +75,8 @@ wget https://raw.githubusercontent.com/espressif/arduino-esp32/master/tools/espo
 pip install FabOMatic
 ```
 
-* Change defaults in conf/settings.toml (see below)
+* In the package installation directory, copy src/FabOMatic/conf/settings.example.toml into settings.toml and edit settings.
+  On first run, if the settings.toml file is missing, the settings.example.toml file will be copied and used instead.
 
 * Test it with
 
@@ -105,9 +106,11 @@ pip install FabOMatic --upgrade
 
 * Database upgrades are applied by Alembic at start of the backend and shall not need user interaction.
 
-## Configuration file defaults
+## Configuration file
 
-* See file conf\settings.toml to setup MQTT server, database connections, SMTP for "forgot password" email. Example below
+* For configuration, the file src/FabOMatic/conf/settings.toml in package installation directory is used.
+* It contains configuration info for MQTT server (mandatory), database connection string (mandatory), SMTP for "forgot password" email (not mandatory)
+* Example below
 
 ```text
 [database]
