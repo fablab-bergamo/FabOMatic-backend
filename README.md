@@ -247,3 +247,4 @@ journalctl --vacuum-time=1y
 | 0.4.0 | June 2024 | Buffered messages sent by Fab-O-Matic boards are flagged with a clock icon. |
 | 0.5.0 | June 2024 | First release on PyPi. Renamed to FabOMatic. Added GDPR compliance (purge function) |
 | 0.6.0 | August 2024 | Added remote commands from backend for cloud-enabled printers like BambuLab |
+| 0.7.0 | December 2024 | Bugfix release, no new features |
