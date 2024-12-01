@@ -585,16 +585,22 @@ class TestDB(unittest.TestCase):
 
             userID1 = user_repo.get_by_id(1)
             machine = machine_repo.get_by_id(1)
-
+            initial_hours = machine.machine_hours
             # create simple use
             self.assertEqual(len(userID1.uses), 0, "No previous user records should exist")
             self.assertTrue(use_repo.startUse(machine.machine_id, user=userID1, timestamp=time(), is_replay=False))
             self.assertEqual(len(userID1.uses), 1, "User start of usage is registered correctly")
 
-            use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1, is_replay=False)
+            use_repo.endUse(machine_id=machine.machine_id, user=userID1, duration_s=1000, is_replay=False)
+
+            session.commit()
 
             self.assertEqual(len(userID1.uses), 1, "User usage has been closed correctly")
             self.assertEqual(len(machine.uses), 1, "Machine use not added correctly")
+
+            self.assertAlmostEqual(
+                initial_hours + 1000 / 3600.0, machine.machine_hours, None, "Machine hours not updated", 0.01
+            )
 
             use_repo.delete(userID1.uses[0])
 
