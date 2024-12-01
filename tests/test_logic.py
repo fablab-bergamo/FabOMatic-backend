@@ -15,11 +15,12 @@ from FabOMatic.mqtt.mqtt_types import (
 from FabOMatic.mqtt.MQTTInterface import MQTTInterface
 from FabOMatic.logic.MsgMapper import MsgMapper
 from FabOMatic.logic.MachineLogic import MachineLogic
-from tests.common import get_simple_db
+from tests.common import get_simple_db, configure_logger
 
 
 class TestLogic(unittest.TestCase):
     def test_missed_messages_1(self):
+        configure_logger()
         db = get_simple_db()
         with db.getSession() as session:
             MachineLogic.database = db
@@ -87,6 +88,8 @@ class TestLogic(unittest.TestCase):
                     use_repo.delete(use)
 
                 session.commit()
+                initial_hours = mac.machine_hours
+                expected_hours = initial_hours
 
                 for d in range(10):
                     # Call inUse without startUse
@@ -128,7 +131,7 @@ class TestLogic(unittest.TestCase):
                 )
                 self.assertIsNone(usage.end_timestamp, "Usage end timestamp is not None (2)")
 
-                response = ml.endUse("1234", 1, False)
+                response = ml.endUse("1234", 1000, False)
                 self.assertTrue(response.request_ok, "endUse failed")
 
                 session.commit()
@@ -141,6 +144,11 @@ class TestLogic(unittest.TestCase):
                 self.assertIsNotNone(usage.end_timestamp, f"Usage end timestamp is None : {response}")
                 # Check that we have two records
                 self.assertEqual(len(use_repo.get_all()), 2, "wrong number of request")
+
+                expected_hours = initial_hours + (10 + 1000) / 3600.0
+                session.commit()
+
+                self.assertAlmostEqual(expected_hours, mac.machine_hours, None, "Total hours not updated", 0.01)
 
     def test_machine_logic(self):
         db = get_simple_db()
@@ -169,6 +177,7 @@ class TestLogic(unittest.TestCase):
 
             mac.blocked = False
             db.getMachineRepository(session).update(mac)
+            initial_hours = mac.machine_hours
 
             query = AliveQuery("0.1.32", "127.0.0.1", "SN0", 1000)
             ml.machineAlive(query)
@@ -184,11 +193,20 @@ class TestLogic(unittest.TestCase):
             response = ml.startUse("1234", True)
             self.assertTrue(response.request_ok, "startUse failed")
 
-            response = ml.inUse("1234", 1)
+            duration_s = 1256
+
+            response = ml.inUse("1234", duration_s - 1)
             self.assertTrue(response.request_ok, "inUse failed")
 
-            response = ml.endUse("1234", 123, True)
+            response = ml.endUse("1234", duration_s, True)
             self.assertTrue(response.request_ok, "endUse failed")
+
+        with db.getSession() as session:
+            mac = db.getMachineRepository(session).get_by_id(mac.machine_id)
+            final_hours = mac.machine_hours
+            self.assertAlmostEqual(
+                initial_hours + duration_s / 3600.0, final_hours, None, "Total hours not updated", 0.01
+            )
 
             ml.registerMaintenance("1234", False)
             self.assertTrue(response.request_ok, "registerMaintenance failed")
@@ -286,3 +304,8 @@ class TestLogic(unittest.TestCase):
             self.assertTrue(
                 response.is_valid, "isAuthorized returns invalid while machine type has no authorization required"
             )
+
+
+if __name__ == "__main__":
+    configure_logger()
+    unittest.main()
