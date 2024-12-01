@@ -6,12 +6,12 @@ import unittest
 
 from FabOMatic.database.DatabaseBackend import DatabaseBackend
 from FabOMatic.database.models import User, Role
-from tests.common import TEST_SETTINGS_PATH, get_empty_test_db, configure_logger
+from tests.common import get_empty_test_db, configure_logger
 
 
 class TestAuth(unittest.TestCase):
     def test_connection(self):
-        _ = DatabaseBackend(TEST_SETTINGS_PATH)
+        _ = DatabaseBackend()
 
     def test_user_auth(self):
         empty_db = get_empty_test_db()

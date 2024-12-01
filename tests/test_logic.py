@@ -15,7 +15,7 @@ from FabOMatic.mqtt.mqtt_types import (
 from FabOMatic.mqtt.MQTTInterface import MQTTInterface
 from FabOMatic.logic.MsgMapper import MsgMapper
 from FabOMatic.logic.MachineLogic import MachineLogic
-from tests.common import TEST_SETTINGS_PATH, get_simple_db
+from tests.common import get_simple_db
 
 
 class TestLogic(unittest.TestCase):
@@ -199,7 +199,7 @@ class TestLogic(unittest.TestCase):
     def test_msg_mapper(self):
         db = get_simple_db()
 
-        mqtt = MQTTInterface(TEST_SETTINGS_PATH)
+        mqtt = MQTTInterface()
         mqtt.connect()
         mapper = MsgMapper(mqtt, db)
         mapper.registerHandlers()

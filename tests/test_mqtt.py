@@ -19,7 +19,7 @@ from FabOMatic.mqtt.mqtt_types import (
 )
 from FabOMatic.mqtt.MQTTInterface import MQTTInterface
 from FabOMatic.logic.MsgMapper import MsgMapper
-from tests.common import TEST_SETTINGS_PATH, get_simple_db
+from tests.common import get_simple_db
 
 
 class TestMQTT(unittest.TestCase):
@@ -90,7 +90,7 @@ class TestMQTT(unittest.TestCase):
         self.assertEqual(json_response, '{"request_type": "stop", "uid": "6"}')
 
     def test_init(self):
-        d = MQTTInterface(TEST_SETTINGS_PATH)
+        d = MQTTInterface()
         self.assertIsNotNone(d)
         d.connect()
         self.assertTrue(d.connected)
@@ -101,7 +101,7 @@ class TestMQTT(unittest.TestCase):
 
         db = get_simple_db()
         session = db.getSession()
-        mqtt = MQTTInterface(TEST_SETTINGS_PATH)
+        mqtt = MQTTInterface()
         mapper = MsgMapper(mqtt, db)
         mapper.registerHandlers()
         mqtt.connect()
