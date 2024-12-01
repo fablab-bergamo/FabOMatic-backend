@@ -12,7 +12,7 @@ from flask_babel import gettext
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from FabOMatic.database.models import Base
-from FabOMatic.database.DatabaseBackend import getSetting, getDatabaseUrl
+from FabOMatic.conf import FabConfig
 from FabOMatic.database.repositories import MachineRepository
 from flask_babel import Babel
 import flask_excel as excel
@@ -24,9 +24,9 @@ UPLOAD_FOLDER = os.path.join(MODULE_DIR, "flask_app", "upload")
 ALLOWED_EXTENSIONS = {"txt", "pdf", "docx"}
 
 app = Flask(__name__, template_folder=FLASK_TEMPLATES_FOLDER, static_folder=FLASK_STATIC_FOLDER)
-app.config["SECRET_KEY"] = getSetting("web", "secret_key")
+app.config["SECRET_KEY"] = FabConfig.getSetting("web", "secret_key")
 
-engine = create_engine(getDatabaseUrl(), echo=False)
+engine = create_engine(FabConfig.getDatabaseUrl(), echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 
@@ -151,7 +151,8 @@ def time_since(dt):
 
 @app.context_processor
 def inject_object():
-    return {'backend': app.backend}
+    return {"backend": app.backend}
+
 
 # Define routes
 @app.route("/")

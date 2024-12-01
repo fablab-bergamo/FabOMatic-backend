@@ -7,7 +7,7 @@ from flask_login import login_required
 from flask_babel import gettext
 from importlib.metadata import version
 
-from FabOMatic.database.DatabaseBackend import getDatabaseUrl
+from FabOMatic.conf import FabConfig
 from FabOMatic.database.repositories import BoardsRepository
 from .webapplication import DBSession, app
 import os
@@ -21,7 +21,7 @@ import requests
 @app.route("/system")
 @login_required
 def system():
-    db_file = getDatabaseUrl().replace("sqlite:///", "")
+    db_file = FabConfig.getDatabaseUrl().replace("sqlite:///", "")
     db_size = os.path.getsize(db_file)
     # Returns information about the host machine (Raspberry Pi)
     machine_info = f"{platform.uname() }, CPU:{os.cpu_count()}"
@@ -59,7 +59,7 @@ def system():
 @login_required
 def download_db():
     # Returns of copy of the SQLite database to the user
-    db_file = getDatabaseUrl().replace("sqlite:///", "")
+    db_file = FabConfig.getDatabaseUrl().replace("sqlite:///", "")
     return send_file(db_file, as_attachment=True)
 
 
@@ -83,7 +83,7 @@ def upload_db():
         redirect(url_for("system"))
 
     # Backup existing file
-    actual_db_file = getDatabaseUrl().replace("sqlite:///", "")
+    actual_db_file = FabConfig.getDatabaseUrl().replace("sqlite:///", "")
     backup_copy = actual_db_file + ".bak"
     shutil.copyfile(actual_db_file, backup_copy)
 
