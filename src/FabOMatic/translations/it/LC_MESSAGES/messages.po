@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-16 14:50+0200\n"
+"POT-Creation-Date: 2025-03-29 09:34+0100\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -84,7 +84,7 @@ msgid "Add Intervention"
 msgstr "Aggiungi intervento"
 
 #: flask_app/templates/add_intervention.html:8
-#: flask_app/templates/base_body.html:27
+#: flask_app/templates/base_body.html:32
 #: flask_app/templates/view_interventions.html:34
 msgid "Maintenance"
 msgstr "Manutenzione"
@@ -251,46 +251,46 @@ msgstr "Tessera UUID"
 msgid "User is disabled"
 msgstr "Disabilitato?"
 
-#: flask_app/templates/base_body.html:15 flask_app/templates/view_users.html:5
+#: flask_app/templates/base_body.html:20 flask_app/templates/view_users.html:5
 msgid "Users"
 msgstr "Utenti"
 
-#: flask_app/templates/base_body.html:18
+#: flask_app/templates/base_body.html:23
 #: flask_app/templates/view_machines.html:4
 msgid "Machines"
 msgstr "Macchine"
 
-#: flask_app/templates/base_body.html:21
+#: flask_app/templates/base_body.html:26
 msgid "History"
 msgstr "Storico"
 
-#: flask_app/templates/base_body.html:24
+#: flask_app/templates/base_body.html:29
 #: flask_app/templates/view_authorizations.html:3
 msgid "Authorizations"
 msgstr "Abilitazioni"
 
-#: flask_app/templates/base_body.html:30
+#: flask_app/templates/base_body.html:35
 #: flask_app/templates/view_interventions.html:5
 msgid "Interventions"
 msgstr "Interventi"
 
-#: flask_app/templates/base_body.html:33 flask_app/templates/view_roles.html:4
+#: flask_app/templates/base_body.html:38 flask_app/templates/view_roles.html:4
 msgid "Roles"
 msgstr "Ruoli"
 
-#: flask_app/templates/base_body.html:36
+#: flask_app/templates/base_body.html:41
 msgid "Machine types"
 msgstr "Tipologie"
 
-#: flask_app/templates/base_body.html:39
+#: flask_app/templates/base_body.html:44
 msgid "System"
 msgstr "Sistema"
 
-#: flask_app/templates/base_body.html:42
+#: flask_app/templates/base_body.html:47
 msgid "Logout"
 msgstr "Logout"
 
-#: flask_app/templates/base_body.html:46 flask_app/templates/login.html:14
+#: flask_app/templates/base_body.html:51 flask_app/templates/login.html:14
 msgid "Login"
 msgstr "Login"
 
@@ -620,7 +620,7 @@ msgid "Maintenance plan"
 msgstr "Manutenzione"
 
 #: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:73
+#: flask_app/templates/view_system.html:79
 msgid "Last seen"
 msgstr "Ultimo contatto"
 
@@ -752,71 +752,71 @@ msgstr "Info sistema"
 msgid "MQTT Status"
 msgstr "Connessione broker MQTT"
 
-#: flask_app/templates/view_system.html:36
+#: flask_app/templates/view_system.html:42
 msgid "Machine info"
 msgstr "Informazioni server"
 
-#: flask_app/templates/view_system.html:37
+#: flask_app/templates/view_system.html:43
 msgid "Disk free space"
 msgstr "Spazio disco disponibile"
 
-#: flask_app/templates/view_system.html:38
+#: flask_app/templates/view_system.html:44
 msgid "Memory free space"
 msgstr "Memoria RAM disponibile"
 
-#: flask_app/templates/view_system.html:39
+#: flask_app/templates/view_system.html:45
 msgid "Backend log file"
 msgstr "Log file del backend"
 
-#: flask_app/templates/view_system.html:39
+#: flask_app/templates/view_system.html:45
 msgid "Download"
 msgstr "Scarica database"
 
-#: flask_app/templates/view_system.html:40
+#: flask_app/templates/view_system.html:46
 msgid "Reboot system"
 msgstr "Riavvia host"
 
-#: flask_app/templates/view_system.html:48
+#: flask_app/templates/view_system.html:54
 msgid "Application info"
 msgstr "Info applicativo"
 
-#: flask_app/templates/view_system.html:52
+#: flask_app/templates/view_system.html:58
 msgid "Version installed"
 msgstr "Versione installata"
 
-#: flask_app/templates/view_system.html:53
+#: flask_app/templates/view_system.html:59
 msgid "Version available"
 msgstr "Versione disponibile"
 
-#: flask_app/templates/view_system.html:54
+#: flask_app/templates/view_system.html:60
 msgid "Update application (pip)"
 msgstr "Aggiorna applicativo (pip)"
 
-#: flask_app/templates/view_system.html:56
+#: flask_app/templates/view_system.html:62
 msgid "Restart application"
 msgstr "Riavvio applicativo"
 
-#: flask_app/templates/view_system.html:63
+#: flask_app/templates/view_system.html:69
 msgid "Boards list"
 msgstr "Elenco boards"
 
-#: flask_app/templates/view_system.html:68
+#: flask_app/templates/view_system.html:74
 msgid "Serial number"
 msgstr "Serial number"
 
-#: flask_app/templates/view_system.html:69
+#: flask_app/templates/view_system.html:75
 msgid "Machine (ID)"
 msgstr "Macchina (ID)"
 
-#: flask_app/templates/view_system.html:70
+#: flask_app/templates/view_system.html:76
 msgid "IP address"
 msgstr "Indirizzo IP"
 
-#: flask_app/templates/view_system.html:71
+#: flask_app/templates/view_system.html:77
 msgid "FW Version"
 msgstr "Versione firmware"
 
-#: flask_app/templates/view_system.html:72
+#: flask_app/templates/view_system.html:78
 msgid "Free heap"
 msgstr "Heap libero"
 
@@ -950,7 +950,7 @@ msgstr "Il campo Ore deve essere un numero."
 
 #: web/routes_machines.py:74 web/routes_machines.py:102
 #: web/routes_machines.py:130 web/routes_machines.py:157
-#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:171
+#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:174
 msgid "Machine not found"
 msgstr "Macchina non trovata."
 
@@ -1028,11 +1028,11 @@ msgstr "Impossibile modificare ruolo riservato."
 msgid "Role deleted successfully."
 msgstr "Ruolo cancellato con successo."
 
-#: web/routes_system.py:83
+#: web/routes_system.py:82
 msgid "File must have sqldb extension"
 msgstr "Il file deve avere estensione sqldb"
 
-#: web/routes_system.py:94
+#: web/routes_system.py:93
 msgid "Database was replaced. Previous copy can be found at "
 msgstr "Database sostituito. La copia precendete è disponibile in "
 
@@ -1063,27 +1063,27 @@ msgstr ""
 msgid "This card ID is already assigned to another user"
 msgstr "Questa tessera è già assegnata ad un altro utente"
 
-#: web/routes_uses.py:47
+#: web/routes_uses.py:50
 msgid "Use deleted successfully."
 msgstr "Uso cancellato con successo."
 
-#: web/routes_uses.py:116
+#: web/routes_uses.py:119
 msgid "Invalid start timestamp."
 msgstr "Data-ora inizio non valida."
 
-#: web/routes_uses.py:126
+#: web/routes_uses.py:129
 msgid "End timestamp cannot be before start timestamp."
 msgstr "La data-ora fine non può essere anteriore alla data-ora inizio."
 
-#: web/routes_uses.py:132
+#: web/routes_uses.py:135
 msgid "Machine not found."
 msgstr "Macchina non trovata."
 
-#: web/routes_uses.py:138
+#: web/routes_uses.py:141
 msgid "User not found."
 msgstr "Utente non trovato."
 
-#: web/routes_uses.py:154
+#: web/routes_uses.py:157
 msgid "Registration added successfully."
 msgstr "Uso registrato con successo."
 
