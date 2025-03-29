@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-16 14:50+0200\n"
+"POT-Creation-Date: 2025-03-29 09:34+0100\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -84,7 +84,7 @@ msgid "Add Intervention"
 msgstr ""
 
 #: flask_app/templates/add_intervention.html:8
-#: flask_app/templates/base_body.html:27
+#: flask_app/templates/base_body.html:32
 #: flask_app/templates/view_interventions.html:34
 msgid "Maintenance"
 msgstr ""
@@ -250,47 +250,47 @@ msgstr ""
 msgid "User is disabled"
 msgstr ""
 
-#: flask_app/templates/base_body.html:15 flask_app/templates/view_users.html:5
+#: flask_app/templates/base_body.html:20 flask_app/templates/view_users.html:5
 msgid "Users"
 msgstr ""
 
-#: flask_app/templates/base_body.html:18
+#: flask_app/templates/base_body.html:23
 #: flask_app/templates/view_machines.html:4
 msgid "Machines"
 msgstr ""
 
-#: flask_app/templates/base_body.html:21
+#: flask_app/templates/base_body.html:26
 msgid "History"
 msgstr ""
 
-#: flask_app/templates/base_body.html:24
+#: flask_app/templates/base_body.html:29
 #: flask_app/templates/view_authorizations.html:3
 msgid "Authorizations"
 msgstr ""
 
-#: flask_app/templates/base_body.html:30
+#: flask_app/templates/base_body.html:35
 #: flask_app/templates/view_interventions.html:5
 msgid "Interventions"
 msgstr ""
 
-#: flask_app/templates/base_body.html:33 flask_app/templates/view_roles.html:4
+#: flask_app/templates/base_body.html:38 flask_app/templates/view_roles.html:4
 msgid "Roles"
 msgstr ""
 
-#: flask_app/templates/base_body.html:36
+#: flask_app/templates/base_body.html:41
 msgid "Machine types"
 msgstr ""
 
-#: flask_app/templates/base_body.html:39
+#: flask_app/templates/base_body.html:44
 #, fuzzy
 msgid "System"
 msgstr "System info"
 
-#: flask_app/templates/base_body.html:42
+#: flask_app/templates/base_body.html:47
 msgid "Logout"
 msgstr ""
 
-#: flask_app/templates/base_body.html:46 flask_app/templates/login.html:14
+#: flask_app/templates/base_body.html:51 flask_app/templates/login.html:14
 msgid "Login"
 msgstr ""
 
@@ -616,7 +616,7 @@ msgid "Maintenance plan"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:73
+#: flask_app/templates/view_system.html:79
 msgid "Last seen"
 msgstr ""
 
@@ -749,74 +749,74 @@ msgstr "System info"
 msgid "MQTT Status"
 msgstr "System status"
 
-#: flask_app/templates/view_system.html:36
+#: flask_app/templates/view_system.html:42
 msgid "Machine info"
 msgstr ""
 
-#: flask_app/templates/view_system.html:37
+#: flask_app/templates/view_system.html:43
 msgid "Disk free space"
 msgstr ""
 
-#: flask_app/templates/view_system.html:38
+#: flask_app/templates/view_system.html:44
 msgid "Memory free space"
 msgstr ""
 
-#: flask_app/templates/view_system.html:39
+#: flask_app/templates/view_system.html:45
 msgid "Backend log file"
 msgstr ""
 
-#: flask_app/templates/view_system.html:39
+#: flask_app/templates/view_system.html:45
 msgid "Download"
 msgstr ""
 
-#: flask_app/templates/view_system.html:40
+#: flask_app/templates/view_system.html:46
 #, fuzzy
 msgid "Reboot system"
 msgstr "System info"
 
-#: flask_app/templates/view_system.html:48
+#: flask_app/templates/view_system.html:54
 msgid "Application info"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:52
+#: flask_app/templates/view_system.html:58
 msgid "Version installed"
 msgstr ""
 
-#: flask_app/templates/view_system.html:53
+#: flask_app/templates/view_system.html:59
 msgid "Version available"
 msgstr ""
 
-#: flask_app/templates/view_system.html:54
+#: flask_app/templates/view_system.html:60
 #, fuzzy
 msgid "Update application (pip)"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:56
+#: flask_app/templates/view_system.html:62
 #, fuzzy
 msgid "Restart application"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:63
+#: flask_app/templates/view_system.html:69
 msgid "Boards list"
 msgstr "Boards list"
 
-#: flask_app/templates/view_system.html:68
+#: flask_app/templates/view_system.html:74
 msgid "Serial number"
 msgstr ""
 
-#: flask_app/templates/view_system.html:69
+#: flask_app/templates/view_system.html:75
 msgid "Machine (ID)"
 msgstr ""
 
-#: flask_app/templates/view_system.html:70
+#: flask_app/templates/view_system.html:76
 msgid "IP address"
 msgstr ""
 
-#: flask_app/templates/view_system.html:71
+#: flask_app/templates/view_system.html:77
 msgid "FW Version"
 msgstr ""
 
-#: flask_app/templates/view_system.html:72
+#: flask_app/templates/view_system.html:78
 msgid "Free heap"
 msgstr ""
 
@@ -950,7 +950,7 @@ msgstr ""
 
 #: web/routes_machines.py:74 web/routes_machines.py:102
 #: web/routes_machines.py:130 web/routes_machines.py:157
-#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:171
+#: web/routes_machines.py:166 web/routes_uses.py:22 web/routes_uses.py:174
 msgid "Machine not found"
 msgstr ""
 
@@ -1026,11 +1026,11 @@ msgstr ""
 msgid "Role deleted successfully."
 msgstr ""
 
-#: web/routes_system.py:83
+#: web/routes_system.py:82
 msgid "File must have sqldb extension"
 msgstr ""
 
-#: web/routes_system.py:94
+#: web/routes_system.py:93
 msgid "Database was replaced. Previous copy can be found at "
 msgstr ""
 
@@ -1059,27 +1059,27 @@ msgstr ""
 msgid "This card ID is already assigned to another user"
 msgstr ""
 
-#: web/routes_uses.py:47
+#: web/routes_uses.py:50
 msgid "Use deleted successfully."
 msgstr ""
 
-#: web/routes_uses.py:116
+#: web/routes_uses.py:119
 msgid "Invalid start timestamp."
 msgstr ""
 
-#: web/routes_uses.py:126
+#: web/routes_uses.py:129
 msgid "End timestamp cannot be before start timestamp."
 msgstr ""
 
-#: web/routes_uses.py:132
+#: web/routes_uses.py:135
 msgid "Machine not found."
 msgstr ""
 
-#: web/routes_uses.py:138
+#: web/routes_uses.py:141
 msgid "User not found."
 msgstr ""
 
-#: web/routes_uses.py:154
+#: web/routes_uses.py:157
 msgid "Registration added successfully."
 msgstr ""
 
