@@ -57,7 +57,8 @@ class TestConfigValidation:
                 "port": 587,
                 "use_tls": True,
                 "username": "user",
-                "password": "pass"
+                "password": "pass",
+                "sender": "noreply@test.com"
             }
         }
 
@@ -87,7 +88,7 @@ class TestConfigValidation:
                      "topic": "machine", "reply_subtopic": "/reply", "stats_topic": "stats"},
             "web": {"secret_key": "secret", "default_admin_email": "test@test.com"},
             "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                     "username": "user", "password": "pass"}
+                     "username": "user", "password": "pass", "sender": "test@test.com"}
         }
 
         is_valid, error_msg = FabConfig.validateSettings(invalid_settings)
@@ -103,7 +104,7 @@ class TestConfigValidation:
                      "reply_subtopic": "/reply", "stats_topic": "stats"},
             "web": {"secret_key": "secret", "default_admin_email": "test@test.com"},
             "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                     "username": "user", "password": "pass"}
+                     "username": "user", "password": "pass", "sender": "test@test.com"}
         }
 
         is_valid, error_msg = FabConfig.validateSettings(invalid_settings)
@@ -118,7 +119,7 @@ class TestConfigValidation:
                      "topic": "machine", "reply_subtopic": "/reply", "stats_topic": "stats"},
             "web": {"secret_key": "secret", "default_admin_email": "test@test.com"},
             "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                     "username": "user", "password": "pass"}
+                     "username": "user", "password": "pass", "sender": "test@test.com"}
         }
 
         is_valid, error_msg = FabConfig.validateSettings(invalid_settings)
@@ -141,7 +142,7 @@ class TestConfigSaveLoad:
                          "topic": "machine", "reply_subtopic": "/reply", "stats_topic": "stats"},
                 "web": {"secret_key": "test-secret", "default_admin_email": "test@test.com"},
                 "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                         "username": "testuser", "password": "testpass"}
+                         "username": "testuser", "password": "testpass", "sender": "noreply@test.com"}
             }
 
             # Save directly using toml for initial setup
@@ -185,7 +186,7 @@ class TestConfigSaveLoad:
                          "topic": "machine", "reply_subtopic": "/reply", "stats_topic": "stats"},
                 "web": {"secret_key": "initial-secret", "default_admin_email": "initial@test.com"},
                 "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                         "username": "user", "password": "pass"}
+                         "username": "user", "password": "pass", "sender": "noreply@test.com"}
             }
 
             # Create initial config file
@@ -225,7 +226,7 @@ class TestConfigSaveLoad:
                      "topic": "machine", "reply_subtopic": "/reply", "stats_topic": "stats"},
             "web": {"secret_key": "secret", "default_admin_email": "test@test.com"},
             "email": {"server": "smtp.test.com", "port": 587, "use_tls": True,
-                     "username": "user", "password": "pass"}
+                     "username": "user", "password": "pass", "sender": "test@test.com"}
         }
 
         success, error_msg = FabConfig.saveSettings(invalid_settings)
