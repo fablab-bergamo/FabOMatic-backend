@@ -20,3 +20,4 @@ port = 587
 use_tls = true
 username = "user"
 password = "pass"
+sender = "admin@fablab.org"

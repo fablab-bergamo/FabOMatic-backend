@@ -136,7 +136,7 @@ def loadSettings() -> dict:
     Returns:
         dict: Configuration dictionary loaded from TOML file
     """
-    global firstRun, useTestSettings
+    global firstRun
 
     checkConfigFile()
 
@@ -188,7 +188,7 @@ def validateSettings(settings: dict) -> tuple[bool, str]:
         "database": ["url", "name"],
         "MQTT": ["broker", "port", "client_id", "topic", "reply_subtopic", "stats_topic"],
         "web": ["secret_key", "default_admin_email"],
-        "email": ["server", "port", "use_tls", "username", "password"]
+        "email": ["server", "port", "use_tls", "username", "password", "sender"]
     }
 
     # Check required sections exist

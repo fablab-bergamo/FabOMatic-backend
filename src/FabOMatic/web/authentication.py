@@ -16,6 +16,7 @@ app.config["MAIL_PORT"] = FabConfig.getSetting("email", "port")
 app.config["MAIL_USE_TLS"] = FabConfig.getSetting("email", "use_tls")
 app.config["MAIL_USERNAME"] = FabConfig.getSetting("email", "username")
 app.config["MAIL_PASSWORD"] = FabConfig.getSetting("email", "password")
+app.config["MAIL_DEFAULT_SENDER"] = FabConfig.getSetting("email", "sender")
 
 mail = Mail(app)
 
@@ -59,15 +60,20 @@ def logout():
 
 
 def send_reset_email(user: User) -> bool:
-    token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
-    msg = Message("Password Reset Request", sender="admin@fablab.org", recipients=[user.email])
-    msg.body = f"""To reset your password, visit the following link:
+    try:
+        token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
+        msg = Message("Password Reset Request", recipients=[user.email])
+        msg.body = f"""To reset your password, visit the following link:
                 {url_for('reset_token', token=token, _external=True)}
 
                 If you did not make this request then simply ignore this email and no changes will be made.
                 """
-    mail.send(msg)
-    return True
+        mail.send(msg)
+        logging.info("Password reset email sent to %s", user.email)
+        return True
+    except Exception as e:
+        logging.error("Failed to send password reset email to %s: %s", user.email, str(e))
+        return False
 
 
 @app.route("/forgot_password", methods=["GET", "POST"])
@@ -76,8 +82,10 @@ def forgot_password():
         with DBSession() as session:
             user = session.query(User).filter_by(email=request.form["email"]).first()
             if user:
-                send_reset_email(user)
-                flash(gettext("Email sent with instructions to reset your password."), "info")
+                if send_reset_email(user):
+                    flash(gettext("Email sent with instructions to reset your password."), "info")
+                else:
+                    flash(gettext("Failed to send email. Please contact an administrator."), "danger")
                 return redirect(url_for("login"))
             else:
                 flash(gettext("No user found with this email."), "danger")
