@@ -1,0 +1,458 @@
+Fabomatic-backend -- release 0.7.3 {#fabomatic-backend-release-0.7.3 .TOC-Heading}
+==================================
+
+Contents {#contents .TOC-Heading}
+========
+
+[Authentication 2](#authentication)
+
+[Menu 3](#menu)
+
+[Homescreen 3](#homescreen)
+
+[Roles 4](#roles)
+
+[Users 6](#users)
+
+[Machines 7](#machines)
+
+[Authorizations 9](#authorizations)
+
+[Maintenance 11](#maintenance)
+
+[Interventions 13](#interventions)
+
+[Usage history 14](#usage-history)
+
+[Machine types 15](#machine-types)
+
+[System page 16](#system-page)
+
+[Configuration Editor 17](#configuration-editor)
+
+[Excel export 18](#excel-export)
+
+[Technical details 19](#technical-details)
+
+Authentication
+==============
+
+The default page is a login page and all other site pages requires a logged-on user.
+
+![Immagine che contiene testo, schermata, numero, Carattere Descrizione generata automaticamente](doc/media/image1.png){width="5.771639326334208in" height="4.333938101487314in"}
+
+Only users with email address and rôle « Can Admin backend » flag can log on.
+
+Default user at install is :
+
+-   Login : <admin@fablab.org>
+
+-   Password : admin
+
+In case an admin forgets the email, the forgot password will send an email with a unique link valid for 20 minutes to reset the password.
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image2.png){width="4.760416666666667in" height="1.9040682414698162in"}
+
+Menu
+====
+
+This is the view for logged users :
+
+![](doc/media/image3.png){width="6.6930555555555555in" height="0.48125in"}
+
+By clicking on FABLAB you reach the homescreen.
+
+Homescreen
+==========
+
+The homescreen presents a real-time view of the various machines.
+
+![Immagine che contiene testo, schermata, Carattere, Marchio Descrizione generata automaticamente](doc/media/image4.png){width="6.6930555555555555in" height="2.9305555555555554in"}
+
+Status description :
+
+-   IN USE = there is an opened use record (manual or automatic) on this machine
+
+-   BLOCKED = the machine has been flagged « BLOCKED FOR ALL »
+
+-   OFFLINE = the RFID has not contacted the backend for more than 3 minutes
+
+-   MAINTENANCE = the machine is free but requires maintenance intervention based on the plan
+
+-   FREE = the machine is idle and waiting for users
+
+Roles
+=====
+
+This is to configure user priviledge levels.
+
+View
+----
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image5.png){width="6.6930555555555555in" height="2.576388888888889in"}
+
+Maintenance = The user can perform maintenance by tapping the card on machine board
+
+Authorize all = User can use any machine in any state. This also bypasses the authorization. This can be useful in an initial phase where all fablab users can use any machine in any state.
+
+Backend admin = User can logon to the backend web interface with its email address. On first access, he needs to receive first a new password by an admin with the Users page.
+
+Reserved = Roles that cannot be deleted.
+
+The Anonymous role is used for anynomized users to limit personal data retention in the system.
+
+Add new role
+------------
+
+Adding a new role can be helpful to handle more fine-grained permissions.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image6.png){width="3.4895833333333335in" height="2.751150481189851in"}
+
+See Roles page for flag description.
+
+Edit existing role
+------------------
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image7.png){width="3.4479166666666665in" height="3.73457895888014in"}
+
+Users
+=====
+
+Users are identified by their RFID card ID. There is no strong authentication of RFID cards in the Arduino board, only chip ID read. This is a limitation of the MFRC522 board used by the Fab-O-Matic PCB.
+
+View
+----
+
+This page shows the users and unrecognized RFID tags, and allows several actions:
+
+-   Adding new users, editing/disabling them. A disabled user cannot perform any action on the machines, but can still logon to the interface
+
+-   Deleting users. In this case the user cannot logon to the webbackend.
+
+-   Convert a badge to a new user: this is mainly to simplify the initial database creation where the fablab users may not be registered. Once the user is created, the corresponding rejected RFID card records will be purged.
+
+![Immagine che contiene testo, schermata, Carattere, software Descrizione generata automaticamente](doc/media/image8.png){width="7.09120406824147in" height="3.3125in"}
+
+Edit existing user
+------------------
+
+This allows to change user rôle, name, email or card UUID.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image9.png){width="3.6875in" height="2.906994750656168in"}
+
+Add new user
+------------
+
+This page is reached by « Add User » button or « Convert to new user » button on the main page.
+
+![Immagine che contiene testo, schermata, linea, numero Descrizione generata automaticamente](doc/media/image10.png){width="6.6930555555555555in" height="2.7534722222222223in"}
+
+Please note :
+
+-   [Card]{.underline} UUID is displayed on the arduino LCD when tapping an unknown card.
+
+-   When converting a unknown card, the Card UUID field is automatically filled
+
+Machines
+========
+
+This is the list of machines. Every machine has a unique ID. The Arduino Board is uniquely linked to a machine thanks to the ID field.
+
+View machines
+-------------
+
+![Immagine che contiene testo, Carattere, schermata Descrizione generata automaticamente](doc/media/image11.png){width="6.6930555555555555in" height="1.5666666666666667in"}
+
+Description :
+
+-   Cumulated usage : hours of power on by users. This is not reset.
+
+-   Maintenance plan : list of maintenance procedures to be applied to the machine
+
+-   Last seen : when an arduino board has last trasmitted the status of the machine.
+
+View History button : view the latest uses of the machine
+
+Edit machine
+------------
+
+Allows to change machine attributes. The machine name is acquired by the arduino board every minute in case of changes.
+
+Blocked for all : this blocks any user to log on the machine except for user having « authorize all » rôle priviledge.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image12.png){width="4.927083333333333in" height="3.02127624671916in"}
+
+Add machine
+-----------
+
+Same as Edit Screen.
+
+![Immagine che contiene testo, schermata, linea, Carattere Descrizione generata automaticamente](doc/media/image13.png){width="6.6930555555555555in" height="2.3354166666666667in"}
+
+Authorizations
+==============
+
+Authorizations maps users to machines. If a user belongs to a rôle with «Authorize all », the authorizations list is ignored. This can be useful if the FabLab does not want to implement authorization for fab users.
+
+View authorizations
+-------------------
+
+The list of authorization by machine and users can be filtered.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image14.png){width="6.6930555555555555in" height="3.5284722222222222in"}
+
+Description :
+
+-   Add Authorization : to add a record for a single user on a single machine
+
+-   Add in buil : to quickly add authorizations for many users on a single machine
+
+Add authorization
+-----------------
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image15.png){width="6.6930555555555555in" height="2.5590277777777777in"}
+
+Edit authorization
+------------------
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image16.png){width="5.479029965004375in" height="2.5104166666666665in"}
+
+Add in bulk
+
+Use this screen to add permissions. To remove permissions, you have to use the main screen Delete button.
+
+First select the machine, then the users or the « Add all users.. » button.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image17.png){width="6.6930555555555555in" height="2.7805555555555554in"}
+
+Maintenance
+===========
+
+This is for regular maintenance which shall be triggered every X hours of use.
+
+View
+----
+
+Filterable list of maintenance actions.
+
+![Immagine che contiene testo, Carattere, linea, numero Descrizione generata automaticamente](doc/media/image18.png){width="6.6930555555555555in" height="2.1506944444444445in"}
+
+Edit
+----
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image19.png){width="3.0in" height="3.2064774715660542in"}
+
+Description : a description of what needs to be done
+
+LCD Message : what shall be displayed on the LCD panel when maintenance is triggerd
+
+Number of hours to trigger : how much worked hours must have elapsed
+
+Instructions : facultative, URL to instructions like manufacturer.
+
+Machine : which machine needs this maintenance action
+
+Add new maintenance
+-------------------
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image20.png){width="2.5520833333333335in" height="2.759570209973753in"}
+
+Description : a description of what needs to be done
+
+LCD Message : what shall be displayed on the LCD panel when maintenance is triggerd
+
+Number of hours to trigger : how much worked hours must have elapsed
+
+Instructions : facultative, URL to instructions like manufacturer.
+
+Machine : which machine needs this maintenance action
+
+Interventions
+=============
+
+View
+----
+
+![Immagine che contiene testo, schermata, Carattere, software Descrizione generata automaticamente](doc/media/image21.png){width="5.666666666666667in" height="3.3571970691163604in"}
+
+Add manually
+------------
+
+Interventions will be created automatically by tapping the card on the machine board, but can be added manually if the maintenance was done ofline.
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image22.png){width="5.055555555555555in" height="1.9318952318460192in"}
+
+Edit interventions
+------------------
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image23.png){width="5.1in" height="2.326696194225722in"}
+
+Usage history
+=============
+
+View
+----
+
+This page shows the latest uses of all machines (up to 500 records).
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image24.png){width="6.6930555555555555in" height="4.215277777777778in"}
+
+If a machine is in use, row is highlighted :
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image25.png){width="6.6930555555555555in" height="0.521428258967629in"}
+
+Manual registration
+
+This allows to register a specific use of a machine by one user, e.g. for machine hours tracking.
+
+![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image26.png){width="4.964374453193351in" height="2.22619094488189in"}
+
+Machine types
+=============
+
+View
+----
+
+![Immagine che contiene testo, Carattere, schermata Descrizione generata automaticamente](doc/media/image27.png){width="6.6930555555555555in" height="1.667361111111111in"}
+
+Description :
+
+-   Auto logoff delay : if a user remains active more than X minutes on the machine, the arduino board will log him off. When set to 0, there is no log-off.
+
+-   Power-off : when no user is connected, the machine will be powered off after this grace period. If 0, the command relay is closed immediately at logoff. The goal of this feature is to reduce power cycles on the target equipment.
+
+Add/Edit page
+-------------
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image28.png){width="3.612029746281715in" height="4.410714129483814in"}
+
+System page
+===========
+
+This page provides an overview of the host backend server, maintenance helpers, and lists the boards which have announced themselves on MQTT brocker.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image29.png){width="6.6930555555555555in" height="2.9208333333333334in"}
+
+Database :
+
+-   This allows to download SQLite3 database for backups.
+
+System info
+
+-   Displays system nature (in this example, a Raspberry Pi Zero)
+
+Application info
+
+-   Checks the latest version on pypi repository (requires internet access)
+
+-   Update application button runs pip --upgrade
+
+-   Restart application runs systemctl restart
+
+Board list :
+
+-   ID : unique ID set by the system, meaningless
+
+-   Machine ID : the board announces the MachineID it wants to handle.
+
+-   IP Address : IP of the board connected to the machine. Useful for OTA upgrades
+
+-   FW version : git version of the firmware announced by the board
+
+-   Last seen : when did the board announced itself for the last time. Announcements are indipendent of other boards messages.
+
+Configuration Editor
+====================
+
+*New in version 0.7.3*
+
+The configuration editor allows administrators to modify FabOMatic's system settings directly through the web interface, eliminating the need for SSH access or manual file editing.
+
+Accessing the Configuration Editor
+-----------------------------------
+
+From the System page, click the **"Edit Configuration"** button in the Application info section.
+
+Configuration File Locations
+-----------------------------
+
+FabOMatic searches for configuration files in the following priority order:
+
+1.  **~/.config/FabOMatic/settings.toml** (Recommended - user-specific, survives pip upgrades)
+2.  **/etc/FabOMatic/settings.toml** (System-wide, requires root access)
+3.  **~/FabOMatic/settings.toml** (Alternative user location)
+4.  **Package directory** (Backward compatibility only)
+
+The active configuration file path is displayed at the top of the editor. When saving, settings are written to the first writable location (typically `~/.config/FabOMatic/settings.toml`).
+
+Configuration Sections
+----------------------
+
+### Database Settings
+
+-   **Database URL**: Connection string for the SQLite database
+    -   Example: `sqlite:///database.sqldb`
+    -   Can be an absolute or relative path
+-   **Database Name**: Logical name for the database
+
+### MQTT Settings
+
+-   **MQTT Broker**: Hostname or IP address of the MQTT broker (e.g., `localhost`, `192.168.1.100`)
+-   **MQTT Port**: Port number for MQTT connection (default: `1883`)
+-   **Client ID**: Unique identifier for this FabOMatic backend instance
+-   **Machine Topic**: Base topic for machine communications (e.g., `machine`)
+-   **Reply Subtopic**: Subtopic for backend replies to boards (e.g., `reply`)
+-   **Stats Topic**: Topic for publishing system statistics (e.g., `stats/`)
+-   **MQTT User**: Username for MQTT authentication (optional, leave empty if not used)
+
+### Web Application Settings
+
+-   **Secret Key**: Flask session encryption key
+    -   **Important**: Change this to a random string for production
+    -   Used for securing user sessions and cookies
+-   **Default Admin Email**: Email address for the default admin account
+    -   Used for initial login and database seeding
+
+### Email Settings
+
+-   **SMTP Server**: Mail server hostname (e.g., `smtp.gmail.com`)
+-   **SMTP Port**: Mail server port (typically `587` for TLS or `465` for SSL)
+-   **Use TLS**: Enable TLS encryption for email transmission (checkbox)
+-   **Username**: SMTP authentication username
+-   **Password**: SMTP authentication password
+    -   Leave empty to keep the current password unchanged
+    -   Passwords are stored in the configuration file
+
+Saving Changes
+--------------
+
+1.  Modify the desired settings in the form
+2.  Click **"Save Configuration"** to write changes to disk
+3.  The system will:
+    -   Validate all required fields and data types
+    -   Create an automatic backup of the previous configuration (with `.bak` extension)
+    -   Save the new settings to the user-accessible location
+4.  **Restart the application** for changes to take effect using the "Restart Application" button
+
+Important Notes
+---------------
+
+-   **Validation**: All settings are validated before saving. Invalid entries will be rejected with an error message.
+-   **Automatic Backups**: Each save creates a timestamped backup of the previous configuration.
+-   **Upgrade Safety**: Configurations stored in `~/.config/FabOMatic/` persist through `pip install --upgrade` operations.
+-   **Password Security**: Email passwords are stored in plain text in the configuration file. Ensure proper file permissions are set.
+-   **Application Restart Required**: Changes only take effect after restarting the FabOMatic application.
+
+Excel export
+============
+
+On most pages, an Excel export button is available, which exports the underlying SQLite tables.
+
+![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image30.png){width="6.601362642169729in" height="1.9881474190726158in"}
+
+Technical details
+=================
+
+-   <https://github.com/fablab-bergamo/rfid-backend>
+
+-   Flask python application + MQTT client
