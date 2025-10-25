@@ -157,7 +157,7 @@ pip install -e .
 python ./run.py
 ```
 
-* Package requirements / How to package (see [Python docs(https://packaging.python.org/en/latest/tutorials/packaging-projects/)])
+* Package requirements / How to package (see [Python docs](https://packaging.python.org/en/latest/tutorials/packaging-projects/))
 
 ```shell
 pip install --upgrade build
@@ -248,3 +248,4 @@ journalctl --vacuum-time=1y
 | 0.5.0 | June 2024 | First release on PyPi. Renamed to FabOMatic. Added GDPR compliance (purge function) |
 | 0.6.0 | August 2024 | Added remote commands from backend for cloud-enabled printers like BambuLab |
 | 0.7.0 | December 2024 | Bugfix release, no new features |
+| 0.7.4 | October 2025 | Added new settings page in Systems, fixed email hanging issue |
