@@ -150,29 +150,33 @@ class TestConfigSaveLoad:
             with open(test_config_path, 'w') as f:
                 toml.dump(test_settings, f)
 
-            # Override the config file path for testing
+            # Temporarily disable test mode to test actual load/save functionality
+            original_test_mode = FabConfig.useTestSettings
             original_cache = FabConfig._active_config_file
+            FabConfig.useTestSettings = False
             FabConfig._active_config_file = test_config_path
 
-            # Load settings to verify
-            loaded_settings = FabConfig.loadSettings()
-            assert loaded_settings["database"]["url"] == "sqlite:///test.db"
-            assert loaded_settings["MQTT"]["port"] == 1883
-            assert loaded_settings["web"]["secret_key"] == "test-secret"
-            assert loaded_settings["email"]["use_tls"] is True
+            try:
+                # Load settings to verify
+                loaded_settings = FabConfig.loadSettings()
+                assert loaded_settings["database"]["url"] == "sqlite:///test.db"
+                assert loaded_settings["MQTT"]["port"] == 1883
+                assert loaded_settings["web"]["secret_key"] == "test-secret"
+                assert loaded_settings["email"]["use_tls"] is True
 
-            # Modify and save through FabConfig
-            loaded_settings["database"]["url"] = "sqlite:///modified.db"
-            success, error_msg = FabConfig.saveSettings(loaded_settings)
-            assert success, f"Should save settings successfully: {error_msg}"
+                # Modify and save through FabConfig
+                loaded_settings["database"]["url"] = "sqlite:///modified.db"
+                success, error_msg = FabConfig.saveSettings(loaded_settings)
+                assert success, f"Should save settings successfully: {error_msg}"
 
-            # Load again to verify modification
-            FabConfig._active_config_file = test_config_path  # Reset cache
-            modified_settings = FabConfig.loadSettings()
-            assert modified_settings["database"]["url"] == "sqlite:///modified.db"
-
-            # Restore original cache
-            FabConfig._active_config_file = original_cache
+                # Load again to verify modification
+                FabConfig._active_config_file = test_config_path  # Reset cache
+                modified_settings = FabConfig.loadSettings()
+                assert modified_settings["database"]["url"] == "sqlite:///modified.db"
+            finally:
+                # Restore original state
+                FabConfig.useTestSettings = original_test_mode
+                FabConfig._active_config_file = original_cache
 
     def test_save_creates_backup(self):
         """Test that saving creates a backup of existing config."""
@@ -194,29 +198,33 @@ class TestConfigSaveLoad:
             with open(test_config_path, 'w') as f:
                 toml.dump(initial_settings, f)
 
-            # Override cache
+            # Temporarily disable test mode to test actual save functionality
+            original_test_mode = FabConfig.useTestSettings
             original_cache = FabConfig._active_config_file
+            FabConfig.useTestSettings = False
             FabConfig._active_config_file = test_config_path
 
-            # Update settings
-            updated_settings = initial_settings.copy()
-            updated_settings["database"]["url"] = "sqlite:///updated.db"
+            try:
+                # Update settings
+                updated_settings = initial_settings.copy()
+                updated_settings["database"]["url"] = "sqlite:///updated.db"
 
-            # Save updated settings (should create backup)
-            success, _ = FabConfig.saveSettings(updated_settings)
-            assert success, "Should save successfully"
-            assert os.path.exists(backup_path), "Backup file should be created"
+                # Save updated settings (should create backup)
+                success, _ = FabConfig.saveSettings(updated_settings)
+                assert success, "Should save successfully"
+                assert os.path.exists(backup_path), "Backup file should be created"
 
-            # Verify backup contains original content
-            backup_content = toml.load(backup_path)
-            assert backup_content["database"]["url"] == "sqlite:///initial.db"
+                # Verify backup contains original content
+                backup_content = toml.load(backup_path)
+                assert backup_content["database"]["url"] == "sqlite:///initial.db"
 
-            # Verify current file has updated content
-            current_content = toml.load(test_config_path)
-            assert current_content["database"]["url"] == "sqlite:///updated.db"
-
-            # Restore original cache
-            FabConfig._active_config_file = original_cache
+                # Verify current file has updated content
+                current_content = toml.load(test_config_path)
+                assert current_content["database"]["url"] == "sqlite:///updated.db"
+            finally:
+                # Restore original state
+                FabConfig.useTestSettings = original_test_mode
+                FabConfig._active_config_file = original_cache
 
     def test_save_fails_with_invalid_settings(self):
         """Test that saving fails when settings are invalid."""
