@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h4>{{ _("System Configuration") }}</h4>
+
+<div class="alert alert-info" role="alert">
+    <i class="fa fa-info-circle"></i> {{ _("Configuration file location") }}: <strong>{{ config_file }}</strong>
+    <br>
+    <small>{{ _("Changes will be saved immediately and require application restart to take effect.") }}</small>
+</div>
+
+<form method="POST" action="{{ url_for('save_settings') }}">
+    <div class="row">
+        <!-- Database Settings -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <i class="fa fa-database"></i> {{ _("Database Settings") }}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="db_url" class="form-label">{{ _("Database URL") }}</label>
+                        <input type="text" class="form-control" id="db_url" name="database.url"
+                               value="{{ settings.database.url }}" required>
+                        <small class="form-text text-muted">{{ _("SQLite example: sqlite:///database.sqldb") }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="db_name" class="form-label">{{ _("Database Name") }}</label>
+                        <input type="text" class="form-control" id="db_name" name="database.name"
+                               value="{{ settings.database.name }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MQTT Settings -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <i class="fa fa-network-wired"></i> {{ _("MQTT Settings") }}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="mqtt_broker" class="form-label">{{ _("MQTT Broker") }}</label>
+                        <input type="text" class="form-control" id="mqtt_broker" name="MQTT.broker"
+                               value="{{ settings.MQTT.broker }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_port" class="form-label">{{ _("MQTT Port") }}</label>
+                        <input type="number" class="form-control" id="mqtt_port" name="MQTT.port"
+                               value="{{ settings.MQTT.port }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_client_id" class="form-label">{{ _("Client ID") }}</label>
+                        <input type="text" class="form-control" id="mqtt_client_id" name="MQTT.client_id"
+                               value="{{ settings.MQTT.client_id }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_topic" class="form-label">{{ _("Machine Topic") }}</label>
+                        <input type="text" class="form-control" id="mqtt_topic" name="MQTT.topic"
+                               value="{{ settings.MQTT.topic }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_reply_subtopic" class="form-label">{{ _("Reply Subtopic") }}</label>
+                        <input type="text" class="form-control" id="mqtt_reply_subtopic" name="MQTT.reply_subtopic"
+                               value="{{ settings.MQTT.reply_subtopic }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_stats_topic" class="form-label">{{ _("Stats Topic") }}</label>
+                        <input type="text" class="form-control" id="mqtt_stats_topic" name="MQTT.stats_topic"
+                               value="{{ settings.MQTT.stats_topic }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mqtt_user" class="form-label">{{ _("MQTT User") }}</label>
+                        <input type="text" class="form-control" id="mqtt_user" name="MQTT.user"
+                               value="{{ settings.MQTT.user }}" placeholder="{{ _('Leave empty if not used') }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Web Settings -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <i class="fa fa-globe"></i> {{ _("Web Application Settings") }}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="web_secret_key" class="form-label">{{ _("Secret Key") }}</label>
+                        <input type="text" class="form-control" id="web_secret_key" name="web.secret_key"
+                               value="{{ settings.web.secret_key }}" required>
+                        <small class="form-text text-muted">{{ _("Used for Flask encryption. Change to a random string.") }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="web_admin_email" class="form-label">{{ _("Default Admin Email") }}</label>
+                        <input type="email" class="form-control" id="web_admin_email" name="web.default_admin_email"
+                               value="{{ settings.web.default_admin_email }}" required>
+                        <small class="form-text text-muted">{{ _("Email for admin login and seeding.") }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Settings -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <i class="fa fa-envelope"></i> {{ _("Email Settings") }}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="email_server" class="form-label">{{ _("SMTP Server") }}</label>
+                        <input type="text" class="form-control" id="email_server" name="email.server"
+                               value="{{ settings.email.server }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email_port" class="form-label">{{ _("SMTP Port") }}</label>
+                        <input type="number" class="form-control" id="email_port" name="email.port"
+                               value="{{ settings.email.port }}" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="email_use_tls" name="email.use_tls"
+                               {% if settings.email.use_tls %}checked{% endif %}>
+                        <label class="form-check-label" for="email_use_tls">{{ _("Use TLS") }}</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email_username" class="form-label">{{ _("Username") }}</label>
+                        <input type="text" class="form-control" id="email_username" name="email.username"
+                               value="{{ settings.email.username }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email_password" class="form-label">{{ _("Password") }}</label>
+                        <input type="password" class="form-control" id="email_password" name="email.password"
+                               value="{{ settings.email.password }}">
+                        <small class="form-text text-muted">{{ _("Leave empty to keep current password.") }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fa fa-save"></i> {{ _("Save Configuration") }}
+                    </button>
+                    <a href="{{ url_for('system') }}" class="btn btn-secondary btn-lg">
+                        <i class="fa fa-times"></i> {{ _("Cancel") }}
+                    </a>
+                    <div class="float-end">
+                        <a href="{{ url_for('restart_app') }}" class="btn btn-warning">
+                            <i class="fa fa-sync"></i> {{ _("Restart Application") }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
