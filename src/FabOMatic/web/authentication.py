@@ -1,4 +1,5 @@
 import logging
+from threading import Thread
 from flask_login import LoginManager, login_user, logout_user, login_required
 from flask import render_template, request, redirect, url_for, flash
 from .webapplication import DBSession, app
@@ -17,6 +18,9 @@ app.config["MAIL_USE_TLS"] = FabConfig.getSetting("email", "use_tls")
 app.config["MAIL_USERNAME"] = FabConfig.getSetting("email", "username")
 app.config["MAIL_PASSWORD"] = FabConfig.getSetting("email", "password")
 app.config["MAIL_DEFAULT_SENDER"] = FabConfig.getSetting("email", "sender")
+# Add timeouts to prevent indefinite hanging on connection failures
+app.config["MAIL_CONNECT_TIMEOUT"] = 10  # 10 seconds to establish connection
+app.config["MAIL_SEND_TIMEOUT"] = 30  # 30 seconds to send email
 
 mail = Mail(app)
 
@@ -59,7 +63,27 @@ def logout():
     return redirect(url_for("login"))
 
 
+def send_async_email(app, msg):
+    """Send email in background thread with app context."""
+    with app.app_context():
+        try:
+            logging.info("Attempting to send password reset email via SMTP (server: %s, port: %s)",
+                        app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT"))
+            mail.send(msg)
+            logging.info("Password reset email sent successfully to: %s", msg.recipients)
+        except Exception as e:
+            logging.error("Failed to send password reset email in background thread: %s (type: %s)",
+                         str(e), type(e).__name__)
+            logging.error("SMTP configuration - Server: %s, Port: %s, TLS: %s",
+                         app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT"),
+                         app.config.get("MAIL_USE_TLS"))
+
+
 def send_reset_email(user: User) -> bool:
+    """
+    Send password reset email asynchronously.
+    Returns True immediately if email is queued, False if there's an error creating the message.
+    """
     try:
         token = user.get_reset_token(app.config["SECRET_KEY"], SALT)
         msg = Message("Password Reset Request", recipients=[user.email])
@@ -68,26 +92,32 @@ def send_reset_email(user: User) -> bool:
 
                 If you did not make this request then simply ignore this email and no changes will be made.
                 """
-        mail.send(msg)
-        logging.info("Password reset email sent to %s", user.email)
+        # Send email in background thread to avoid blocking the web request
+        Thread(target=send_async_email, args=(app, msg)).start()
+        logging.info("Password reset email queued for %s", user.email)
         return True
     except Exception as e:
-        logging.error("Failed to send password reset email to %s: %s", user.email, str(e))
+        logging.error("Failed to queue password reset email for %s: %s", user.email, str(e))
         return False
 
 
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
+        email_input = request.form.get("email", "").strip()
+        logging.info("Password reset requested for email: %s", email_input)
+
         with DBSession() as session:
-            user = session.query(User).filter_by(email=request.form["email"]).first()
+            user = session.query(User).filter_by(email=email_input).first()
             if user:
+                logging.info("User found (ID: %d) for password reset: %s", user.user_id, email_input)
                 if send_reset_email(user):
                     flash(gettext("Email sent with instructions to reset your password."), "info")
                 else:
                     flash(gettext("Failed to send email. Please contact an administrator."), "danger")
                 return redirect(url_for("login"))
             else:
+                logging.warning("Password reset failed - no user found with email: %s", email_input)
                 flash(gettext("No user found with this email."), "danger")
                 return redirect(url_for("login"))
     return render_template("forgot_password.html")
