@@ -67,10 +67,16 @@ def send_async_email(app, msg):
     """Send email in background thread with app context."""
     with app.app_context():
         try:
+            logging.info("Attempting to send password reset email via SMTP (server: %s, port: %s)",
+                        app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT"))
             mail.send(msg)
-            logging.info("Password reset email sent successfully")
+            logging.info("Password reset email sent successfully to: %s", msg.recipients)
         except Exception as e:
-            logging.error("Failed to send password reset email in background thread: %s", str(e))
+            logging.error("Failed to send password reset email in background thread: %s (type: %s)",
+                         str(e), type(e).__name__)
+            logging.error("SMTP configuration - Server: %s, Port: %s, TLS: %s",
+                         app.config.get("MAIL_SERVER"), app.config.get("MAIL_PORT"),
+                         app.config.get("MAIL_USE_TLS"))
 
 
 def send_reset_email(user: User) -> bool:
@@ -98,15 +104,20 @@ def send_reset_email(user: User) -> bool:
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
+        email_input = request.form.get("email", "").strip()
+        logging.info("Password reset requested for email: %s", email_input)
+
         with DBSession() as session:
-            user = session.query(User).filter_by(email=request.form["email"]).first()
+            user = session.query(User).filter_by(email=email_input).first()
             if user:
+                logging.info("User found (ID: %d) for password reset: %s", user.user_id, email_input)
                 if send_reset_email(user):
                     flash(gettext("Email sent with instructions to reset your password."), "info")
                 else:
                     flash(gettext("Failed to send email. Please contact an administrator."), "danger")
                 return redirect(url_for("login"))
             else:
+                logging.warning("Password reset failed - no user found with email: %s", email_input)
                 flash(gettext("No user found with this email."), "danger")
                 return redirect(url_for("login"))
     return render_template("forgot_password.html")
