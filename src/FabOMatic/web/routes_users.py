@@ -39,8 +39,10 @@ def reset_user(user_id):
         return gettext("User not found"), 404
 
     if request.method == "POST":
-        send_reset_email(user)
-        flash(gettext("An email has been sent with instructions to reset password."), "info")
+        if send_reset_email(user):
+            flash(gettext("An email has been sent with instructions to reset password."), "info")
+        else:
+            flash(gettext("Failed to send email. Please check SMTP configuration."), "danger")
         return redirect(url_for("view_users"))
 
     return render_template("reset_user.html", user=user)

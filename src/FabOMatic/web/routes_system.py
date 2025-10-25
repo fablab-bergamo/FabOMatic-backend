@@ -143,3 +143,76 @@ def restart_app():
         restart_output = "Restart skipped because application is running on Windows or not running under systemd."
 
     return Response(restart_output, mimetype="text/plain")
+
+
+@app.route("/settings")
+@login_required
+def view_settings():
+    """Display the system configuration editor."""
+    settings = FabConfig.loadSettings()
+    config_file = FabConfig.getConfigFilePath()
+    if not config_file:
+        config_file = FabConfig.getWritableConfigPath()
+    return render_template("view_settings.html", settings=settings, config_file=config_file)
+
+
+@app.route("/settings/save", methods=["POST"])
+@login_required
+def save_settings():
+    """Save updated configuration settings."""
+    try:
+        # Parse form data into nested dictionary structure
+        settings = {}
+        for key, value in request.form.items():
+            # Skip empty password fields
+            if key == "email.password" and value == "":
+                continue
+
+            # Parse dotted keys (e.g., "database.url" -> settings["database"]["url"])
+            parts = key.split(".")
+            if len(parts) == 2:
+                section, setting = parts
+                if section not in settings:
+                    settings[section] = {}
+
+                # Handle boolean checkbox values
+                if key == "email.use_tls":
+                    settings[section][setting] = True
+                # Convert numeric values
+                elif setting in ["port"]:
+                    settings[section][setting] = int(value)
+                else:
+                    settings[section][setting] = value
+
+        # Handle unchecked checkboxes (not present in form data)
+        if "email.use_tls" not in request.form:
+            if "email" not in settings:
+                settings["email"] = {}
+            settings["email"]["use_tls"] = False
+
+        # Load current settings to preserve password if not changed
+        current_settings = FabConfig.loadSettings()
+        if "email" in settings and "password" not in settings["email"]:
+            settings["email"]["password"] = current_settings.get("email", {}).get("password", "")
+
+        # Merge with current settings to preserve any fields not in form
+        for section in current_settings:
+            if section not in settings:
+                settings[section] = current_settings[section]
+            else:
+                # Merge section-level settings
+                for key in current_settings[section]:
+                    if key not in settings[section]:
+                        settings[section][key] = current_settings[section][key]
+
+        # Save settings
+        success, error_msg = FabConfig.saveSettings(settings)
+        if success:
+            flash(gettext("Settings saved successfully. Please restart the application for changes to take effect."), "success")
+        else:
+            flash(gettext("Failed to save settings: ") + error_msg, "error")
+
+    except Exception as e:
+        flash(gettext("Error saving settings: ") + str(e), "error")
+
+    return redirect(url_for("view_settings"))

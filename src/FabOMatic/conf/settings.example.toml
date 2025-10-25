@@ -20,8 +20,9 @@ default_admin_email = "admin@fablab.org"        # Email of the admin, used for 1
 
 
 [email]
-server = "smtp.google.com"
-port = 587
-use_tls = true
-username = ""
-password = ""
+server = "smtp.google.com"       # SMTP server hostname (e.g., smtp.gmail.com, smtp.office365.com)
+port = 587                        # SMTP port (587 for TLS, 465 for SSL, 25 for unencrypted)
+use_tls = true                    # Use TLS encryption (recommended)
+username = ""                     # SMTP authentication username (usually your email address)
+password = ""                     # SMTP authentication password (use app-specific password for Gmail)
+sender = "admin@fablab.org"       # Email address to use as sender for system emails

@@ -35,6 +35,8 @@ class Parser:
                     return RegisterMaintenanceQuery.deserialize(json_data)
                 case "alive":
                     return AliveQuery.deserialize(json_data)
+                case "synccache":
+                    return SyncCacheQuery.deserialize(json_data)
                 case _:
                     raise ValueError("Invalid action")
         else:
@@ -219,3 +221,35 @@ class StopRequest(BaseJson):
     def deserialize(json_data: str):
         data = json.loads(json_data)
         return StopRequest(data["uid"])
+
+
+class SyncCacheQuery(BaseJson):
+    """Query for synchronizing RFID card cache from server."""
+    
+    def __init__(self):
+        self.action = "synccache"
+
+    @staticmethod
+    def deserialize(json_data: str):
+        data = json.loads(json_data)
+        return SyncCacheQuery()
+
+
+class SyncCacheResponse:
+    """Response containing synchronized card cache data."""
+    
+    def __init__(self, request_ok: bool, cards: list = None):
+        self.request_ok = request_ok
+        self.cards = cards if cards is not None else []
+
+    def serialize(self) -> str:
+        return json.dumps(self.__dict__)
+
+    def add_card(self, uid: str, level: int):
+        """Add a card to the response.
+        
+        Args:
+            uid (str): Card UID
+            level (int): User level (1=normal, 2=admin)
+        """
+        self.cards.append({"uid": uid, "level": level})

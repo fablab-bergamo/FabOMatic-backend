@@ -108,7 +108,8 @@ class User(UserMixin, Base):
         s = Serializer(secret_key=key, salt=salt)
         try:
             user_id = s.loads(s=token, max_age=max_age)["user_id"]
-        except:
+        except Exception:
+            # Catches BadSignature, SignatureExpired, and other token errors
             return None
 
         return int(user_id)

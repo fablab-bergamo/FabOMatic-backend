@@ -1,27 +1,23 @@
-# Rename this file to settings.toml after editing
-#
-
 [database]
-url = "sqlite:///database.sqldb"    # Database source. Will be seeded if empty.
-name = "fablab"                     # Name of the database
+url = "sqlite:///initial.db"
+name = "initial"
 
 [MQTT]
-broker = "localhost"            # Name / IP of the MQTT broker
-port = 1883                 # MQTT broker port
-client_id = "backend-3"     # MQTT Client name
-topic = "machine"           # Machine topic to be monitored. All subtopics with <topic>/<ID> will be subscribed. Do not include leading or trailing slashes.
-reply_subtopic = "/reply"   # appended to the <topic>/<id> for replies by backend. E.g. machine/1/reply
-stats_topic = "stats"       # Stats will be published in this topic on MQTT server.
-user = ""                   # Auth not used
+broker = "localhost"
+port = 1883
+client_id = "test"
+topic = "machine"
+reply_subtopic = "/reply"
+stats_topic = "stats"
 
 [web]
-secret_key = "ç°32è+3242039ikòlòà"              # Used for encryption by Flask. Change it to a random string.
-default_admin_email = "admin@fablab.org"        # Email of the admin, used for 1st login and seeding.
-
+secret_key = "initial-secret"
+default_admin_email = "initial@test.com"
 
 [email]
-server = "smtp.google.com"
+server = "smtp.test.com"
 port = 587
 use_tls = true
-username = ""
-password = ""
+username = "user"
+password = "pass"
+sender = "admin@fablab.org"
