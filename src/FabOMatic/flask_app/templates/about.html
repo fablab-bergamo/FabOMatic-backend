@@ -1,50 +1,154 @@
 {% extends 'base_refresh.html' %}
 
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Machines status") }}</li>
+{% endblock %}
+
 {% block content %}
-    <h4>{{ _("Machines status") }}</h4>
-    {% set ns = namespace(cpt=0) %}
-    {% for mac in machines %}
-        {% if (ns.cpt % 3) == 0 %}
-            <div class="row m-2">
-        {% endif %}
-                <div class="col-lg-3" style="margin: 1px;">
-                {% if mac.active_user() != None %}
-                    <div class="card bg-success text-white">
-                    {% set text = gettext("IN USE") %}
-                {% elif mac.blocked %}
-                    <div class="card bg-danger text-white">
-                    {% set text = gettext("BLOCKED") %}
-                {% elif mac.maintenance_needed %}
-                    <div class="card bg-warning text-white">
-                    {% set text = gettext("MAINTENANCE") %}
-                {% elif not mac.isOnline() %}
-                    <div class="card bg-secondary text-white">
-                    {% set text = gettext("OFFLINE") %}
-                {% else %}
-                    <div class="card bg-light text-black">
-                    {% set text = gettext("FREE") %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1><i class="fas fa-tachometer-alt me-2"></i>{{ _("Machines status") }}</h1>
+                <p class="text-muted mb-0">{{ _("Real-time machine status dashboard") }}</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="badge bg-primary fs-6">
+                    <i class="fas fa-cogs me-1"></i>{{ machines|length }} {{ _("Machines") }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Status Summary Cards -->
+        <div class="row g-3 mb-4">
+            {% set in_use_count = machines|selectattr('active_user')|list|length %}
+            {% set blocked_count = machines|selectattr('blocked')|list|length %}
+            {% set maintenance_count = machines|selectattr('maintenance_needed')|list|length %}
+            {% set offline_count = namespace(value=0) %}
+            {% for mac in machines %}
+                {% if not mac.isOnline() %}
+                    {% set offline_count.value = offline_count.value + 1 %}
                 {% endif %}
-                        <div class="card-header"><h5><a class="link-info" href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">{{ mac.machine_name }}</a></h5></div>
-                        <div class="card-body">
-                            <p class="card-title">{{ gettext("Machine status") }}: {{ text }}<br/>
-                            {% if mac.active_user() != None %}
-                                {{ gettext("In use by:") }} {{ mac.active_user().name }}</p>
-                            {% endif %}
-                            </p>
-                        </div>
-                        <div card="card-footer">
-                            {% if mac.active_board() != None %}
-                                <p class="card-text text-center"><small>Board IP: {{ mac.active_board().ip_address }}</small></p>
-                            {% endif %}
-                        </div>
+            {% endfor %}
+            {% set free_count = machines|length - in_use_count - blocked_count - maintenance_count - offline_count.value %}
+
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-user-check fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ in_use_count }}</h3>
+                        <small>{{ _("IN USE") }}</small>
                     </div>
                 </div>
-        {% set ns.cpt = ns.cpt + 1 %}
-        {% if ns.cpt % 3 == 0 %}
             </div>
-        {% endif %}
-    {% endfor %}
-    {% if ns.cpt % 3 != 0 %}
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-light text-dark h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ free_count }}</h3>
+                        <small>{{ _("FREE") }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-warning text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tools fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ maintenance_count }}</h3>
+                        <small>{{ _("MAINTENANCE") }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-danger text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-lock fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ blocked_count }}</h3>
+                        <small>{{ _("BLOCKED") }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-secondary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-power-off fa-2x mb-2"></i>
+                        <h3 class="mb-0">{{ offline_count.value }}</h3>
+                        <small>{{ _("OFFLINE") }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-4 col-6">
+                <div class="card summary-card bg-primary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                        <h3 class="mb-0">30s</h3>
+                        <small>{{ _("AUTO REFRESH") }}</small>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
+
+        <!-- Detailed Machine Status -->
+        <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+            <h4 class="mb-0">
+                <i class="fas fa-list me-2"></i>{{ _("Detailed Machine Status") }}
+            </h4>
+        </div>
+
+        <div class="row g-3">
+            {% for mac in machines %}
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    {% if mac.active_user() != None %}
+                        <div class="card machine-card bg-success text-white">
+                            {% set text = gettext("IN USE") %}
+                            {% set icon = "fas fa-user-check" %}
+                    {% elif mac.blocked %}
+                        <div class="card machine-card bg-danger text-white">
+                            {% set text = gettext("BLOCKED") %}
+                            {% set icon = "fas fa-lock" %}
+                    {% elif mac.maintenance_needed %}
+                        <div class="card machine-card bg-warning text-white">
+                            {% set text = gettext("MAINTENANCE") %}
+                            {% set icon = "fas fa-tools" %}
+                    {% elif not mac.isOnline() %}
+                        <div class="card machine-card bg-secondary text-white">
+                            {% set text = gettext("OFFLINE") %}
+                            {% set icon = "fas fa-power-off" %}
+                    {% else %}
+                        <div class="card machine-card bg-light text-dark">
+                            {% set text = gettext("FREE") %}
+                            {% set icon = "fas fa-check-circle" %}
+                    {% endif %}
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <a href="{{ url_for('view_machine_use_history', machine_id=mac.machine_id) }}">
+                                        {{ mac.machine_name }}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="status-icon">
+                                    <i class="{{ icon }}"></i>
+                                </div>
+                                <h5 class="card-title mb-2">{{ text }}</h5>
+                                {% if mac.active_user() != None %}
+                                    <p class="mb-0">
+                                        <i class="fas fa-user me-2"></i>
+                                        <strong>{{ mac.active_user().name }}</strong>
+                                    </p>
+                                {% endif %}
+                            </div>
+                            {% if mac.active_board() != None %}
+                                <div class="card-footer bg-transparent border-0">
+                                    <small class="d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-network-wired me-2"></i>
+                                        {{ mac.active_board().ip_address }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

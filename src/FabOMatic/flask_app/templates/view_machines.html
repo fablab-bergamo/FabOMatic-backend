@@ -1,69 +1,204 @@
 {% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Machines") }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>{{ _("Machines") }}</h1>
-    <h3>{{ _("Use this page to view and configure FabLab machines.") }}</h3>
-    <a href="{{ url_for('add_machine') }}" class="btn btn-primary mb-3">{{ _("Add Machine") }}</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th class="d-none d-lg-table-cell">ID</th>
-                <th>{{ _("Name") }}</th>
-                <th class="d-none d-lg-table-cell">{{ _("Machine type") }}</th>
-                <th>{{ _("Cumulated usage") }}</th>
-                <th>{{ _("Blocked for all?") }}</th>
-                <th>{{ _("Maintenance plan") }}</th>
-                <th class="d-none d-lg-table-cell">{{ _("Last seen") }}</th>
-                <th>{{ _("Remote login") }}</th>
-                <th>{{ _("Remote logoff") }}</th>
-                <th>{{ _("Actions") }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for machine in machines %}
-            <tr>
-                <td class="d-none d-lg-table-cell">{{ machine.machine_id }}</td>
-                <td>{{ machine.machine_name }}</td>
-                <td class="d-none d-lg-table-cell"><span class="badge bg-info">{{ machine.machine_type.type_name }}</span></td>
-                <td>{{ machine.machine_hours | format_hours }}</td>
-                <td>
-                    {% if machine.blocked %}
-                    <i class="fa-solid fa-lock"></i> <!-- Locked Icon -->
-                    {% else %}
-                    <i class="fa-solid fa-lock-open"></i> <!-- Unlocked Icon -->
-                    {% endif %}
-                </td>
-                <td>                    
-                    {% for m in machine.maintenances %} 
-                        {% if maint_stats[m.maintenance_id]["expired"] %}
-                            <span class="badge bg-danger">{{ _("EXPIRED") }}</span>
-                        {% else %}
-                            <span class="badge bg-success">{{ _("OK") }}</span>
-                        {% endif %}
-                        {{ m.description }}
-                        <div class="d-none d-lg-table-cell">({{ maint_stats[m.maintenance_id]["elapsed"] }} / {{ m.hours_between }} {{ _("hours") }})</div>
-                        <br/>
-                    {% endfor %}
-                </td>
-                <td class="d-none d-lg-table-cell">{{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}</td>
-                <td>
-                    
-                    <a href="{{ url_for('start_machine', machine_id=machine.machine_id) }}" class="btn btn-light"><i class="fa fa-play-circle"></i></a>
-                </td>
-                <td>
-                    <a href="{{ url_for('stop_machine', machine_id=machine.machine_id) }}" class="btn btn-light"><i class="fa fa-stop-circle"></i></a>
-                </td>
-                <td>
-                    <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
-                        class="btn btn-info">{{ _("View history") }}</a>
-                    <a href="{{ url_for('edit_machine', machine_id=machine.machine_id) }}"
-                        class="btn btn-warning">{{ _("Edit") }}</a>
-                    <a href="{{ url_for('delete_machine', machine_id=machine.machine_id) }}"
-                        class="btn btn-danger">{{ _("Delete") }}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-cogs me-2"></i>{{ _("Machines") }}</h1>
+            <p class="text-muted mb-0">{{ _("Configure machines and track maintenance") }}</p>
+        </div>
+        <a href="{{ url_for('add_machine') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>{{ _("Add Machine") }}
+        </a>
+    </div>
+
+    <!-- Search and Filter Card -->
+    <div class="search-container">
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="searchInput"
+                               placeholder="{{ _('Search machines by name or type...') }}"
+                               onkeyup="filterTable()">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter" onchange="filterTable()">
+                            <option value="">{{ _("All Status") }}</option>
+                            <option value="active">{{ _("Active") }}</option>
+                            <option value="blocked">{{ _("Blocked") }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="maintenanceFilter" onchange="filterTable()">
+                            <option value="">{{ _("All Maintenance") }}</option>
+                            <option value="ok">{{ _("OK") }}</option>
+                            <option value="expired">{{ _("Expired") }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machines Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0" id="machinesTable">
+                    <thead>
+                        <tr>
+                            <th class="d-none d-lg-table-cell">ID</th>
+                            <th>{{ _("Name") }}</th>
+                            <th class="d-none d-lg-table-cell">{{ _("Machine type") }}</th>
+                            <th>{{ _("Usage") }}</th>
+                            <th>{{ _("Status") }}</th>
+                            <th>{{ _("Maintenance") }}</th>
+                            <th class="d-none d-lg-table-cell">{{ _("Last seen") }}</th>
+                            <th>{{ _("Remote") }}</th>
+                            <th class="text-end">{{ _("Actions") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for machine in machines %}
+                        <tr data-status="{% if machine.blocked %}blocked{% else %}active{% endif %}"
+                            data-maintenance="{% for m in machine.maintenances %}{% if maint_stats[m.maintenance_id]['expired'] %}expired{% endif %}{% endfor %}">
+                            <td class="d-none d-lg-table-cell">
+                                <strong>#{{ machine.machine_id }}</strong>
+                            </td>
+                            <td>
+                                <strong>{{ machine.machine_name }}</strong>
+                            </td>
+                            <td class="d-none d-lg-table-cell">
+                                <span class="badge bg-info">
+                                    <i class="fas fa-tag me-1"></i>{{ machine.machine_type.type_name }}
+                                </span>
+                            </td>
+                            <td>
+                                <i class="fas fa-clock me-2 text-muted"></i>
+                                <strong>{{ machine.machine_hours | format_hours }}</strong>
+                            </td>
+                            <td>
+                                {% if machine.blocked %}
+                                <span class="badge bg-danger">
+                                    <i class="fa-solid fa-lock me-1"></i>{{ _("Blocked") }}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-success">
+                                    <i class="fa-solid fa-lock-open me-1"></i>{{ _("Active") }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% for m in machine.maintenances %}
+                                    <div class="mb-1">
+                                        {% if maint_stats[m.maintenance_id]["expired"] %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>{{ _("EXPIRED") }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>{{ _("OK") }}
+                                            </span>
+                                        {% endif %}
+                                        {{ m.description }}
+                                        <small class="d-none d-lg-inline text-muted">
+                                            ({{ maint_stats[m.maintenance_id]["elapsed"] }} / {{ m.hours_between }} {{ _("hours") }})
+                                        </small>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                            <td class="d-none d-lg-table-cell">
+                                <small class="text-muted">
+                                    <i class="fas fa-history me-1"></i>
+                                    {{ machine.last_seen | datetimeformat('%b %d, %Y %I:%M %p') }}
+                                </small>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('start_machine', machine_id=machine.machine_id) }}"
+                                       class="btn btn-outline-success"
+                                       title="{{ _('Remote login') }}">
+                                        <i class="fa fa-play-circle"></i>
+                                    </a>
+                                    <a href="{{ url_for('stop_machine', machine_id=machine.machine_id) }}"
+                                       class="btn btn-outline-danger"
+                                       title="{{ _('Remote logoff') }}">
+                                        <i class="fa fa-stop-circle"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('view_machine_use_history', machine_id=machine.machine_id) }}"
+                                       class="btn btn-outline-info"
+                                       title="{{ _('View history') }}">
+                                        <i class="fas fa-chart-line"></i>
+                                    </a>
+                                    <a href="{{ url_for('edit_machine', machine_id=machine.machine_id) }}"
+                                       class="btn btn-outline-primary"
+                                       title="{{ _('Edit') }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_machine', machine_id=machine.machine_id) }}"
+                                       class="btn btn-outline-danger"
+                                       title="{{ _('Delete') }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="recordCount">{{ machines|length }}</span> {{ _("machines total") }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const maintenanceFilter = document.getElementById('maintenanceFilter').value.toLowerCase();
+            const table = document.getElementById('machinesTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent.toLowerCase();
+                const status = row.getAttribute('data-status').toLowerCase();
+                const maintenance = row.getAttribute('data-maintenance').toLowerCase();
+
+                const matchesSearch = text.includes(searchInput);
+                const matchesStatus = statusFilter === '' || status === statusFilter;
+                const matchesMaintenance = maintenanceFilter === '' ||
+                    (maintenanceFilter === 'expired' && maintenance.includes('expired')) ||
+                    (maintenanceFilter === 'ok' && !maintenance.includes('expired'));
+
+                if (matchesSearch && matchesStatus && matchesMaintenance) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+
+            document.getElementById('recordCount').textContent = visibleCount;
+        }
+    </script>
 </div>
 {% endblock %}
