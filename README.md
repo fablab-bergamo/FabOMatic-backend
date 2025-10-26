@@ -306,5 +306,5 @@ python -m FabOMatic --weekly-summary
 | 0.6.0 | August 2024 | Added remote commands from backend for cloud-enabled printers like BambuLab |
 | 0.7.0 | December 2024 | Bugfix release, no new features |
 | 0.7.4 | October 2024 | Added new settings page in Systems, fixed email hanging issue |
-| 1.0.0 | October 2024 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |
-| 1.0.1 | October 2024 | Added weekly summary email feature with automated activity reports, pending maintenance alerts, and unrecognized cards tracking. Fixed HTML link rendering bug in emails. |
+| 1.0.0 | October 2025 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |
+| 1.0.1 | October 2025 | Added weekly summary email feature with automated activity reports, pending maintenance alerts, and unrecognized cards tracking. Fixed HTML link rendering bug in emails. |
