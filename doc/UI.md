@@ -99,7 +99,7 @@ Authentication
 
 The default page is a login page and all other site pages requires a logged-on user.
 
-![Immagine che contiene testo, schermata, numero, Carattere Descrizione generata automaticamente](doc/media/image1.png){width="5.771639326334208in" height="4.333938101487314in"}
+![Login page](media/login.png)
 
 Only users with email address and rôle « Can Admin backend » flag can log on.
 
@@ -118,14 +118,14 @@ After installation, a default administrator account is automatically created usi
 
 In case an admin forgets the password, click "Forgot password?" to receive an email with a unique reset link valid for 20 minutes.
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image2.png){width="4.760416666666667in" height="1.9040682414698162in"}
+![Password reset page](media/login.png)
 
 Menu
 ====
 
 This is the view for logged users :
 
-![](doc/media/image3.png){width="6.6930555555555555in" height="0.48125in"}
+![Navigation menu](media/about.png)
 
 By clicking on FABLAB you reach the homescreen.
 
@@ -134,7 +134,7 @@ Homescreen
 
 The homescreen presents a real-time view of the various machines.
 
-![Immagine che contiene testo, schermata, Carattere, Marchio Descrizione generata automaticamente](doc/media/image4.png){width="6.6930555555555555in" height="2.9305555555555554in"}
+![Machine status dashboard](media/about.png)
 
 Status description :
 
@@ -156,7 +156,7 @@ This is to configure user priviledge levels.
 View
 ----
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image5.png){width="6.6930555555555555in" height="2.576388888888889in"}
+![Roles list](media/roles_list.png)
 
 Maintenance = The user can perform maintenance by tapping the card on machine board
 
@@ -173,14 +173,14 @@ Add new role
 
 Adding a new role can be helpful to handle more fine-grained permissions.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image6.png){width="3.4895833333333335in" height="2.751150481189851in"}
+![Add new role](media/roles_list.png)
 
 See Roles page for flag description.
 
 Edit existing role
 ------------------
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image7.png){width="3.4479166666666665in" height="3.73457895888014in"}
+![Edit role](media/roles_list.png)
 
 Users
 =====
@@ -198,21 +198,21 @@ This page shows the users and unrecognized RFID tags, and allows several actions
 
 -   Convert a badge to a new user: this is mainly to simplify the initial database creation where the fablab users may not be registered. Once the user is created, the corresponding rejected RFID card records will be purged.
 
-![Immagine che contiene testo, schermata, Carattere, software Descrizione generata automaticamente](doc/media/image8.png){width="7.09120406824147in" height="3.3125in"}
+![Users list](media/users_list.png)
 
 Edit existing user
 ------------------
 
 This allows to change user rôle, name, email or card UUID.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image9.png){width="3.6875in" height="2.906994750656168in"}
+![Edit user](media/users_add.png)
 
 Add new user
 ------------
 
 This page is reached by « Add User » button or « Convert to new user » button on the main page.
 
-![Immagine che contiene testo, schermata, linea, numero Descrizione generata automaticamente](doc/media/image10.png){width="6.6930555555555555in" height="2.7534722222222223in"}
+![Add new user](media/users_add.png)
 
 Please note :
 
@@ -228,7 +228,7 @@ This is the list of machines. Every machine has a unique ID. The Arduino Board i
 View machines
 -------------
 
-![Immagine che contiene testo, Carattere, schermata Descrizione generata automaticamente](doc/media/image11.png){width="6.6930555555555555in" height="1.5666666666666667in"}
+![Machines list](media/machines_list.png)
 
 Description :
 
@@ -247,14 +247,14 @@ Allows to change machine attributes. The machine name is acquired by the arduino
 
 Blocked for all : this blocks any user to log on the machine except for user having « authorize all » rôle priviledge.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image12.png){width="4.927083333333333in" height="3.02127624671916in"}
+![Edit machine](media/machines_add.png)
 
 Add machine
 -----------
 
 Same as Edit Screen.
 
-![Immagine che contiene testo, schermata, linea, Carattere Descrizione generata automaticamente](doc/media/image13.png){width="6.6930555555555555in" height="2.3354166666666667in"}
+![Add machine](media/machines_add.png)
 
 Authorizations
 ==============
@@ -266,7 +266,7 @@ View authorizations
 
 The list of authorization by machine and users can be filtered.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image14.png){width="6.6930555555555555in" height="3.5284722222222222in"}
+![Authorizations list](media/authorizations_list.png)
 
 Description :
 
@@ -277,12 +277,12 @@ Description :
 Add authorization
 -----------------
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image15.png){width="6.6930555555555555in" height="2.5590277777777777in"}
+![Add authorization](media/authorizations_add.png)
 
 Edit authorization
 ------------------
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image16.png){width="5.479029965004375in" height="2.5104166666666665in"}
+![Edit authorization](media/authorizations_add.png)
 
 Add in bulk
 
@@ -290,7 +290,7 @@ Use this screen to add permissions. To remove permissions, you have to use the m
 
 First select the machine, then the users or the « Add all users.. » button.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image17.png){width="6.6930555555555555in" height="2.7805555555555554in"}
+![Add authorizations in bulk](media/authorizations_list.png)
 
 Maintenance
 ===========
@@ -302,12 +302,12 @@ View
 
 Filterable list of maintenance actions.
 
-![Immagine che contiene testo, Carattere, linea, numero Descrizione generata automaticamente](doc/media/image18.png){width="6.6930555555555555in" height="2.1506944444444445in"}
+![Maintenance list](media/maintenances_list.png)
 
 Edit
 ----
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image19.png){width="3.0in" height="3.2064774715660542in"}
+![Edit maintenance](media/maintenances_add.png)
 
 Description : a description of what needs to be done
 
@@ -322,7 +322,7 @@ Machine : which machine needs this maintenance action
 Add new maintenance
 -------------------
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image20.png){width="2.5520833333333335in" height="2.759570209973753in"}
+![Add new maintenance](media/maintenances_add.png)
 
 Description : a description of what needs to be done
 
@@ -340,19 +340,19 @@ Interventions
 View
 ----
 
-![Immagine che contiene testo, schermata, Carattere, software Descrizione generata automaticamente](doc/media/image21.png){width="5.666666666666667in" height="3.3571970691163604in"}
+![Interventions list](media/interventions_list.png)
 
 Add manually
 ------------
 
 Interventions will be created automatically by tapping the card on the machine board, but can be added manually if the maintenance was done ofline.
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image22.png){width="5.055555555555555in" height="1.9318952318460192in"}
+![Add intervention manually](media/interventions_add.png)
 
 Edit interventions
 ------------------
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image23.png){width="5.1in" height="2.326696194225722in"}
+![Edit intervention](media/interventions_add.png)
 
 Usage history
 =============
@@ -362,17 +362,17 @@ View
 
 This page shows the latest uses of all machines (up to 500 records).
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image24.png){width="6.6930555555555555in" height="4.215277777777778in"}
+![Usage history view](media/uses_list.png)
 
 If a machine is in use, row is highlighted :
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image25.png){width="6.6930555555555555in" height="0.521428258967629in"}
+![Machine in use highlighted](media/uses_list.png)
 
 Manual registration
 
 This allows to register a specific use of a machine by one user, e.g. for machine hours tracking.
 
-![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image26.png){width="4.964374453193351in" height="2.22619094488189in"}
+![Manual usage registration](media/uses_add.png)
 
 Machine types
 =============
@@ -380,7 +380,7 @@ Machine types
 View
 ----
 
-![Immagine che contiene testo, Carattere, schermata Descrizione generata automaticamente](doc/media/image27.png){width="6.6930555555555555in" height="1.667361111111111in"}
+![Machine types list](media/machine_types_list.png)
 
 Description :
 
@@ -391,14 +391,14 @@ Description :
 Add/Edit page
 -------------
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image28.png){width="3.612029746281715in" height="4.410714129483814in"}
+![Add/Edit machine type](media/machine_types_list.png)
 
 System page
 ===========
 
 This page provides an overview of the host backend server, maintenance helpers, and lists the boards which have announced themselves on MQTT brocker.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image29.png){width="6.6930555555555555in" height="2.9208333333333334in"}
+![System information page](media/system_info.png)
 
 Database :
 
@@ -515,7 +515,7 @@ Excel export
 
 On most pages, an Excel export button is available, which exports the underlying SQLite tables.
 
-![Immagine che contiene testo, schermata, Carattere, numero Descrizione generata automaticamente](doc/media/image30.png){width="6.601362642169729in" height="1.9881474190726158in"}
+![Excel export button](media/users_list.png)
 
 Technical details
 =================
