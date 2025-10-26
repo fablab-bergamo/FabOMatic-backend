@@ -8,7 +8,7 @@
 
 * Homescreen example, with real-time machine status:
 
-![image](https://github.com/fablab-bergamo/rfid-backend/assets/6236243/75075b86-ec9b-4e6c-82d8-35de94663c09)
+![Machine Dashboard](doc/media/about.png)
 
 * **User Manual**: [PDF version](doc/UI.pdf) | [Markdown version](doc/UI.md)
 
