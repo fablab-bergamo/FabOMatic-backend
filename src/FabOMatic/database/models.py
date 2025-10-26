@@ -73,6 +73,7 @@ class User(UserMixin, Base):
     deleted = Column(Boolean, unique=False, nullable=False, default=False)
     password_hash = Column(String(128), nullable=True)
     email = Column(String, nullable=True)
+    receive_weekly_summary = Column(Boolean, unique=False, nullable=False, default=False)
 
     authorizations = relationship("Authorization", back_populates="user")
     interventions = relationship("Intervention", back_populates="user")
@@ -129,6 +130,7 @@ class User(UserMixin, Base):
             "deleted": self.deleted,
             "email": self.email,
             "password_hash": self.password_hash,
+            "receive_weekly_summary": self.receive_weekly_summary,
         }
 
     @classmethod

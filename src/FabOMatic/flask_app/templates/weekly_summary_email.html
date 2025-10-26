@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="{{ g.language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ _('FabOMatic - Weekly Summary') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .greeting {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: bold;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .no-data {
+            color: #6c757d;
+            font-style: italic;
+            padding: 10px 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .warning strong {
+            color: #856404;
+        }
+        .date-range {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .card-uuid {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ _('FabOMatic - Weekly Summary') }}</h1>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                <p>{{ _('Hello %(name)s,', name=user.name) }}</p>
+                <p>{{ _("Here's the summary of lab activities for last week.") }}</p>
+            </div>
+
+            <div class="date-range">
+                <strong>{{ _('Period:') }}</strong> {{ summary_data.week_start.strftime('%Y-%m-%d') }} - {{ summary_data.week_end.strftime('%Y-%m-%d') }}
+            </div>
+
+            <!-- Machine Usage Statistics -->
+            <div class="section">
+                <h2>{{ _('📊 Machine Usage') }}</h2>
+
+                {% if summary_data.machine_stats %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ _('Machine') }}</th>
+                                <th>{{ _('Usage Hours') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in summary_data.machine_stats %}
+                            <tr>
+                                <td>{{ stat.machine_name }}</td>
+                                <td>{{ "%.1f"|format(stat.total_hours) }} h</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-data">
+                        {{ _('No machine usage recorded this week.') }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Pending Maintenance -->
+            <div class="section">
+                <h2>{{ _('⚠️ Pending Maintenance') }}</h2>
+
+                {% if summary_data.pending_maintenances %}
+                    {% for maint in summary_data.pending_maintenances %}
+                    <div class="warning">
+                        <strong>{{ maint.machine_name }}</strong><br>
+                        {{ maint.maintenance_description }}<br>
+                        <small>{{ _('Overdue by %(hours).1f hours', hours=maint.overdue_hours) }}</small>
+                        {% if maint.instructions_url %}
+                        <br><small><a href="{{ maint.instructions_url }}">
+                            {{ _('Instructions') }}
+                        </a></small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-data">
+                        {{ _('No pending maintenance. Great job! 👍') }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Unrecognized Cards -->
+            <div class="section">
+                <h2>{{ _('🔑 Unrecognized Cards') }}</h2>
+
+                {% if summary_data.unrecognized_cards %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ _('Card UUID') }}</th>
+                                <th>{{ _('Machines') }}</th>
+                                <th>{{ _('Attempts') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for card in summary_data.unrecognized_cards %}
+                            <tr>
+                                <td><span class="card-uuid">{{ card.card_uuid }}</span></td>
+                                <td>{{ card.machines|join(', ') }}</td>
+                                <td>{{ card.attempt_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 10px; font-size: 14px;">
+                        <em>{{ _('Note: These cards attempted to access machines but were not recognized. They may need to be registered in the system.') }}</em>
+                    </p>
+                {% else %}
+                    <p class="no-data">
+                        {{ _('No unrecognized cards this week.') }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>{{ _('Visit') }} <a href="https://{{ base_url }}">FabOMatic</a> {{ _('for more details') }}</p>
+            <p style="font-size: 12px; color: #999; margin-top: 15px;">
+                {{ _('This is an automated email generated by FabOMatic. Please do not reply.') }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
