@@ -156,3 +156,5 @@ src/FabOMatic/log.txt
 *.sqldb
 log/fablab.txt
 database.sqldb.bak
+initial.db
+src/FabOMatic/conf/settings.toml.bak
