@@ -100,6 +100,12 @@
                                value="{{ settings.web.default_admin_email }}" required>
                         <small class="form-text text-muted">{{ _("Email for admin login and seeding.") }}</small>
                     </div>
+                    <div class="mb-3">
+                        <label for="web_base_url" class="form-label">{{ _("Base URL") }}</label>
+                        <input type="text" class="form-control" id="web_base_url" name="web.base_url"
+                               value="{{ settings.web.get('base_url', '') }}" placeholder="fabpi.example.com">
+                        <small class="form-text text-muted">{{ _("Base URL for web application (used in emails).") }}</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,6 +142,39 @@
                         <input type="password" class="form-control" id="email_password" name="email.password"
                                value="{{ settings.email.password }}">
                         <small class="form-text text-muted">{{ _("Leave empty to keep current password.") }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email_sender" class="form-label">{{ _("Sender Email") }}</label>
+                        <input type="email" class="form-control" id="email_sender" name="email.sender"
+                               value="{{ settings.email.get('sender', '') }}" required>
+                        <small class="form-text text-muted">{{ _("Email address used as sender for system emails.") }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Weekly Summary Settings -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <i class="fa fa-calendar-week"></i> {{ _("Weekly Summary Settings") }}
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="weekly_summary_enabled" name="weekly_summary.enabled"
+                               {% if settings.get('weekly_summary', {}).get('enabled', True) %}checked{% endif %}>
+                        <label class="form-check-label" for="weekly_summary_enabled">{{ _("Enable weekly summary emails") }}</label>
+                        <small class="form-text text-muted d-block">{{ _("Send automated weekly summary emails to users.") }}</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weekly_summary_language" class="form-label">{{ _("Email Language") }}</label>
+                        <select class="form-select" id="weekly_summary_language" name="weekly_summary.language">
+                            <option value="en" {% if settings.get('weekly_summary', {}).get('language', 'en') == 'en' %}selected{% endif %}>English</option>
+                            <option value="it" {% if settings.get('weekly_summary', {}).get('language', 'en') == 'it' %}selected{% endif %}>Italiano</option>
+                        </select>
+                        <small class="form-text text-muted">{{ _("Language for weekly summary emails.") }}</small>
                     </div>
                 </div>
             </div>

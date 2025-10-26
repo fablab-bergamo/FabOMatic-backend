@@ -90,9 +90,37 @@ def start(loglevel):
         sleep(5)
 
 
+def send_weekly_summary():
+    """Send weekly summary emails to all eligible users."""
+    from FabOMatic.logic.WeeklySummary import send_weekly_summaries
+    from FabOMatic.web.webapplication import app, DBSession
+    from FabOMatic.web.authentication import mail
+
+    logging.info("Sending weekly summary emails...")
+
+    # Get database session
+    session = DBSession()
+
+    try:
+        # Set a dummy backend attribute to satisfy app context
+        if not hasattr(app, 'backend'):
+            app.backend = None
+
+        with app.app_context():
+            stats = send_weekly_summaries(session, mail, app)
+            logging.info(
+                f"Weekly summary completed: {stats['sent']} sent, {stats['failed']} failed, {stats['skipped']} skipped"
+            )
+    except Exception as e:
+        logging.error(f"Error sending weekly summaries: {e}", exc_info=True)
+    finally:
+        session.close()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Fab-O-Matic Backend server.")
     parser.add_argument("-p", "--purge", action="store_true", help="Purge data and exit")
+    parser.add_argument("-w", "--weekly-summary", action="store_true", help="Send weekly summary emails and exit")
     parser.add_argument("-l", "--loglevel", type=int, default=10, help="Set log level (default: 10)")
 
     args = parser.parse_args()
@@ -103,6 +131,10 @@ def main():
         back = Backend()
         back.purge_data()
         logging.info("Purge operation completed. Exiting.")
+    elif args.weekly_summary:
+        configure_logger(args.loglevel)
+        send_weekly_summary()
+        logging.info("Weekly summary operation completed. Exiting.")
     else:
         start(args.loglevel)
 

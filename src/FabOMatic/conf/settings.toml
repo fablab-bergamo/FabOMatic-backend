@@ -9,15 +9,16 @@ client_id = "test"
 topic = "machine"
 reply_subtopic = "/reply"
 stats_topic = "stats"
+user = ""
 
 [web]
 secret_key = "initial-secret"
 default_admin_email = "initial@test.com"
 
 [email]
-server = "smtp.test.com"
+server = "smtp.gmail.com"
 port = 587
 use_tls = true
-username = "user"
-password = "pass"
+username = "fabomatic@fablabbergamo.it"
+password = "xccs zinw lwes gtdp"
 sender = "admin@fablab.org"

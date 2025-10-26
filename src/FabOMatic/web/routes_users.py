@@ -69,6 +69,13 @@ def create_user():
             "error",
         )
         return redirect(url_for("view_users"))
+
+    # Validate weekly summary flag requires email
+    receive_weekly_summary = user_data.get("receive_weekly_summary", "off") == "on"
+    if receive_weekly_summary and not user_data.get("email"):
+        flash(gettext("Cannot enable weekly summary emails without an email address."), "error")
+        return redirect(url_for("add_user"))
+
     new_user = User(
         name=user_data["name"],
         surname=user_data["surname"],
@@ -76,6 +83,7 @@ def create_user():
         disabled=user_data.get("disabled", "off") == "on",
         card_UUID=card_UUID,
         email=user_data["email"],
+        receive_weekly_summary=receive_weekly_summary,
     )
     session.add(new_user)
 
@@ -135,12 +143,20 @@ def update_user():
                 "error",
             )
             return redirect(url_for("edit_user", user_id=user.user_id))
+
+        # Validate weekly summary flag requires email
+        receive_weekly_summary = user_data.get("receive_weekly_summary", "off") == "on"
+        if receive_weekly_summary and not user_data.get("email"):
+            flash(gettext("Cannot enable weekly summary emails without an email address."), "error")
+            return redirect(url_for("edit_user", user_id=user.user_id))
+
         user.name = user_data["name"]
         user.surname = user_data["surname"]
         user.role_id = user_data["role_id"]
         user.card_UUID = card_UUID
         user.disabled = user_data.get("disabled", "off") == "on"
         user.email = user_data["email"]
+        user.receive_weekly_summary = receive_weekly_summary
         session.commit()
         return redirect(url_for("view_users"))
     else:
