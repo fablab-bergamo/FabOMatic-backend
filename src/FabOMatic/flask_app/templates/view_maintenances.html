@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Maintenances") }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>{{ _("Maintenances") }}</h1>
-    <h2>{{ _("This system page configures the possible maintenances actions of the machines") }}</h2>
-    <a href="{{ url_for('add_maintenance') }}" class="btn btn-primary mb-3">{{ _("Add Maintenance") }}</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-tools me-2"></i>{{ _("Maintenances") }}</h1>
+            <p class="text-muted mb-0">{{ _("Schedule and track machine maintenance") }}</p>
+        </div>
+        <a href="{{ url_for('add_maintenance') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>{{ _("Add Maintenance") }}
+        </a>
+    </div>
     <form method="GET" action="{{ url_for('maintenances') }}">
         <div class="form-group">
             <label for="machineFilter">{{ _("Filter Machines") }}:</label>

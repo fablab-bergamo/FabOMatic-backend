@@ -10,7 +10,7 @@
 
 ![image](https://github.com/fablab-bergamo/rfid-backend/assets/6236243/75075b86-ec9b-4e6c-82d8-35de94663c09)
 
-* [UI description](doc/UI.pdf)
+* **User Manual**: [PDF version](doc/UI.pdf) | [Markdown version](doc/UI.md)
 
 * This Python 3.10 application runs a MQTT client and a Flask HTTPS application.
 
@@ -248,4 +248,5 @@ journalctl --vacuum-time=1y
 | 0.5.0 | June 2024 | First release on PyPi. Renamed to FabOMatic. Added GDPR compliance (purge function) |
 | 0.6.0 | August 2024 | Added remote commands from backend for cloud-enabled printers like BambuLab |
 | 0.7.0 | December 2024 | Bugfix release, no new features |
-| 0.7.4 | October 2025 | Added new settings page in Systems, fixed email hanging issue |
+| 0.7.4 | October 2024 | Added new settings page in Systems, fixed email hanging issue |
+| 1.0.0 | October 2024 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |

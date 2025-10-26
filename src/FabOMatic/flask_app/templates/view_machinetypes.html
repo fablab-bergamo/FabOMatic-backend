@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Machine Types") }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>{{ _("Machine Types") }}</h1>
-    <h3>{{ _("This page defines the categories of machines in the LAB.") }}</h3>
-    <a href="{{ url_for('add_machinetype') }}" class="btn btn-primary mb-3">{{ _("Add Machine Type") }}</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-sitemap me-2"></i>{{ _("Machine Types") }}</h1>
+            <p class="text-muted mb-0">{{ _("Configure machine categories and settings") }}</p>
+        </div>
+        <a href="{{ url_for('add_machinetype') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>{{ _("Add Machine Type") }}
+        </a>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>

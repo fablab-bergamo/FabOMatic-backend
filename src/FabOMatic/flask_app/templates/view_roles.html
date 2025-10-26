@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
+
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Roles") }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>{{ _("Roles") }}</h1>
-    <h2>{{ _("This page configures the possible roles of FabLab users.") }}</h2>
-    <a href="{{ url_for('add_role') }}" class="btn btn-primary mb-3">{{ _("Add Role") }}</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-user-tag me-2"></i>{{ _("Roles") }}</h1>
+            <p class="text-muted mb-0">{{ _("Define user roles and permissions") }}</p>
+        </div>
+        <a href="{{ url_for('add_role') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>{{ _("Add Role") }}
+        </a>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
