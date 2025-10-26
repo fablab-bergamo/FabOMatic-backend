@@ -1,12 +1,14 @@
-Fabomatic-backend -- release 0.7.3 {#fabomatic-backend-release-0.7.3 .TOC-Heading}
+Fabomatic-backend -- release 1.0.0 {#fabomatic-backend-release-1.0.0 .TOC-Heading}
 ==================================
 
 Contents {#contents .TOC-Heading}
 ========
 
-[Authentication 2](#authentication)
+[What's New in 1.0.0 2](#whats-new-in-100)
 
-[Menu 3](#menu)
+[Authentication 3](#authentication)
+
+[Menu 4](#menu)
 
 [Homescreen 3](#homescreen)
 
@@ -34,6 +36,64 @@ Contents {#contents .TOC-Heading}
 
 [Technical details 19](#technical-details)
 
+What's New in 1.0.0
+===================
+
+Version 1.0.0 represents a major milestone for FabOMatic with a complete user interface modernization and several important improvements.
+
+## Modern User Interface
+
+The entire web interface has been redesigned with a modern, professional appearance:
+
+### Visual Design
+- **New Color Scheme**: Modern purple gradient navbar matching FabLab branding
+- **Custom CSS Framework**: 859 lines of professional styling with consistent design system
+- **FontAwesome Icons**: Icons throughout the interface for better visual recognition
+- **Smooth Animations**: Transitions and animations for a polished user experience
+- **Gradient Cards**: Machine status cards with color gradients and pulse animations for active machines
+
+### Navigation Improvements
+- **Enhanced Navbar**: Gradient background with improved contrast and visibility
+- **Icon Navigation**: Each menu item now has a relevant icon for quick identification
+- **Active Page Highlighting**: Current page is highlighted in the navigation menu
+- **Breadcrumb Navigation**: All pages now include breadcrumbs showing the current location
+- **MQTT Status Indicator**: Improved visibility of connection status in the navbar
+
+### Data Tables Enhancement
+- **Search Functionality**: Real-time search across all data tables (Users, Machines, etc.)
+- **Advanced Filtering**: Filter by role, status, machine type, and other criteria
+- **Modern Table Design**: Improved spacing, hover effects, and visual hierarchy
+- **Better Mobile Experience**: Tables adapt to smaller screens with responsive columns
+
+### Machine Dashboard
+- **Summary Statistics**: Quick overview cards showing counts of machines by status
+- **Visual Status Indicators**: Color-coded cards with icons (In Use: green, Free: white, Maintenance: orange, Blocked: red, Offline: gray)
+- **Auto-refresh Indicator**: Visible 30-second refresh timer
+- **Animated Active Machines**: Pulse animation on machines currently in use
+
+### Responsive Design
+- **Mobile-First Approach**: Interface optimized for touch devices
+- **Adaptive Layouts**: Content reorganizes for optimal viewing on all screen sizes
+- **Touch-Optimized**: Larger touch targets for mobile users
+- **Breakpoints**: Responsive design at 768px and 992px for tablets and desktops
+
+### User Experience Improvements
+- **Better Visual Hierarchy**: Clear distinction between headers, content, and actions
+- **Improved Readability**: Inter font family for enhanced legibility
+- **Consistent Spacing**: Uniform margins and padding throughout
+- **Enhanced Forms**: Modern input fields with focus states and validation
+- **Professional Buttons**: Gradient backgrounds with hover effects and smooth transitions
+
+## Email System Improvements (from 0.7.4)
+
+- **Timeout Protection**: Added timeouts to prevent email operations from hanging indefinitely
+- **Async Email Sending**: Non-blocking email operations for better performance
+- **Comprehensive Logging**: Detailed logging for password reset operations to aid troubleshooting
+
+## Bug Fixes
+
+- **Machine Count Fix**: Corrected dashboard summary logic that was showing negative counts for free machines. The counting now uses consistent if-elif priority logic ensuring each machine is counted exactly once.
+
 Authentication
 ==============
 
@@ -43,13 +103,20 @@ The default page is a login page and all other site pages requires a logged-on u
 
 Only users with email address and rôle « Can Admin backend » flag can log on.
 
-Default user at install is :
+## First Login
 
--   Login : <admin@fablab.org>
+After installation, a default administrator account is automatically created using the email address specified in the configuration file (`settings.toml` → `web.default_admin_email`).
 
--   Password : admin
+**Default credentials:**
 
-In case an admin forgets the email, the forgot password will send an email with a unique link valid for 20 minutes to reset the password.
+-   **Email**: `admin@fablab.org` (or the email configured in settings.toml)
+-   **Password**: `admin`
+
+**Important**: Change the default password immediately after first login for security reasons.
+
+## Password Reset
+
+In case an admin forgets the password, click "Forgot password?" to receive an email with a unique reset link valid for 20 minutes.
 
 ![Immagine che contiene testo, schermata, Carattere, linea Descrizione generata automaticamente](doc/media/image2.png){width="4.760416666666667in" height="1.9040682414698162in"}
 
