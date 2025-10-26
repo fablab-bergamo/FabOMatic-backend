@@ -99,6 +99,12 @@ def take_screenshots():
             browser.close()
             return False
 
+        # Switch to English language
+        print("\nSwitching to English language...")
+        page.goto(f"{BASE_URL}/language/en", timeout=5000)
+        time.sleep(1)  # Wait for language switch
+        print("✓ Language set to English")
+
         # Take screenshots of main pages
         print("\nCapturing main pages...")
         for route, filename in PAGES:
