@@ -1,92 +1,104 @@
 <body>
     {% from 'macros.html' import render_datetime %}
     <!-- Begin Bootstrap Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('about') }}">
+                <i class="fas fa-industry"></i>
+                FabOMatic
+            </a>
+            {% if not backend.connected %}
+            <div class="mqtt-status">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                MQTT
+            </div>
+            {% endif %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('about') }}">FABLAB</a>
-            {% if not backend.connected %}
-            <div class="text-danger">
-                MQTT <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-            </div>
-            {%endif%}
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     {% if current_user and current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_users') }}">{{ _("Users") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'view_users' %}active{% endif %}" href="{{ url_for('view_users') }}">
+                            <i class="fas fa-users"></i>{{ _("Users") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_machines') }}">{{ _("Machines") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'view_machines' %}active{% endif %}" href="{{ url_for('view_machines') }}">
+                            <i class="fas fa-cogs"></i>{{ _("Machines") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_uses') }}">{{ _("History") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'view_uses' %}active{% endif %}" href="{{ url_for('view_uses') }}">
+                            <i class="fas fa-history"></i>{{ _("History") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_authorizations') }}">{{ _("Authorizations") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'view_authorizations' %}active{% endif %}" href="{{ url_for('view_authorizations') }}">
+                            <i class="fas fa-key"></i>{{ _("Authorizations") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('maintenances') }}">{{ _("Maintenance") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'maintenances' %}active{% endif %}" href="{{ url_for('maintenances') }}">
+                            <i class="fas fa-tools"></i>{{ _("Maintenance") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('view_interventions') }}">{{ _("Interventions") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'view_interventions' %}active{% endif %}" href="{{ url_for('view_interventions') }}">
+                            <i class="fas fa-wrench"></i>{{ _("Interventions") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('roles') }}">{{ _("Roles") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'roles' %}active{% endif %}" href="{{ url_for('roles') }}">
+                            <i class="fas fa-user-tag"></i>{{ _("Roles") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('machinetypes') }}">{{ _("Machine types") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'machinetypes' %}active{% endif %}" href="{{ url_for('machinetypes') }}">
+                            <i class="fas fa-sitemap"></i>{{ _("Machine types") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('system') }}">{{ _("System") }}</a>
+                        <a class="nav-link {% if request.endpoint == 'system' %}active{% endif %}" href="{{ url_for('system') }}">
+                            <i class="fas fa-server"></i>{{ _("System") }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">{{ _("Logout") }}</a>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i>{{ _("Logout") }}
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">{{ _("Login") }}</a>
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="fas fa-sign-in-alt"></i>{{ _("Login") }}
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
             </div>
-            <a href="{{ url_for('set_language', lang='en') }}">🇬🇧</a>&nbsp;
-            <a href="{{ url_for('set_language', lang='it') }}">🇮🇹</a>
+            <div class="language-switcher ms-2">
+                <a href="{{ url_for('set_language', lang='en') }}" title="English">🇬🇧</a>
+                <a href="{{ url_for('set_language', lang='it') }}" title="Italiano">🇮🇹</a>
+            </div>
         </div>
     </nav>
-    <style>
-        @media (max-width: 992px) {
-            .navbar-nav .nav-link {
-                padding: .5rem 1rem;
-                /* Increase padding to make links easier to tap */
-                font-size: 2rem;
-                /* Increase font size to make links easier to read */
-                font-weight: bold;
-                /* Increase font weight to make links easier to read */
-            }
-
-            #navbarNav {
-                max-height: calc(100vh - 56px);
-                /* Subtract the height of the navbar */
-                overflow-y: auto;
-                /* Add scroll if content is larger than screen */
-            }
-
-            body {
-                padding-left: 0px;
-                padding-right: 0px;
-            }
-        }
-
-        .container-fluid {
-            padding: 1px;
-        }
-    </style>
     <!-- End Bootstrap Navbar -->
-    <hr>
+
+    <!-- Breadcrumbs -->
+    <div class="breadcrumb-container">
+        <div class="container-fluid">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% block breadcrumbs %}
+                    <li class="breadcrumb-item"><a href="{{ url_for('about') }}"><i class="fas fa-home"></i> Home</a></li>
+                    {% endblock %}
+                </ol>
+            </nav>
+        </div>
+    </div>
     {% for mesg in get_flashed_messages() %}
     <div class="alert alert-warning" role="alert">{{mesg}}</div>
     {% endfor %}

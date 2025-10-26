@@ -1,98 +1,208 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h4>{{ _("System status") }}</h4>
-<div class="row mt-0">
-    <div class="col-md-4">
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("System") }}</li>
+{% endblock %}
 
-        <div class="card">
-            <div class="card-header">
-                {{ _("Database info") }}
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">{{ _("Database size (KB)") }}: {{ db_size }} <a href="{{ url_for('download_db') }}"
-                        class="btn btn-info">{{ _("Download DB") }}</a></li>
-                    <li class="list-group-item">Database file : {{ db_file }}</li>
-                    <li class="list-group-item">
-                        {{ _("Restore database") }}:
-                        <form action="{{ url_for('upload_db') }}" method="post" enctype="multipart/form-data">
-                            <input class="form-control" type="file" name="db_file" accept=".sqldb" maxlength="1000000">
-                            <button type="submit" class="btn btn-primary">{{ _("Upload DB") }}</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                {{ _("System info") }}
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">{{ _("MQTT Status") }}: 
-                        {% if backend.connected %}
-                            <i class="fa fa-check-square text-success" aria-hidden="true">&nbsp;OK</i>
-                        {%else%} 
-                            <i class="fa fa-exclamation-triangle text-danger" aria-hidden="true">&nbsp;ERROR</i>
-                        {%endif%}
-                    </li>
-                    <li class="list-group-item">{{ _("Machine info") }}: {{ machine_info }}</li>
-                    <li class="list-group-item">{{ _("Disk free space") }} (MB): {{ disk_free }}</li>
-                    <li class="list-group-item">{{ _("Memory free space") }} (MB): {{ ram_free }}</li>
-                    <li class="list-group-item">{{ _("Backend log file") }}: <a href="{{ url_for('download_logs') }}" class="btn btn-info">{{ _("Download") }}</a></li>
-                    <li class="list-group-item"><a href="{{ url_for('reboot') }}" class="btn btn-danger">{{ _("Reboot system") }}</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                {{ _("Application info") }}
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">{{ _("Version installed") }} : {{ app_version }}</li>
-                    <li class="list-group-item">{{ _("Version available") }} : {{ latest_version }}</li>
-                    <li class="list-group-item"><a href="{{ url_for('view_settings') }}" class="btn btn-info">{{ _("Edit Configuration") }}</a>
-                    </li>
-                    <li class="list-group-item"><a href="{{ url_for('update_app') }}" class="btn btn-danger">{{ _("Update application (pip)") }}</a>
-                    </li>
-                    <li class="list-group-item"><a href="{{ url_for('restart_app') }}" class="btn btn-primary">{{ _("Restart application") }}</a>
-                </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<h4>{{ _("Boards list") }}</h4>
+{% block content %}
 <div class="container-fluid">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">{{ _("Serial number") }}</th>
-                <th scope="col">{{ _("Machine (ID)") }}</th>
-                <th scope="col">{{ _("IP address") }}</th>
-                <th scope="col">{{ _("FW Version") }}</th>
-                <th scope="col">{{_("Free heap") }}</th>
-                <th scope="col">{{ _("Last seen") }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for board in boards %}
-            <tr>
-                <td>{{ board.serial }}</td>
-                <td>{{ board.machine.machine_name }} ({{ board.machine_id }})</td>
-                <td>{{ board.ip_address }}</td>
-                <td>{{ board.fw_version }}</td>
-                <td>{{ board.heap }}</td>
-                <td>{{ board.last_seen | time_since }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>   
+    <div class="mb-4">
+        <h1><i class="fas fa-server me-2"></i>{{ _("System status") }}</h1>
+        <p class="text-muted mb-0">{{ _("Monitor and manage system resources") }}</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Database Info Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-database me-2"></i>{{ _("Database info") }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-hdd me-2 text-muted"></i>
+                                {{ _("Database size") }}
+                            </div>
+                            <span class="badge bg-info">{{ db_size }} KB</span>
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted">
+                                <i class="fas fa-file me-2"></i>{{ db_file }}
+                            </small>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('download_db') }}" class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-download me-2"></i>{{ _("Download DB") }}
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <form action="{{ url_for('upload_db') }}" method="post" enctype="multipart/form-data">
+                                <label class="form-label small fw-bold">{{ _("Restore database") }}:</label>
+                                <input class="form-control form-control-sm mb-2" type="file" name="db_file" accept=".sqldb" maxlength="1000000">
+                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-upload me-2"></i>{{ _("Upload DB") }}
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Info Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-microchip me-2"></i>{{ _("System info") }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ _("MQTT Status") }}</span>
+                            {% if backend.connected %}
+                                <span class="badge bg-success">
+                                    <i class="fa fa-check-circle me-1"></i>{{ _("Connected") }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    <i class="fa fa-exclamation-triangle me-1"></i>{{ _("Disconnected") }}
+                                </span>
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item">
+                            <small class="text-muted d-block">{{ _("Machine info") }}</small>
+                            <strong>{{ machine_info }}</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-hdd me-2 text-muted"></i>{{ _("Disk free") }}
+                            </div>
+                            <span class="badge bg-info">{{ disk_free }} MB</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-memory me-2 text-muted"></i>{{ _("RAM free") }}
+                            </div>
+                            <span class="badge bg-info">{{ ram_free }} MB</span>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('download_logs') }}" class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-file-download me-2"></i>{{ _("Download Logs") }}
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('reboot') }}" class="btn btn-danger btn-sm w-100">
+                                <i class="fas fa-power-off me-2"></i>{{ _("Reboot system") }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Info Card -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-code me-2"></i>{{ _("Application info") }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ _("Version installed") }}</span>
+                            <span class="badge bg-dark">v{{ app_version }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ _("Version available") }}</span>
+                            <span class="badge bg-primary">v{{ latest_version }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('view_settings') }}" class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-cog me-2"></i>{{ _("Edit Configuration") }}
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('update_app') }}" class="btn btn-danger btn-sm w-100">
+                                <i class="fas fa-cloud-download-alt me-2"></i>{{ _("Update application (pip)") }}
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{{ url_for('restart_app') }}" class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-redo me-2"></i>{{ _("Restart application") }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Boards List Section -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-microchip me-2"></i>{{ _("Boards list") }}
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ _("Serial number") }}</th>
+                            <th scope="col">{{ _("Machine") }}</th>
+                            <th scope="col">{{ _("IP address") }}</th>
+                            <th scope="col">{{ _("FW Version") }}</th>
+                            <th scope="col">{{ _("Free heap") }}</th>
+                            <th scope="col">{{ _("Last seen") }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for board in boards %}
+                        <tr>
+                            <td>
+                                <code class="text-muted">{{ board.serial }}</code>
+                            </td>
+                            <td>
+                                <i class="fas fa-cog me-2 text-muted"></i>
+                                <strong>{{ board.machine.machine_name }}</strong>
+                                <span class="badge bg-secondary ms-2">#{{ board.machine_id }}</span>
+                            </td>
+                            <td>
+                                <i class="fas fa-network-wired me-2 text-muted"></i>
+                                {{ board.ip_address }}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">v{{ board.fw_version }}</span>
+                            </td>
+                            <td>
+                                <i class="fas fa-memory me-2 text-muted"></i>
+                                {{ board.heap }}
+                            </td>
+                            <td>
+                                <i class="fas fa-clock me-2 text-muted"></i>
+                                {{ board.last_seen | time_since }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <span class="text-muted">
+                <i class="fas fa-info-circle me-2"></i>
+                {{ boards|length }} {{ _("boards connected") }}
+            </span>
+        </div>
+    </div>
 </div>
 {% endblock %}

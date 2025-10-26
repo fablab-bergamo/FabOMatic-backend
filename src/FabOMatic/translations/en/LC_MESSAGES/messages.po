@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-29 09:34+0100\n"
+"POT-Creation-Date: 2025-10-26 08:25+0100\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -17,51 +17,62 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.14.0\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: flask_app/templates/about.html:4
+#: flask_app/templates/about.html:5 flask_app/templates/about.html:12
 msgid "Machines status"
 msgstr ""
 
 #: flask_app/templates/about.html:13
+msgid "Real-time machine status dashboard"
+msgstr ""
+
+#: flask_app/templates/about.html:17 flask_app/templates/base_body.html:30
+#: flask_app/templates/view_machines.html:5
+#: flask_app/templates/view_machines.html:12
+msgid "Machines"
+msgstr ""
+
+#: flask_app/templates/about.html:40 flask_app/templates/about.html:103
 msgid "IN USE"
 msgstr ""
 
-#: flask_app/templates/about.html:16
-msgid "BLOCKED"
-msgstr ""
-
-#: flask_app/templates/about.html:19
-msgid "MAINTENANCE"
-msgstr ""
-
-#: flask_app/templates/about.html:22
-msgid "OFFLINE"
-msgstr ""
-
-#: flask_app/templates/about.html:25
+#: flask_app/templates/about.html:49 flask_app/templates/about.html:119
 msgid "FREE"
 msgstr ""
 
-#: flask_app/templates/about.html:29
-msgid "Machine status"
+#: flask_app/templates/about.html:58 flask_app/templates/about.html:111
+msgid "MAINTENANCE"
 msgstr ""
 
-#: flask_app/templates/about.html:31
-msgid "In use by:"
+#: flask_app/templates/about.html:67 flask_app/templates/about.html:107
+msgid "BLOCKED"
+msgstr ""
+
+#: flask_app/templates/about.html:76 flask_app/templates/about.html:115
+msgid "OFFLINE"
+msgstr ""
+
+#: flask_app/templates/about.html:85
+msgid "AUTO REFRESH"
+msgstr ""
+
+#: flask_app/templates/about.html:94
+msgid "Detailed Machine Status"
 msgstr ""
 
 #: flask_app/templates/add_authorization.html:3
 #: flask_app/templates/add_authorization.html:21
+#: flask_app/templates/view_authorizations.html:17
 msgid "Add Authorization"
 msgstr ""
 
 #: flask_app/templates/add_authorization.html:6
 #: flask_app/templates/add_intervention.html:24
 #: flask_app/templates/add_use.html:8
-#: flask_app/templates/view_authorizations.html:31
-#: flask_app/templates/view_interventions.html:36
-#: flask_app/templates/view_uses.html:49
+#: flask_app/templates/view_authorizations.html:49
+#: flask_app/templates/view_interventions.html:47
+#: flask_app/templates/view_uses.html:60
 msgid "User"
 msgstr ""
 
@@ -70,11 +81,12 @@ msgstr ""
 #: flask_app/templates/add_use.html:17
 #: flask_app/templates/edit_authorization.html:15
 #: flask_app/templates/edit_maintenance.html:29
-#: flask_app/templates/view_authorizations.html:32
-#: flask_app/templates/view_interventions.html:35
-#: flask_app/templates/view_maintenances.html:33
-#: flask_app/templates/view_users.html:61 flask_app/templates/view_uses.html:24
-#: flask_app/templates/view_uses.html:48
+#: flask_app/templates/view_authorizations.html:50
+#: flask_app/templates/view_interventions.html:46
+#: flask_app/templates/view_maintenances.html:44
+#: flask_app/templates/view_system.html:161
+#: flask_app/templates/view_users.html:185
+#: flask_app/templates/view_uses.html:35 flask_app/templates/view_uses.html:59
 msgid "Machine"
 msgstr ""
 
@@ -84,14 +96,15 @@ msgid "Add Intervention"
 msgstr ""
 
 #: flask_app/templates/add_intervention.html:8
-#: flask_app/templates/base_body.html:32
-#: flask_app/templates/view_interventions.html:34
+#: flask_app/templates/base_body.html:45
+#: flask_app/templates/view_interventions.html:45
+#: flask_app/templates/view_machines.html:61
 msgid "Maintenance"
 msgstr ""
 
 #: flask_app/templates/add_machine.html:5
 #: flask_app/templates/add_machine.html:27
-#: flask_app/templates/view_machines.html:6
+#: flask_app/templates/view_machines.html:16
 msgid "Add Machine"
 msgstr ""
 
@@ -108,11 +121,13 @@ msgid "Machine Hours"
 msgstr ""
 
 #: flask_app/templates/add_machine.html:25
+#: flask_app/templates/view_machines.html:34
+#: flask_app/templates/view_machines.html:89
 msgid "Blocked"
 msgstr ""
 
 #: flask_app/templates/add_machinetype.html:5
-#: flask_app/templates/view_machinetypes.html:7
+#: flask_app/templates/view_machinetypes.html:16
 msgid "Add Machine Type"
 msgstr ""
 
@@ -140,7 +155,7 @@ msgstr ""
 
 #: flask_app/templates/add_machinetype.html:26
 #: flask_app/templates/edit_machinetype.html:26
-#: flask_app/templates/view_machinetypes.html:15
+#: flask_app/templates/view_machinetypes.html:26
 msgid "Access control"
 msgstr ""
 
@@ -160,7 +175,7 @@ msgstr ""
 
 #: flask_app/templates/add_maintenance.html:5
 #: flask_app/templates/add_maintenance.html:31
-#: flask_app/templates/view_maintenances.html:7
+#: flask_app/templates/view_maintenances.html:16
 msgid "Add Maintenance"
 msgstr ""
 
@@ -186,7 +201,7 @@ msgid "instructions_url"
 msgstr ""
 
 #: flask_app/templates/add_role.html:5 flask_app/templates/add_role.html:23
-#: flask_app/templates/view_roles.html:6
+#: flask_app/templates/view_roles.html:16
 msgid "Add Role"
 msgstr ""
 
@@ -219,17 +234,18 @@ msgid "End Timestamp"
 msgstr ""
 
 #: flask_app/templates/add_user.html:5 flask_app/templates/add_user.html:35
+#: flask_app/templates/view_users.html:16
 msgid "Add User"
 msgstr ""
 
 #: flask_app/templates/add_user.html:8
-#: flask_app/templates/view_machines.html:11
-#: flask_app/templates/view_roles.html:11
-#: flask_app/templates/view_users.html:12
+#: flask_app/templates/view_machines.html:57
+#: flask_app/templates/view_roles.html:23
+#: flask_app/templates/view_users.html:61
 msgid "Name"
 msgstr ""
 
-#: flask_app/templates/add_user.html:12 flask_app/templates/view_users.html:13
+#: flask_app/templates/add_user.html:12 flask_app/templates/view_users.html:62
 msgid "Surname"
 msgstr ""
 
@@ -237,12 +253,12 @@ msgstr ""
 msgid "Email (required for backend admins)"
 msgstr ""
 
-#: flask_app/templates/add_user.html:20 flask_app/templates/view_users.html:14
+#: flask_app/templates/add_user.html:20 flask_app/templates/view_users.html:63
 msgid "Role"
 msgstr ""
 
-#: flask_app/templates/add_user.html:28 flask_app/templates/view_users.html:15
-#: flask_app/templates/view_users.html:62
+#: flask_app/templates/add_user.html:28 flask_app/templates/view_users.html:64
+#: flask_app/templates/view_users.html:186
 msgid "Card UUID"
 msgstr ""
 
@@ -250,47 +266,46 @@ msgstr ""
 msgid "User is disabled"
 msgstr ""
 
-#: flask_app/templates/base_body.html:20 flask_app/templates/view_users.html:5
+#: flask_app/templates/base_body.html:25 flask_app/templates/view_users.html:5
+#: flask_app/templates/view_users.html:12
 msgid "Users"
 msgstr ""
 
-#: flask_app/templates/base_body.html:23
-#: flask_app/templates/view_machines.html:4
-msgid "Machines"
-msgstr ""
-
-#: flask_app/templates/base_body.html:26
+#: flask_app/templates/base_body.html:35
 msgid "History"
 msgstr ""
 
-#: flask_app/templates/base_body.html:29
-#: flask_app/templates/view_authorizations.html:3
+#: flask_app/templates/base_body.html:40
+#: flask_app/templates/view_authorizations.html:5
+#: flask_app/templates/view_authorizations.html:12
 msgid "Authorizations"
 msgstr ""
 
-#: flask_app/templates/base_body.html:35
+#: flask_app/templates/base_body.html:50
 #: flask_app/templates/view_interventions.html:5
+#: flask_app/templates/view_interventions.html:12
 msgid "Interventions"
 msgstr ""
 
-#: flask_app/templates/base_body.html:38 flask_app/templates/view_roles.html:4
+#: flask_app/templates/base_body.html:55 flask_app/templates/view_roles.html:5
+#: flask_app/templates/view_roles.html:12
 msgid "Roles"
 msgstr ""
 
-#: flask_app/templates/base_body.html:41
+#: flask_app/templates/base_body.html:60
 msgid "Machine types"
 msgstr ""
 
-#: flask_app/templates/base_body.html:44
+#: flask_app/templates/base_body.html:65 flask_app/templates/view_system.html:5
 #, fuzzy
 msgid "System"
 msgstr "System info"
 
-#: flask_app/templates/base_body.html:47
+#: flask_app/templates/base_body.html:70
 msgid "Logout"
 msgstr ""
 
-#: flask_app/templates/base_body.html:51 flask_app/templates/login.html:14
+#: flask_app/templates/base_body.html:76 flask_app/templates/login.html:14
 msgid "Login"
 msgstr ""
 
@@ -381,13 +396,14 @@ msgid "Are you sure you want to delete the machine type"
 msgstr ""
 
 #: flask_app/templates/delete_machinetype.html:8
-#: flask_app/templates/view_authorizations.html:44
-#: flask_app/templates/view_interventions.html:57
-#: flask_app/templates/view_machines.html:62
-#: flask_app/templates/view_machinetypes.html:48
-#: flask_app/templates/view_maintenances.html:42
-#: flask_app/templates/view_roles.html:55
-#: flask_app/templates/view_users.html:45 flask_app/templates/view_uses.html:90
+#: flask_app/templates/view_authorizations.html:62
+#: flask_app/templates/view_interventions.html:68
+#: flask_app/templates/view_machines.html:150
+#: flask_app/templates/view_machinetypes.html:59
+#: flask_app/templates/view_maintenances.html:53
+#: flask_app/templates/view_roles.html:67
+#: flask_app/templates/view_users.html:113
+#: flask_app/templates/view_uses.html:101
 msgid "Delete"
 msgstr ""
 
@@ -452,12 +468,12 @@ msgid "Edit Machine Type"
 msgstr ""
 
 #: flask_app/templates/edit_machinetype.html:28
-#: flask_app/templates/view_machinetypes.html:38
+#: flask_app/templates/view_machinetypes.html:49
 msgid "Machines need to be authorized for user"
 msgstr ""
 
 #: flask_app/templates/edit_machinetype.html:29
-#: flask_app/templates/view_machinetypes.html:41
+#: flask_app/templates/view_machinetypes.html:52
 msgid "No authorization required for machines"
 msgstr ""
 
@@ -466,12 +482,12 @@ msgid "Edit Maintenance"
 msgstr ""
 
 #: flask_app/templates/edit_maintenance.html:9
-#: flask_app/templates/view_maintenances.html:30
+#: flask_app/templates/view_maintenances.html:41
 msgid "Description"
 msgstr ""
 
 #: flask_app/templates/edit_maintenance.html:19
-#: flask_app/templates/view_maintenances.html:32
+#: flask_app/templates/view_maintenances.html:43
 msgid "Hours Between"
 msgstr ""
 
@@ -503,11 +519,11 @@ msgstr ""
 msgid "This is a web application to manage machines in a Fab Lab environment."
 msgstr ""
 
-#: flask_app/templates/login.html:7 flask_app/templates/view_users.html:16
+#: flask_app/templates/login.html:7 flask_app/templates/view_users.html:65
 msgid "Email"
 msgstr ""
 
-#: flask_app/templates/login.html:11
+#: flask_app/templates/login.html:11 flask_app/templates/view_settings.html:135
 msgid "Password"
 msgstr ""
 
@@ -515,416 +531,609 @@ msgstr ""
 msgid "Forgot your password?"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:4
-msgid "Add Authorization..."
+#: flask_app/templates/view_authorizations.html:13
+msgid "Manage user permissions for machines"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:5
-msgid "Add in bulk..."
+#: flask_app/templates/view_authorizations.html:20
+msgid "Add in bulk"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:8
+#: flask_app/templates/view_authorizations.html:26
 msgid "Filter Users:"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:10
-#: flask_app/templates/view_interventions.html:10
+#: flask_app/templates/view_authorizations.html:28
+#: flask_app/templates/view_interventions.html:21
 msgid "--Select User--"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:17
+#: flask_app/templates/view_authorizations.html:35
 msgid "Filter Machines:"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:19
-#: flask_app/templates/view_interventions.html:18
-#: flask_app/templates/view_maintenances.html:12
+#: flask_app/templates/view_authorizations.html:37
+#: flask_app/templates/view_interventions.html:29
+#: flask_app/templates/view_maintenances.html:23
 msgid "--Select Machine--"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:25
-#: flask_app/templates/view_maintenances.html:24
+#: flask_app/templates/view_authorizations.html:43
+#: flask_app/templates/view_maintenances.html:35
 msgid "Apply Filters"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:33
-#: flask_app/templates/view_interventions.html:38
-#: flask_app/templates/view_machinetypes.html:16
-#: flask_app/templates/view_roles.html:16
-#: flask_app/templates/view_users.html:18
-#: flask_app/templates/view_users.html:64 flask_app/templates/view_uses.html:55
+#: flask_app/templates/view_authorizations.html:51
+#: flask_app/templates/view_interventions.html:49
+#: flask_app/templates/view_machinetypes.html:27
+#: flask_app/templates/view_roles.html:28
+#: flask_app/templates/view_users.html:188
+#: flask_app/templates/view_uses.html:66
 msgid "Action"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:43
-#: flask_app/templates/view_interventions.html:55
-#: flask_app/templates/view_machines.html:60
-#: flask_app/templates/view_machinetypes.html:46
-#: flask_app/templates/view_maintenances.html:40
-#: flask_app/templates/view_roles.html:54
-#: flask_app/templates/view_users.html:44
+#: flask_app/templates/view_authorizations.html:61
+#: flask_app/templates/view_interventions.html:66
+#: flask_app/templates/view_machines.html:145
+#: flask_app/templates/view_machinetypes.html:57
+#: flask_app/templates/view_maintenances.html:51
+#: flask_app/templates/view_roles.html:66
+#: flask_app/templates/view_users.html:108
 msgid "Edit"
 msgstr ""
 
-#: flask_app/templates/view_authorizations.html:50
-#: flask_app/templates/view_uses.html:99
+#: flask_app/templates/view_authorizations.html:68
+#: flask_app/templates/view_uses.html:110
 msgid "Export table"
 msgstr ""
 
-#: flask_app/templates/view_interventions.html:6
-msgid "Register manually..."
+#: flask_app/templates/view_interventions.html:13
+msgid "Track maintenance interventions and repairs"
 msgstr ""
 
-#: flask_app/templates/view_interventions.html:7
-msgid "You can filter the results below with this form"
+#: flask_app/templates/view_interventions.html:16
+msgid "Register manually"
 msgstr ""
 
-#: flask_app/templates/view_interventions.html:25
-#: flask_app/templates/view_uses.html:42
+#: flask_app/templates/view_interventions.html:36
+#: flask_app/templates/view_uses.html:53
 msgid "Filter"
 msgstr ""
 
-#: flask_app/templates/view_interventions.html:37
+#: flask_app/templates/view_interventions.html:48
 msgid "Timestamp"
 msgstr ""
 
-#: flask_app/templates/view_interventions.html:65
+#: flask_app/templates/view_interventions.html:76
 #: flask_app/templates/view_machine_use_history.html:28
-#: flask_app/templates/view_uses.html:97
+#: flask_app/templates/view_uses.html:108
 msgid "Only first 500 records are displayed. Use filters if needed."
 msgstr ""
 
-#: flask_app/templates/view_machines.html:5
-msgid "Use this page to view and configure FabLab machines."
-msgstr ""
-
-#: flask_app/templates/view_machines.html:12
-#: flask_app/templates/view_machinetypes.html:12
-msgid "Machine type"
-msgstr ""
-
 #: flask_app/templates/view_machines.html:13
-msgid "Cumulated usage"
+msgid "Configure machines and track maintenance"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:14
-msgid "Blocked for all?"
+#: flask_app/templates/view_machines.html:27
+msgid "Search machines by name or type..."
 msgstr ""
 
-#: flask_app/templates/view_machines.html:15
-msgid "Maintenance plan"
-msgstr ""
+#: flask_app/templates/view_machines.html:32
+#: flask_app/templates/view_users.html:44
+#, fuzzy
+msgid "All Status"
+msgstr "System status"
 
-#: flask_app/templates/view_machines.html:16
-#: flask_app/templates/view_system.html:79
-msgid "Last seen"
-msgstr ""
-
-#: flask_app/templates/view_machines.html:17
-msgid "Remote login"
-msgstr ""
-
-#: flask_app/templates/view_machines.html:18
-msgid "Remote logoff"
-msgstr ""
-
-#: flask_app/templates/view_machines.html:19
-msgid "Actions"
+#: flask_app/templates/view_machines.html:33
+#: flask_app/templates/view_machines.html:93
+#: flask_app/templates/view_users.html:45
+#: flask_app/templates/view_users.html:100
+msgid "Active"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:39
-msgid "EXPIRED"
+msgid "All Maintenance"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:41
+#: flask_app/templates/view_machines.html:40
+#: flask_app/templates/view_machines.html:106
 msgid "OK"
 msgstr ""
 
-#: flask_app/templates/view_machines.html:44 web/webapplication.py:99
-msgid "hours"
+#: flask_app/templates/view_machines.html:41
+msgid "Expired"
 msgstr ""
 
 #: flask_app/templates/view_machines.html:58
+#: flask_app/templates/view_machinetypes.html:23
+msgid "Machine type"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:59
+msgid "Usage"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:60
+#: flask_app/templates/view_users.html:66
+#, fuzzy
+msgid "Status"
+msgstr "System status"
+
+#: flask_app/templates/view_machines.html:62
+#: flask_app/templates/view_system.html:165
+msgid "Last seen"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:63
+msgid "Remote"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:64
+#: flask_app/templates/view_users.html:67
+msgid "Actions"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:102
+msgid "EXPIRED"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:111 web/webapplication.py:99
+msgid "hours"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:126
+msgid "Remote login"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:131
+msgid "Remote logoff"
+msgstr ""
+
+#: flask_app/templates/view_machines.html:140
 msgid "View history"
 msgstr ""
 
+#: flask_app/templates/view_machines.html:165
+msgid "machines total"
+msgstr ""
+
 #: flask_app/templates/view_machinetypes.html:5
+#: flask_app/templates/view_machinetypes.html:12
 msgid "Machine Types"
 msgstr ""
 
-#: flask_app/templates/view_machinetypes.html:6
-msgid "This page defines the categories of machines in the LAB."
+#: flask_app/templates/view_machinetypes.html:13
+msgid "Configure machine categories and settings"
 msgstr ""
 
-#: flask_app/templates/view_machinetypes.html:13
+#: flask_app/templates/view_machinetypes.html:24
 msgid "Auto-logoff"
 msgstr ""
 
-#: flask_app/templates/view_machinetypes.html:14
+#: flask_app/templates/view_machinetypes.html:25
 msgid "Power-off"
 msgstr ""
 
-#: flask_app/templates/view_machinetypes.html:27
-#: flask_app/templates/view_machinetypes.html:33
+#: flask_app/templates/view_machinetypes.html:38
+#: flask_app/templates/view_machinetypes.html:44
 msgid "disabled"
 msgstr ""
 
 #: flask_app/templates/view_maintenances.html:5
+#: flask_app/templates/view_maintenances.html:12
 msgid "Maintenances"
 msgstr ""
 
-#: flask_app/templates/view_maintenances.html:6
-msgid ""
-"This system page configures the possible maintenances actions of the "
-"machines"
+#: flask_app/templates/view_maintenances.html:13
+msgid "Schedule and track machine maintenance"
 msgstr ""
 
-#: flask_app/templates/view_maintenances.html:10
+#: flask_app/templates/view_maintenances.html:21
 msgid "Filter Machines"
 msgstr ""
 
-#: flask_app/templates/view_maintenances.html:20
+#: flask_app/templates/view_maintenances.html:31
 msgid "Filter Description"
 msgstr ""
 
-#: flask_app/templates/view_maintenances.html:31
+#: flask_app/templates/view_maintenances.html:42
 msgid "Lcd message"
 msgstr ""
 
-#: flask_app/templates/view_maintenances.html:35
+#: flask_app/templates/view_maintenances.html:46
 msgid "Instructions URL"
 msgstr ""
 
-#: flask_app/templates/view_roles.html:5
-msgid "This page configures the possible roles of FabLab users."
+#: flask_app/templates/view_roles.html:13
+msgid "Define user roles and permissions"
 msgstr ""
 
-#: flask_app/templates/view_roles.html:12
+#: flask_app/templates/view_roles.html:24
 msgid "Reserved"
 msgstr ""
 
-#: flask_app/templates/view_roles.html:13
+#: flask_app/templates/view_roles.html:25
 msgid "Backend admin?"
 msgstr ""
 
-#: flask_app/templates/view_roles.html:14
+#: flask_app/templates/view_roles.html:26
 msgid "Maintainer?"
 msgstr ""
 
-#: flask_app/templates/view_roles.html:15
+#: flask_app/templates/view_roles.html:27
 msgid "Authorize All?"
 msgstr ""
 
-#: flask_app/templates/view_system.html:4
+#: flask_app/templates/view_settings.html:4
+#, fuzzy
+msgid "System Configuration"
+msgstr "System info"
+
+#: flask_app/templates/view_settings.html:7
+msgid "Configuration file location"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:9
+msgid ""
+"Changes will be saved immediately and require application restart to take"
+" effect."
+msgstr ""
+
+#: flask_app/templates/view_settings.html:18
+#, fuzzy
+msgid "Database Settings"
+msgstr "Database info"
+
+#: flask_app/templates/view_settings.html:22
+#, fuzzy
+msgid "Database URL"
+msgstr "Database info"
+
+#: flask_app/templates/view_settings.html:25
+msgid "SQLite example: sqlite:///database.sqldb"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:28
+#, fuzzy
+msgid "Database Name"
+msgstr "Database info"
+
+#: flask_app/templates/view_settings.html:40
+#, fuzzy
+msgid "MQTT Settings"
+msgstr "System status"
+
+#: flask_app/templates/view_settings.html:44
+msgid "MQTT Broker"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:49
+#, fuzzy
+msgid "MQTT Port"
+msgstr "System status"
+
+#: flask_app/templates/view_settings.html:54
+msgid "Client ID"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:59
+msgid "Machine Topic"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:64
+msgid "Reply Subtopic"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:69
+msgid "Stats Topic"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:74
+#, fuzzy
+msgid "MQTT User"
+msgstr "System status"
+
+#: flask_app/templates/view_settings.html:76
+msgid "Leave empty if not used"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:88
+#, fuzzy
+msgid "Web Application Settings"
+msgstr "Application info"
+
+#: flask_app/templates/view_settings.html:92
+msgid "Secret Key"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:95
+msgid "Used for Flask encryption. Change to a random string."
+msgstr ""
+
+#: flask_app/templates/view_settings.html:98
+msgid "Default Admin Email"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:101
+msgid "Email for admin login and seeding."
+msgstr ""
+
+#: flask_app/templates/view_settings.html:111
+msgid "Email Settings"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:115
+msgid "SMTP Server"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:120
+msgid "SMTP Port"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:127
+msgid "Use TLS"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:130
+msgid "Username"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:138
+msgid "Leave empty to keep current password."
+msgstr ""
+
+#: flask_app/templates/view_settings.html:151
+msgid "Save Configuration"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:154
+msgid "Cancel"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:158
+#, fuzzy
+msgid "Restart Application"
+msgstr "Application info"
+
+#: flask_app/templates/view_system.html:11
 msgid "System status"
 msgstr "System status"
 
-#: flask_app/templates/view_system.html:10
-msgid "Database info"
-msgstr "Database info"
-
-#: flask_app/templates/view_system.html:14
-#, fuzzy
-msgid "Database size (KB)"
-msgstr "Database info"
-
-#: flask_app/templates/view_system.html:15
-msgid "Download DB"
-msgstr ""
-
-#: flask_app/templates/view_system.html:18
-msgid "Restore database"
+#: flask_app/templates/view_system.html:12
+msgid "Monitor and manage system resources"
 msgstr ""
 
 #: flask_app/templates/view_system.html:21
+msgid "Database info"
+msgstr "Database info"
+
+#: flask_app/templates/view_system.html:29
+#, fuzzy
+msgid "Database size"
+msgstr "Database info"
+
+#: flask_app/templates/view_system.html:40
+msgid "Download DB"
+msgstr ""
+
+#: flask_app/templates/view_system.html:45
+msgid "Restore database"
+msgstr ""
+
+#: flask_app/templates/view_system.html:48
 msgid "Upload DB"
 msgstr ""
 
-#: flask_app/templates/view_system.html:31
+#: flask_app/templates/view_system.html:62
 msgid "System info"
 msgstr "System info"
 
-#: flask_app/templates/view_system.html:35
+#: flask_app/templates/view_system.html:68
 #, fuzzy
 msgid "MQTT Status"
 msgstr "System status"
 
-#: flask_app/templates/view_system.html:42
+#: flask_app/templates/view_system.html:71
+msgid "Connected"
+msgstr ""
+
+#: flask_app/templates/view_system.html:75
+msgid "Disconnected"
+msgstr ""
+
+#: flask_app/templates/view_system.html:80
 msgid "Machine info"
 msgstr ""
 
-#: flask_app/templates/view_system.html:43
-msgid "Disk free space"
+#: flask_app/templates/view_system.html:85
+msgid "Disk free"
 msgstr ""
 
-#: flask_app/templates/view_system.html:44
-msgid "Memory free space"
+#: flask_app/templates/view_system.html:91
+msgid "RAM free"
 msgstr ""
 
-#: flask_app/templates/view_system.html:45
-msgid "Backend log file"
+#: flask_app/templates/view_system.html:97
+msgid "Download Logs"
 msgstr ""
 
-#: flask_app/templates/view_system.html:45
-msgid "Download"
-msgstr ""
-
-#: flask_app/templates/view_system.html:46
+#: flask_app/templates/view_system.html:102
 #, fuzzy
 msgid "Reboot system"
 msgstr "System info"
 
-#: flask_app/templates/view_system.html:54
+#: flask_app/templates/view_system.html:115
 msgid "Application info"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:58
+#: flask_app/templates/view_system.html:121
 msgid "Version installed"
 msgstr ""
 
-#: flask_app/templates/view_system.html:59
+#: flask_app/templates/view_system.html:125
 msgid "Version available"
 msgstr ""
 
-#: flask_app/templates/view_system.html:60
+#: flask_app/templates/view_system.html:130
+msgid "Edit Configuration"
+msgstr ""
+
+#: flask_app/templates/view_system.html:135
 #, fuzzy
 msgid "Update application (pip)"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:62
+#: flask_app/templates/view_system.html:140
 #, fuzzy
 msgid "Restart application"
 msgstr "Application info"
 
-#: flask_app/templates/view_system.html:69
+#: flask_app/templates/view_system.html:152
 msgid "Boards list"
 msgstr "Boards list"
 
-#: flask_app/templates/view_system.html:74
+#: flask_app/templates/view_system.html:160
 msgid "Serial number"
 msgstr ""
 
-#: flask_app/templates/view_system.html:75
-msgid "Machine (ID)"
-msgstr ""
-
-#: flask_app/templates/view_system.html:76
+#: flask_app/templates/view_system.html:162
 msgid "IP address"
 msgstr ""
 
-#: flask_app/templates/view_system.html:77
+#: flask_app/templates/view_system.html:163
 msgid "FW Version"
 msgstr ""
 
-#: flask_app/templates/view_system.html:78
+#: flask_app/templates/view_system.html:164
 msgid "Free heap"
 msgstr ""
 
-#: flask_app/templates/view_users.html:6
-msgid "List of machines and web interface users"
+#: flask_app/templates/view_system.html:203
+msgid "boards connected"
 msgstr ""
 
-#: flask_app/templates/view_users.html:7
-msgid "Add User..."
+#: flask_app/templates/view_users.html:13
+msgid "Manage users and RFID card access"
 msgstr ""
 
-#: flask_app/templates/view_users.html:11
+#: flask_app/templates/view_users.html:27
+msgid "Search by name, surname, email or card ID..."
+msgstr ""
+
+#: flask_app/templates/view_users.html:32
+msgid "All Roles"
+msgstr ""
+
+#: flask_app/templates/view_users.html:46
+#: flask_app/templates/view_users.html:96
+msgid "Disabled"
+msgstr ""
+
+#: flask_app/templates/view_users.html:60
 msgid "ID"
 msgstr ""
 
-#: flask_app/templates/view_users.html:17
-msgid "Disabled?"
-msgstr ""
-
-#: flask_app/templates/view_users.html:47
+#: flask_app/templates/view_users.html:119
 msgid "Password reset"
 msgstr ""
 
-#: flask_app/templates/view_users.html:57
-msgid "List of last 20 rejected RFID cards"
+#: flask_app/templates/view_users.html:134
+msgid "users total"
 msgstr ""
 
-#: flask_app/templates/view_users.html:63
+#: flask_app/templates/view_users.html:137
+msgid "Export to Excel"
+msgstr ""
+
+#: flask_app/templates/view_users.html:178
+msgid "Last 20 rejected RFID cards"
+msgstr ""
+
+#: flask_app/templates/view_users.html:187
 msgid "Time of attempt"
 msgstr ""
 
-#: flask_app/templates/view_users.html:74
+#: flask_app/templates/view_users.html:207
 msgid "Convert to new user"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:5
+#: flask_app/templates/view_uses.html:5 flask_app/templates/view_uses.html:12
 msgid "Usage History"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:6
-msgid "Search for machine usage history"
+#: flask_app/templates/view_uses.html:13
+msgid "View and search machine usage records"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:7
+#: flask_app/templates/view_uses.html:16
 msgid "Manual registration"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:14
+#: flask_app/templates/view_uses.html:25
 msgid "All Users"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:26
+#: flask_app/templates/view_uses.html:37
 msgid "All Machines"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:36 flask_app/templates/view_uses.html:50
+#: flask_app/templates/view_uses.html:47 flask_app/templates/view_uses.html:61
 msgid "Start Time"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:52
+#: flask_app/templates/view_uses.html:63
 msgid "End Time"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:53
+#: flask_app/templates/view_uses.html:64
 msgid "Duration (minutes)"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:54
+#: flask_app/templates/view_uses.html:65
 msgid "Last update"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:64
+#: flask_app/templates/view_uses.html:75
 msgid "deleted user"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:76
+#: flask_app/templates/view_uses.html:87
 msgid "Still in use"
 msgstr ""
 
-#: flask_app/templates/view_uses.html:85
+#: flask_app/templates/view_uses.html:96
 msgid "In use"
 msgstr ""
 
-#: web/authentication.py:44
+#: web/authentication.py:49
 msgid "Your user does not have a role with backend administration permission."
 msgstr ""
 
-#: web/authentication.py:48
+#: web/authentication.py:53
 msgid "Wrong username or password."
 msgstr ""
 
-#: web/authentication.py:57
+#: web/authentication.py:62
 msgid "You have been logged out."
 msgstr ""
 
-#: web/authentication.py:80
+#: web/authentication.py:115
 msgid "Email sent with instructions to reset your password."
 msgstr ""
 
-#: web/authentication.py:83
+#: web/authentication.py:117
+msgid "Failed to send email. Please contact an administrator."
+msgstr ""
+
+#: web/authentication.py:121
 msgid "No user found with this email."
 msgstr ""
 
-#: web/authentication.py:92
+#: web/authentication.py:130
 msgid "That is an invalid or expired token"
 msgstr ""
 
-#: web/authentication.py:99
+#: web/authentication.py:137
 msgid "Your password has been updated! You are now able to log in"
 msgstr ""
 
@@ -1034,8 +1243,22 @@ msgstr ""
 msgid "Database was replaced. Previous copy can be found at "
 msgstr ""
 
-#: web/routes_users.py:39 web/routes_users.py:105 web/routes_users.py:145
-#: web/routes_users.py:154
+#: web/routes_system.py:211
+msgid ""
+"Settings saved successfully. Please restart the application for changes "
+"to take effect."
+msgstr ""
+
+#: web/routes_system.py:213
+msgid "Failed to save settings: "
+msgstr ""
+
+#: web/routes_system.py:216
+msgid "Error saving settings: "
+msgstr ""
+
+#: web/routes_users.py:39 web/routes_users.py:107 web/routes_users.py:147
+#: web/routes_users.py:156
 msgid "User not found"
 msgstr ""
 
@@ -1043,19 +1266,23 @@ msgstr ""
 msgid "An email has been sent with instructions to reset password."
 msgstr ""
 
-#: web/routes_users.py:60 web/routes_users.py:120
+#: web/routes_users.py:45
+msgid "Failed to send email. Please check SMTP configuration."
+msgstr ""
+
+#: web/routes_users.py:62 web/routes_users.py:122
 msgid ""
 "Invalid card UUID. Please enter either 8 hexadecimal characters or leave "
 "it empty."
 msgstr ""
 
-#: web/routes_users.py:88
+#: web/routes_users.py:91
 msgid ""
 "You have created a backend admin user without an email address. User will"
 " not be able to log on."
 msgstr ""
 
-#: web/routes_users.py:131
+#: web/routes_users.py:133
 msgid "This card ID is already assigned to another user"
 msgstr ""
 
@@ -1251,5 +1478,67 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Attachment"
+#~ msgstr ""
+
+#~ msgid "Machine status"
+#~ msgstr ""
+
+#~ msgid "In use by:"
+#~ msgstr ""
+
+#~ msgid "Use this page to view and configure FabLab machines."
+#~ msgstr ""
+
+#~ msgid "Cumulated usage"
+#~ msgstr ""
+
+#~ msgid "Blocked for all?"
+#~ msgstr ""
+
+#~ msgid "Maintenance plan"
+#~ msgstr ""
+
+#~ msgid "Disk free space"
+#~ msgstr ""
+
+#~ msgid "Memory free space"
+#~ msgstr ""
+
+#~ msgid "List of machines and web interface users"
+#~ msgstr ""
+
+#~ msgid "Add User..."
+#~ msgstr ""
+
+#~ msgid "Disabled?"
+#~ msgstr ""
+
+#~ msgid "List of last 20 rejected RFID cards"
+#~ msgstr ""
+
+#~ msgid "Add Authorization..."
+#~ msgstr ""
+
+#~ msgid "Add in bulk..."
+#~ msgstr ""
+
+#~ msgid "Register manually..."
+#~ msgstr ""
+
+#~ msgid "You can filter the results below with this form"
+#~ msgstr ""
+
+#~ msgid "This page defines the categories of machines in the LAB."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This system page configures the possible"
+#~ " maintenances actions of the machines"
+#~ msgstr ""
+
+#~ msgid "This page configures the possible roles of FabLab users."
+#~ msgstr ""
+
+#~ msgid "Search for machine usage history"
 #~ msgstr ""
 

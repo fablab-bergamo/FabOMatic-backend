@@ -1,81 +1,217 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+    {{ super() }}
+    <li class="breadcrumb-item active" aria-current="page">{{ _("Users") }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid mt-0">
-    <h1>{{ _("Users") }}</h1>
-    <h3>{{ _("List of machines and web interface users") }}</h3>
-    <a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">{{ _("Add User...") }}</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>{{ _("ID") }}</th>
-                <th>{{ _("Name") }}</th>
-                <th>{{ _("Surname") }}</th>
-                <th>{{ _("Role") }}</th>
-                <th class="d-none d-lg-table-cell">{{ _("Card UUID") }}</th>
-                <th class="d-none d-lg-table-cell">{{ _("Email") }}</th>
-                <th class="d-none d-lg-table-cell">{{ _("Disabled?") }}</th>
-                <th>{{ _("Action") }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.user_id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.surname }}</td>
-                <td>
-                    <span class="badge bg-dark">{{ user.role.role_name }}</span>
-                </td>
-                <td class="d-none d-lg-table-cell">{{ user.card_UUID }}</td>
-                <td class="d-none d-lg-table-cell">
-                    {% if user.email != "" %}
-                    <a href="mailto:{{ user.email }}">{{ user.email }}</a><br />
-                    {% endif %}
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    {% if user.disabled %}
-                    <i class="fa fa-lock" aria-hidden="true"></i>
-                    {% else %}
-                    <i class="fa fa-unlock" aria-hidden="true"></i>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ url_for('edit_user', user_id=user.user_id) }}" class="btn btn-warning">{{ _("Edit") }}</a>
-                    <a href="{{ url_for('delete_user', user_id=user.user_id) }}" class="btn btn-danger">{{ _("Delete") }}</a>
-                    {% if user.email != "" %}
-                    <a href="{{ url_for('reset_user', user_id=user.user_id) }}" class="btn btn-dark" style="margin: 15px;">{{ _("Password reset") }}</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-users me-2"></i>{{ _("Users") }}</h1>
+            <p class="text-muted mb-0">{{ _("Manage users and RFID card access") }}</p>
+        </div>
+        <a href="{{ url_for('add_user') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>{{ _("Add User") }}
+        </a>
+    </div>
+
+    <!-- Search and Filter Card -->
+    <div class="search-container">
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="searchInput"
+                               placeholder="{{ _('Search by name, surname, email or card ID...') }}"
+                               onkeyup="filterTable()">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="roleFilter" onchange="filterTable()">
+                            <option value="">{{ _("All Roles") }}</option>
+                            {% for user in users %}
+                                {% if user.role.role_name not in roleFilter|default([]) %}
+                                    {% if roleFilter is not defined %}
+                                        {% set roleFilter = [] %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter" onchange="filterTable()">
+                            <option value="">{{ _("All Status") }}</option>
+                            <option value="active">{{ _("Active") }}</option>
+                            <option value="disabled">{{ _("Disabled") }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>{{ _("ID") }}</th>
+                        <th>{{ _("Name") }}</th>
+                        <th>{{ _("Surname") }}</th>
+                        <th>{{ _("Role") }}</th>
+                        <th class="d-none d-lg-table-cell">{{ _("Card UUID") }}</th>
+                        <th class="d-none d-lg-table-cell">{{ _("Email") }}</th>
+                        <th class="d-none d-lg-table-cell">{{ _("Status") }}</th>
+                        <th class="text-end">{{ _("Actions") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr data-role="{{ user.role.role_name }}" data-status="{% if user.disabled %}disabled{% else %}active{% endif %}">
+                        <td><strong>#{{ user.user_id }}</strong></td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.surname }}</td>
+                        <td>
+                            <span class="badge bg-dark">
+                                <i class="fas fa-user-tag me-1"></i>{{ user.role.role_name }}
+                            </span>
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            <code class="text-muted">{{ user.card_UUID }}</code>
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            {% if user.email != "" %}
+                            <a href="mailto:{{ user.email }}">
+                                <i class="fas fa-envelope me-1"></i>{{ user.email }}
+                            </a>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            {% if user.disabled %}
+                            <span class="badge bg-danger">
+                                <i class="fa fa-lock me-1"></i>{{ _("Disabled") }}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success">
+                                <i class="fa fa-check me-1"></i>{{ _("Active") }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ url_for('edit_user', user_id=user.user_id) }}"
+                                   class="btn btn-outline-primary"
+                                   title="{{ _('Edit') }}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('delete_user', user_id=user.user_id) }}"
+                                   class="btn btn-outline-danger"
+                                   title="{{ _('Delete') }}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                {% if user.email != "" %}
+                                <a href="{{ url_for('reset_user', user_id=user.user_id) }}"
+                                   class="btn btn-outline-warning"
+                                   title="{{ _('Password reset') }}">
+                                    <i class="fas fa-key"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="recordCount">{{ users|length }}</span> {{ _("users total") }}
+                </span>
+                <a href="{{ url_for('users_export') }}" class="btn btn-sm btn-success">
+                    <i class="fas fa-file-excel me-2"></i>{{ _("Export to Excel") }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterTable() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const roleFilter = document.getElementById('roleFilter').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const table = document.getElementById('usersTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent.toLowerCase();
+                const role = row.getAttribute('data-role').toLowerCase();
+                const status = row.getAttribute('data-status').toLowerCase();
+
+                const matchesSearch = text.includes(searchInput);
+                const matchesRole = roleFilter === '' || role === roleFilter;
+                const matchesStatus = statusFilter === '' || status === statusFilter;
+
+                if (matchesSearch && matchesRole && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+
+            document.getElementById('recordCount').textContent = visibleCount;
+        }
+    </script>
 </div>
-<a href="{{ url_for('users_export') }}" class="link-info"><i class="fas fa-file-excel"></i>Export table</a>
-<div class="container-fluid mt-0">
-    <h3>{{ _("List of last 20 rejected RFID cards") }}</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>{{ _("Machine") }}</th>
-                <th>{{ _("Card UUID") }}</th>
-                <th>{{ _("Time of attempt") }}</th>
-                <th>{{ _("Action") }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for card in cards %}
-            <tr>
-                <td>{{ card.machine.machine_name }}</td>
-                <td>{{ card.card_UUID }}</td>
-                <td>{{ card.timestamp|time_since }}</td>
-                <td>
-                    <a href="{{ url_for('add_user', card_uuid = card.card_UUID) }}" class="btn btn-warning">{{ _("Convert to new user") }}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <!-- Rejected RFID Cards Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-exclamation-circle me-2"></i>{{ _("Last 20 rejected RFID cards") }}
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ _("Machine") }}</th>
+                        <th>{{ _("Card UUID") }}</th>
+                        <th>{{ _("Time of attempt") }}</th>
+                        <th class="text-end">{{ _("Action") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for card in cards %}
+                    <tr>
+                        <td>
+                            <i class="fas fa-cog me-2 text-muted"></i>
+                            {{ card.machine.machine_name }}
+                        </td>
+                        <td>
+                            <code class="text-danger">{{ card.card_UUID }}</code>
+                        </td>
+                        <td>
+                            <i class="fas fa-clock me-2 text-muted"></i>
+                            {{ card.timestamp|time_since }}
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ url_for('add_user', card_uuid = card.card_UUID) }}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-user-plus me-2"></i>{{ _("Convert to new user") }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
