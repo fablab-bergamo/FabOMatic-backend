@@ -176,7 +176,7 @@ def save_settings():
                     settings[section] = {}
 
                 # Handle boolean checkbox values
-                if key == "email.use_tls":
+                if key in ["email.use_tls", "weekly_summary.enabled"]:
                     settings[section][setting] = True
                 # Convert numeric values
                 elif setting in ["port"]:
@@ -189,6 +189,11 @@ def save_settings():
             if "email" not in settings:
                 settings["email"] = {}
             settings["email"]["use_tls"] = False
+
+        if "weekly_summary.enabled" not in request.form:
+            if "weekly_summary" not in settings:
+                settings["weekly_summary"] = {}
+            settings["weekly_summary"]["enabled"] = False
 
         # Load current settings to preserve password if not changed
         current_settings = FabConfig.loadSettings()

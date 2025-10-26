@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-10-26 08:25+0100\n"
+"POT-Creation-Date: 2025-10-26 13:56+0100\n"
 "PO-Revision-Date: 2024-02-24 11:47+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -30,34 +30,35 @@ msgstr "Dashboard di stato macchine in tempo reale"
 #: flask_app/templates/about.html:17 flask_app/templates/base_body.html:30
 #: flask_app/templates/view_machines.html:5
 #: flask_app/templates/view_machines.html:12
+#: flask_app/templates/weekly_summary_email.html:188
 msgid "Machines"
 msgstr "Macchine"
 
-#: flask_app/templates/about.html:40 flask_app/templates/about.html:103
+#: flask_app/templates/about.html:45 flask_app/templates/about.html:108
 msgid "IN USE"
 msgstr "IN USO"
 
-#: flask_app/templates/about.html:49 flask_app/templates/about.html:119
+#: flask_app/templates/about.html:54 flask_app/templates/about.html:124
 msgid "FREE"
 msgstr "LIBERA"
 
-#: flask_app/templates/about.html:58 flask_app/templates/about.html:111
+#: flask_app/templates/about.html:63 flask_app/templates/about.html:116
 msgid "MAINTENANCE"
 msgstr "MANUTENZIONE RICHIESTA"
 
-#: flask_app/templates/about.html:67 flask_app/templates/about.html:107
+#: flask_app/templates/about.html:72 flask_app/templates/about.html:112
 msgid "BLOCKED"
 msgstr "BLOCCATA"
 
-#: flask_app/templates/about.html:76 flask_app/templates/about.html:115
+#: flask_app/templates/about.html:81 flask_app/templates/about.html:120
 msgid "OFFLINE"
 msgstr "FUORI LINEA"
 
-#: flask_app/templates/about.html:85
+#: flask_app/templates/about.html:90
 msgid "AUTO REFRESH"
 msgstr ""
 
-#: flask_app/templates/about.html:94
+#: flask_app/templates/about.html:99
 #, fuzzy
 msgid "Detailed Machine Status"
 msgstr "Stato macchina"
@@ -88,6 +89,7 @@ msgstr "Utente"
 #: flask_app/templates/view_system.html:161
 #: flask_app/templates/view_users.html:185
 #: flask_app/templates/view_uses.html:35 flask_app/templates/view_uses.html:59
+#: flask_app/templates/weekly_summary_email.html:135
 msgid "Machine"
 msgstr "Macchina"
 
@@ -235,7 +237,7 @@ msgstr "Data-ora inizio"
 msgid "End Timestamp"
 msgstr "Data-ora fine"
 
-#: flask_app/templates/add_user.html:5 flask_app/templates/add_user.html:35
+#: flask_app/templates/add_user.html:5 flask_app/templates/add_user.html:39
 #: flask_app/templates/view_users.html:16
 msgid "Add User"
 msgstr "Nuovo utente..."
@@ -261,12 +263,17 @@ msgstr "Ruoli"
 
 #: flask_app/templates/add_user.html:28 flask_app/templates/view_users.html:64
 #: flask_app/templates/view_users.html:186
+#: flask_app/templates/weekly_summary_email.html:187
 msgid "Card UUID"
 msgstr "Tessera UUID"
 
 #: flask_app/templates/add_user.html:33
 msgid "User is disabled"
 msgstr "Disabilitato?"
+
+#: flask_app/templates/add_user.html:37
+msgid "Receive weekly summary emails"
+msgstr "Ricevi email riepilogo settimanale"
 
 #: flask_app/templates/base_body.html:25 flask_app/templates/view_users.html:5
 #: flask_app/templates/view_users.html:12
@@ -526,7 +533,7 @@ msgstr "Applicativo di gestione parco macchine per Fab Lab"
 msgid "Email"
 msgstr "Email"
 
-#: flask_app/templates/login.html:11 flask_app/templates/view_settings.html:135
+#: flask_app/templates/login.html:11 flask_app/templates/view_settings.html:141
 msgid "Password"
 msgstr "Password"
 
@@ -874,42 +881,84 @@ msgstr ""
 msgid "Email for admin login and seeding."
 msgstr ""
 
-#: flask_app/templates/view_settings.html:111
+#: flask_app/templates/view_settings.html:104
+#, fuzzy
+msgid "Base URL"
+msgstr "Database"
+
+#: flask_app/templates/view_settings.html:107
+#, fuzzy
+msgid "Base URL for web application (used in emails)."
+msgstr "Info applicativo"
+
+#: flask_app/templates/view_settings.html:117
 msgid "Email Settings"
 msgstr ""
 
-#: flask_app/templates/view_settings.html:115
+#: flask_app/templates/view_settings.html:121
 #, fuzzy
 msgid "SMTP Server"
 msgstr "Riservato"
 
-#: flask_app/templates/view_settings.html:120
+#: flask_app/templates/view_settings.html:126
 msgid "SMTP Port"
 msgstr ""
 
-#: flask_app/templates/view_settings.html:127
+#: flask_app/templates/view_settings.html:133
 #, fuzzy
 msgid "Use TLS"
 msgstr "Utenti"
 
-#: flask_app/templates/view_settings.html:130
+#: flask_app/templates/view_settings.html:136
 #, fuzzy
 msgid "Username"
 msgstr "Cognome"
 
-#: flask_app/templates/view_settings.html:138
+#: flask_app/templates/view_settings.html:144
 msgid "Leave empty to keep current password."
 msgstr ""
 
-#: flask_app/templates/view_settings.html:151
+#: flask_app/templates/view_settings.html:147
+msgid "Sender Email"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:150
+msgid "Email address used as sender for system emails."
+msgstr ""
+
+#: flask_app/templates/view_settings.html:162
+#, fuzzy
+msgid "Weekly Summary Settings"
+msgstr "Ricevi email riepilogo settimanale"
+
+#: flask_app/templates/view_settings.html:168
+#, fuzzy
+msgid "Enable weekly summary emails"
+msgstr "Ricevi email riepilogo settimanale"
+
+#: flask_app/templates/view_settings.html:169
+#, fuzzy
+msgid "Send automated weekly summary emails to users."
+msgstr "Ricevi email riepilogo settimanale"
+
+#: flask_app/templates/view_settings.html:172
+msgid "Email Language"
+msgstr ""
+
+#: flask_app/templates/view_settings.html:177
+#, fuzzy
+msgid "Language for weekly summary emails."
+msgstr "Ricevi email riepilogo settimanale"
+
+#: flask_app/templates/view_settings.html:190
 msgid "Save Configuration"
 msgstr ""
 
-#: flask_app/templates/view_settings.html:154
+#: flask_app/templates/view_settings.html:193
 msgid "Cancel"
 msgstr ""
 
-#: flask_app/templates/view_settings.html:158
+#: flask_app/templates/view_settings.html:197
 #, fuzzy
 msgid "Restart Application"
 msgstr "Riavvio applicativo"
@@ -1129,6 +1178,89 @@ msgstr "Ancora in uso"
 msgid "In use"
 msgstr "In uso"
 
+#: flask_app/templates/weekly_summary_email.html:6
+#: flask_app/templates/weekly_summary_email.html:114
+msgid "FabOMatic - Weekly Summary"
+msgstr "FabOMatic - Riepilogo Settimanale"
+
+#: flask_app/templates/weekly_summary_email.html:119
+#, python-format
+msgid "Hello %(name)s,"
+msgstr "Ciao %(name)s,"
+
+#: flask_app/templates/weekly_summary_email.html:120
+msgid "Here's the summary of lab activities for last week."
+msgstr "Ecco il riepilogo delle attività del laboratorio per la settimana scorsa."
+
+#: flask_app/templates/weekly_summary_email.html:124
+msgid "Period:"
+msgstr "Periodo:"
+
+#: flask_app/templates/weekly_summary_email.html:129
+#, fuzzy
+msgid "📊 Machine Usage"
+msgstr "Nome macchina"
+
+#: flask_app/templates/weekly_summary_email.html:136
+#, fuzzy
+msgid "Usage Hours"
+msgstr "Storico"
+
+#: flask_app/templates/weekly_summary_email.html:150
+#, fuzzy
+msgid "No machine usage recorded this week."
+msgstr "Visualizza e cerca nello storico utilizzo macchine"
+
+#: flask_app/templates/weekly_summary_email.html:157
+#, fuzzy
+msgid "⚠️ Pending Maintenance"
+msgstr "Modifica manutenzione"
+
+#: flask_app/templates/weekly_summary_email.html:164
+#, python-format
+msgid "Overdue by %(hours).1f hours"
+msgstr "📊 Utilizzo Macchine"
+
+#: flask_app/templates/weekly_summary_email.html:167
+#, fuzzy
+msgid "Instructions"
+msgstr "Interventi"
+
+#: flask_app/templates/weekly_summary_email.html:174
+msgid "No pending maintenance. Great job! 👍"
+msgstr "⚠️ Manutenzioni in Sospeso"
+
+#: flask_app/templates/weekly_summary_email.html:181
+msgid "🔑 Unrecognized Cards"
+msgstr "🔑 Tessere Non Riconosciute"
+
+#: flask_app/templates/weekly_summary_email.html:189
+#, fuzzy
+msgid "Attempts"
+msgstr "Ora tentativo"
+
+#: flask_app/templates/weekly_summary_email.html:203
+msgid ""
+"Note: These cards attempted to access machines but were not recognized. "
+"They may need to be registered in the system."
+msgstr "Nessun utilizzo di macchine registrato questa settimana."
+
+#: flask_app/templates/weekly_summary_email.html:207
+msgid "No unrecognized cards this week."
+msgstr "Nessuna manutenzione in sospeso. Ottimo lavoro! 👍"
+
+#: flask_app/templates/weekly_summary_email.html:214
+msgid "Visit"
+msgstr "Visita"
+
+#: flask_app/templates/weekly_summary_email.html:214
+msgid "for more details"
+msgstr "per maggiori dettagli"
+
+#: flask_app/templates/weekly_summary_email.html:216
+msgid "This is an automated email generated by FabOMatic. Please do not reply."
+msgstr "Questa è un'email automatica generata da FabOMatic. Si prega di non rispondere."
+
 #: web/authentication.py:49
 msgid "Your user does not have a role with backend administration permission."
 msgstr "Il tuo utente non ha i permessi di amministrazione del backend."
@@ -1269,22 +1401,22 @@ msgstr "Il file deve avere estensione sqldb"
 msgid "Database was replaced. Previous copy can be found at "
 msgstr "Database sostituito. La copia precendete è disponibile in "
 
-#: web/routes_system.py:211
+#: web/routes_system.py:216
 msgid ""
 "Settings saved successfully. Please restart the application for changes "
 "to take effect."
 msgstr ""
 
-#: web/routes_system.py:213
+#: web/routes_system.py:218
 msgid "Failed to save settings: "
 msgstr ""
 
-#: web/routes_system.py:216
+#: web/routes_system.py:221
 msgid "Error saving settings: "
 msgstr ""
 
-#: web/routes_users.py:39 web/routes_users.py:107 web/routes_users.py:147
-#: web/routes_users.py:156
+#: web/routes_users.py:39 web/routes_users.py:115 web/routes_users.py:163
+#: web/routes_users.py:172
 msgid "User not found"
 msgstr "Utente non trovato."
 
@@ -1296,13 +1428,19 @@ msgstr "Un'e-mail è stato mandata con le istruzioni di re-impostazione password
 msgid "Failed to send email. Please check SMTP configuration."
 msgstr ""
 
-#: web/routes_users.py:62 web/routes_users.py:122
+#: web/routes_users.py:62 web/routes_users.py:130
 msgid ""
 "Invalid card UUID. Please enter either 8 hexadecimal characters or leave "
 "it empty."
 msgstr "Codice tessera non valido. Usare 8 caratteri esadecimali o lasciare vuoto."
 
-#: web/routes_users.py:91
+#: web/routes_users.py:76 web/routes_users.py:150
+msgid "Cannot enable weekly summary emails without an email address."
+msgstr ""
+"Impossibile attivare le email di riepilogo settimanale senza un indirizzo"
+" email."
+
+#: web/routes_users.py:99
 msgid ""
 "You have created a backend admin user without an email address. User will"
 " not be able to log on."
@@ -1310,7 +1448,7 @@ msgstr ""
 "L'utente amministrativo creato non ha un indirizzo e-mail. Non potrà "
 "collegarsi al backend."
 
-#: web/routes_users.py:133
+#: web/routes_users.py:141
 msgid "This card ID is already assigned to another user"
 msgstr "Questa tessera è già assegnata ad un altro utente"
 

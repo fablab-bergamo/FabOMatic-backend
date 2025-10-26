@@ -2,6 +2,8 @@
 
 [![Build, test and package](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/build.yml/badge.svg)](https://github.com/fablab-bergamo/rfid-backend/actions/workflows/build.yml)
 
+**English** | **[Italiano](README.it.md)**
+
 ## What is this project?
 
 * This is a web application to handle a FabLab machines access by Fab-O-Matic boards connected to the machines (see ESP32 project : [Fab-O-Matic](https://github.com/fablab-bergamo/Fab-O-matic) )
@@ -109,7 +111,7 @@ pip install FabOMatic --upgrade
 ## Configuration file
 
 * For configuration, the file src/FabOMatic/conf/settings.toml in package installation directory is used.
-* It contains configuration info for MQTT server (mandatory), database connection string (mandatory), SMTP for "forgot password" email (not mandatory)
+* It contains configuration info for MQTT server (mandatory), database connection string (mandatory), SMTP for "forgot password" email (not mandatory), and weekly summary settings (optional)
 * Example below
 
 ```text
@@ -128,6 +130,7 @@ stats_topic = "stats/"
 [web]
 secret_key = "some_long_hex_string_1234gs"  # Used for encryption
 default_admin_email = "admin@fablag.org"    # Used for initial login
+base_url = "fabpi.example.com"              # Base URL for web application (used in emails)
 
 [email]
 server = "smtp.google.com"
@@ -135,6 +138,11 @@ port = 587
 use_tls = true
 username = ""
 password = ""
+sender = "admin@fablab.org"
+
+[weekly_summary]
+enabled = true    # Enable weekly summary emails
+language = "en"   # Language for emails: "en" or "it"
 
 ```
 
@@ -236,6 +244,57 @@ journalctl --vacuum-time=1y
 * To garantee data access requests, you can use the Excel export feature filtering data by the user.
 * To garantee right to deletion, you can use the Delete buttons on Use, Interventions and User pages.
 
+## Weekly Summary Emails 📧
+
+Fab-O-Matic can send automated weekly summary emails to users with statistics about machine usage, pending maintenance, and unrecognized cards.
+
+### Configuration
+
+Add the following settings to your `settings.toml`:
+
+```toml
+[web]
+base_url = "your.external.url.for.fabomatic"  # Your FabOMatic URL (used in email links)
+
+[weekly_summary]
+enabled = true       # Enable/disable weekly summary emails
+language = "en"      # Language for emails: "en" or "it"
+```
+
+### User Configuration
+
+* Users must have an email address configured in their profile
+* Users must enable "Receive weekly summary emails" checkbox in their profile
+* This can be configured when adding or editing users in the admin interface
+
+### Scheduling Weekly Summaries
+
+Set up a cron job to send weekly summaries. For example, to send every Sunday at 9 AM:
+
+```shell
+# Edit crontab
+crontab -e
+
+# Add this line to send weekly summaries every Sunday at 9:00 AM
+0 9 * * 0 cd /path/to/FabOMatic && /path/to/venv/bin/python -m FabOMatic --weekly-summary --loglevel 40
+```
+
+### Email Contents
+
+Weekly summary emails include:
+* **Machine Usage Statistics**: Time spent on each machine during the week (Sunday to Sunday)
+* **Pending Maintenance**: List of machines requiring maintenance with hours overdue
+* **Unrecognized Cards**: RFID cards that attempted access but are not registered
+* **Direct link**: Link to FabOMatic web interface for more details
+
+### Testing
+
+To manually trigger a weekly summary email:
+
+```shell
+python -m FabOMatic --weekly-summary
+```
+
 ## Main revision log
 
 | Version | When | Release notes |
@@ -249,4 +308,5 @@ journalctl --vacuum-time=1y
 | 0.6.0 | August 2024 | Added remote commands from backend for cloud-enabled printers like BambuLab |
 | 0.7.0 | December 2024 | Bugfix release, no new features |
 | 0.7.4 | October 2024 | Added new settings page in Systems, fixed email hanging issue |
-| 1.0.0 | October 2024 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |
+| 1.0.0 | October 2025 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |
+| 1.0.1 | October 2025 | Added weekly summary email feature with automated activity reports, pending maintenance alerts, and unrecognized cards tracking. Fixed HTML link rendering bug in emails. |

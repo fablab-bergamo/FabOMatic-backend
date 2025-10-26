@@ -1,7 +1,10 @@
-# Fabomatic-backend -- release 1.0.0
+# Fabomatic-backend -- release 1.0.1
+
+**English** | **[Italiano](UI.it.md)**
 
 ## Contents
 
+- [What's New in 1.0.1](#whats-new-in-101)
 - [What's New in 1.0.0](#whats-new-in-100)
 - [Authentication](#authentication)
 - [Menu](#menu)
@@ -18,6 +21,39 @@
 - [Configuration Editor](#configuration-editor)
 - [Excel export](#excel-export)
 - [Technical details](#technical-details)
+
+## What's New in 1.0.1
+
+Version 1.0.1 adds automated weekly summary emails and fixes a critical email rendering bug.
+
+### New Features
+
+#### Weekly Summary Emails 📧
+
+FabOMatic can now send automated weekly activity summaries to users who opt in:
+
+- **Machine Usage Statistics**: Shows time spent on each machine during the past week (Sunday to Sunday)
+- **Pending Maintenance Alerts**: Lists machines requiring maintenance with hours overdue
+- **Unrecognized Cards Report**: Shows RFID cards that attempted access but weren't registered
+- **Professional Email Templates**: HTML and plain text versions with modern, responsive design
+- **Internationalization**: Supports English and Italian languages
+- **User Opt-in**: Users can enable/disable weekly summaries in their profile settings
+- **System Configuration**: Administrators can enable/disable feature and set language globally
+
+**Configuration Requirements:**
+- Set up email server in `settings.toml` (SMTP settings)
+- Configure `base_url` in web settings for email links
+- Enable weekly summaries in `[weekly_summary]` section
+- Schedule via cron job (e.g., `python -m FabOMatic --weekly-summary`)
+
+### Bug Fixes
+
+- **Fixed HTML link rendering in emails**: Previously, HTML links in email footers were displayed as escaped text (e.g., `Visit <a href="...">FabOMatic</a>`) instead of clickable links. This affected all email communications and has been corrected.
+
+### User Interface Updates
+
+- Added "Receive weekly summary emails" checkbox in user add/edit forms
+- Users must have an email address configured to receive weekly summaries
 
 ## What's New in 1.0.0
 
@@ -176,6 +212,10 @@ This page shows the users and unrecognized RFID tags, and allows several actions
 ## Edit existing user
 
 This allows to change user rôle, name, email or card UUID.
+
+You can also configure email preferences:
+- **Email address**: Required for password reset and weekly summary emails
+- **Receive weekly summary emails**: Check this box to enable automated weekly activity summaries (requires email address)
 
 ![Edit user](media/users_add.png)
 

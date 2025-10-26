@@ -30,6 +30,11 @@
                 class="form-check-input" />
             <label for="disabled" class="form-check-label">Tick to disable user</label>
         </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" id="receive_weekly_summary" name="receive_weekly_summary" {% if user.receive_weekly_summary %}checked{% endif %}
+                class="form-check-input" />
+            <label for="receive_weekly_summary" class="form-check-label">Receive weekly summary emails</label>
+        </div>
         <div class="form-group">
             <label for="card_UUID">Card UUID:</label>
             <input type="text" id="card_UUID" name="card_UUID" value="{% if user.card_UUID is not none %}{{user.card_UUID}}{%endif%}" pattern="[0-9A-Fa-f]{0}|[0-9A-Fa-f]{8}" class="form-control" />
