@@ -12,7 +12,7 @@
 
 ![Dashboard Macchine](doc/media/about.png)
 
-* **Manuale Utente**: [Versione PDF](doc/UI.pdf) | [Versione Markdown](doc/UI.md)
+* **Manuale Utente**: [Versione PDF](doc/UI.pdf) | [Versione Markdown](doc/UI.it.md)
 
 * Questa applicazione Python 3.10 esegue un client MQTT e un'applicazione Flask HTTPS.
 
