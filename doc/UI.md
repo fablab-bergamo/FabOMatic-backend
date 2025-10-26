@@ -1,43 +1,25 @@
-Fabomatic-backend -- release 1.0.0 {#fabomatic-backend-release-1.0.0 .TOC-Heading}
-==================================
+# Fabomatic-backend -- release 1.0.0
 
-Contents {#contents .TOC-Heading}
-========
+## Contents
 
-[What's New in 1.0.0 2](#whats-new-in-100)
+- [What's New in 1.0.0](#whats-new-in-100)
+- [Authentication](#authentication)
+- [Menu](#menu)
+- [Homescreen](#homescreen)
+- [Roles](#roles)
+- [Users](#users)
+- [Machines](#machines)
+- [Authorizations](#authorizations)
+- [Maintenance](#maintenance)
+- [Interventions](#interventions)
+- [Usage history](#usage-history)
+- [Machine types](#machine-types)
+- [System page](#system-page)
+- [Configuration Editor](#configuration-editor)
+- [Excel export](#excel-export)
+- [Technical details](#technical-details)
 
-[Authentication 3](#authentication)
-
-[Menu 4](#menu)
-
-[Homescreen 3](#homescreen)
-
-[Roles 4](#roles)
-
-[Users 6](#users)
-
-[Machines 7](#machines)
-
-[Authorizations 9](#authorizations)
-
-[Maintenance 11](#maintenance)
-
-[Interventions 13](#interventions)
-
-[Usage history 14](#usage-history)
-
-[Machine types 15](#machine-types)
-
-[System page 16](#system-page)
-
-[Configuration Editor 17](#configuration-editor)
-
-[Excel export 18](#excel-export)
-
-[Technical details 19](#technical-details)
-
-What's New in 1.0.0
-===================
+## What's New in 1.0.0
 
 Version 1.0.0 represents a major milestone for FabOMatic with a complete user interface modernization and several important improvements.
 
@@ -94,8 +76,7 @@ The entire web interface has been redesigned with a modern, professional appeara
 
 - **Machine Count Fix**: Corrected dashboard summary logic that was showing negative counts for free machines. The counting now uses consistent if-elif priority logic ensuring each machine is counted exactly once.
 
-Authentication
-==============
+# Authentication
 
 The default page is a login page and all other site pages requires a logged-on user.
 
@@ -120,8 +101,7 @@ In case an admin forgets the password, click "Forgot password?" to receive an em
 
 ![Password reset page](media/login.png)
 
-Menu
-====
+# Menu
 
 This is the view for logged users :
 
@@ -129,8 +109,7 @@ This is the view for logged users :
 
 By clicking on FABLAB you reach the homescreen.
 
-Homescreen
-==========
+# Homescreen
 
 The homescreen presents a real-time view of the various machines.
 
@@ -148,13 +127,11 @@ Status description :
 
 -   FREE = the machine is idle and waiting for users
 
-Roles
-=====
+# Roles
 
 This is to configure user priviledge levels.
 
-View
-----
+## View
 
 ![Roles list](media/roles_list.png)
 
@@ -168,8 +145,7 @@ Reserved = Roles that cannot be deleted.
 
 The Anonymous role is used for anynomized users to limit personal data retention in the system.
 
-Add new role
-------------
+## Add new role
 
 Adding a new role can be helpful to handle more fine-grained permissions.
 
@@ -177,18 +153,15 @@ Adding a new role can be helpful to handle more fine-grained permissions.
 
 See Roles page for flag description.
 
-Edit existing role
-------------------
+## Edit existing role
 
 ![Edit role](media/roles_list.png)
 
-Users
-=====
+# Users
 
 Users are identified by their RFID card ID. There is no strong authentication of RFID cards in the Arduino board, only chip ID read. This is a limitation of the MFRC522 board used by the Fab-O-Matic PCB.
 
-View
-----
+## View
 
 This page shows the users and unrecognized RFID tags, and allows several actions:
 
@@ -200,15 +173,13 @@ This page shows the users and unrecognized RFID tags, and allows several actions
 
 ![Users list](media/users_list.png)
 
-Edit existing user
-------------------
+## Edit existing user
 
 This allows to change user rôle, name, email or card UUID.
 
 ![Edit user](media/users_add.png)
 
-Add new user
-------------
+## Add new user
 
 This page is reached by « Add User » button or « Convert to new user » button on the main page.
 
@@ -220,13 +191,11 @@ Please note :
 
 -   When converting a unknown card, the Card UUID field is automatically filled
 
-Machines
-========
+# Machines
 
 This is the list of machines. Every machine has a unique ID. The Arduino Board is uniquely linked to a machine thanks to the ID field.
 
-View machines
--------------
+## View machines
 
 ![Machines list](media/machines_list.png)
 
@@ -240,8 +209,7 @@ Description :
 
 View History button : view the latest uses of the machine
 
-Edit machine
-------------
+## Edit machine
 
 Allows to change machine attributes. The machine name is acquired by the arduino board every minute in case of changes.
 
@@ -249,20 +217,17 @@ Blocked for all : this blocks any user to log on the machine except for user ha
 
 ![Edit machine](media/machines_add.png)
 
-Add machine
------------
+## Add machine
 
 Same as Edit Screen.
 
 ![Add machine](media/machines_add.png)
 
-Authorizations
-==============
+# Authorizations
 
 Authorizations maps users to machines. If a user belongs to a rôle with «Authorize all », the authorizations list is ignored. This can be useful if the FabLab does not want to implement authorization for fab users.
 
-View authorizations
--------------------
+## View authorizations
 
 The list of authorization by machine and users can be filtered.
 
@@ -274,13 +239,11 @@ Description :
 
 -   Add in buil : to quickly add authorizations for many users on a single machine
 
-Add authorization
------------------
+## Add authorization
 
 ![Add authorization](media/authorizations_add.png)
 
-Edit authorization
-------------------
+## Edit authorization
 
 ![Edit authorization](media/authorizations_add.png)
 
@@ -292,20 +255,17 @@ First select the machine, then the users or the « Add all users.. » button.
 
 ![Add authorizations in bulk](media/authorizations_list.png)
 
-Maintenance
-===========
+# Maintenance
 
 This is for regular maintenance which shall be triggered every X hours of use.
 
-View
-----
+## View
 
 Filterable list of maintenance actions.
 
 ![Maintenance list](media/maintenances_list.png)
 
-Edit
-----
+## Edit
 
 ![Edit maintenance](media/maintenances_add.png)
 
@@ -319,8 +279,7 @@ Instructions : facultative, URL to instructions like manufacturer.
 
 Machine : which machine needs this maintenance action
 
-Add new maintenance
--------------------
+## Add new maintenance
 
 ![Add new maintenance](media/maintenances_add.png)
 
@@ -334,31 +293,25 @@ Instructions : facultative, URL to instructions like manufacturer.
 
 Machine : which machine needs this maintenance action
 
-Interventions
-=============
+# Interventions
 
-View
-----
+## View
 
 ![Interventions list](media/interventions_list.png)
 
-Add manually
-------------
+## Add manually
 
 Interventions will be created automatically by tapping the card on the machine board, but can be added manually if the maintenance was done ofline.
 
 ![Add intervention manually](media/interventions_add.png)
 
-Edit interventions
-------------------
+## Edit interventions
 
 ![Edit intervention](media/interventions_add.png)
 
-Usage history
-=============
+# Usage history
 
-View
-----
+## View
 
 This page shows the latest uses of all machines (up to 500 records).
 
@@ -374,11 +327,9 @@ This allows to register a specific use of a machine by one user, e.g. for machin
 
 ![Manual usage registration](media/uses_add.png)
 
-Machine types
-=============
+# Machine types
 
-View
-----
+## View
 
 ![Machine types list](media/machine_types_list.png)
 
@@ -388,13 +339,11 @@ Description :
 
 -   Power-off : when no user is connected, the machine will be powered off after this grace period. If 0, the command relay is closed immediately at logoff. The goal of this feature is to reduce power cycles on the target equipment.
 
-Add/Edit page
--------------
+## Add/Edit page
 
 ![Add/Edit machine type](media/machine_types_list.png)
 
-System page
-===========
+# System page
 
 This page provides an overview of the host backend server, maintenance helpers, and lists the boards which have announced themselves on MQTT brocker.
 
@@ -428,20 +377,17 @@ Board list :
 
 -   Last seen : when did the board announced itself for the last time. Announcements are indipendent of other boards messages.
 
-Configuration Editor
-====================
+# Configuration Editor
 
 *New in version 0.7.3*
 
 The configuration editor allows administrators to modify FabOMatic's system settings directly through the web interface, eliminating the need for SSH access or manual file editing.
 
-Accessing the Configuration Editor
------------------------------------
+## Accessing the Configuration Editor
 
 From the System page, click the **"Edit Configuration"** button in the Application info section.
 
-Configuration File Locations
------------------------------
+## Configuration File Locations
 
 FabOMatic searches for configuration files in the following priority order:
 
@@ -452,8 +398,7 @@ FabOMatic searches for configuration files in the following priority order:
 
 The active configuration file path is displayed at the top of the editor. When saving, settings are written to the first writable location (typically `~/.config/FabOMatic/settings.toml`).
 
-Configuration Sections
-----------------------
+## Configuration Sections
 
 ### Database Settings
 
@@ -490,8 +435,7 @@ Configuration Sections
     -   Leave empty to keep the current password unchanged
     -   Passwords are stored in the configuration file
 
-Saving Changes
---------------
+## Saving Changes
 
 1.  Modify the desired settings in the form
 2.  Click **"Save Configuration"** to write changes to disk
@@ -501,8 +445,7 @@ Saving Changes
     -   Save the new settings to the user-accessible location
 4.  **Restart the application** for changes to take effect using the "Restart Application" button
 
-Important Notes
----------------
+## Important Notes
 
 -   **Validation**: All settings are validated before saving. Invalid entries will be rejected with an error message.
 -   **Automatic Backups**: Each save creates a timestamped backup of the previous configuration.
@@ -510,15 +453,13 @@ Important Notes
 -   **Password Security**: Email passwords are stored in plain text in the configuration file. Ensure proper file permissions are set.
 -   **Application Restart Required**: Changes only take effect after restarting the FabOMatic application.
 
-Excel export
-============
+# Excel export
 
 On most pages, an Excel export button is available, which exports the underlying SQLite tables.
 
 ![Excel export button](media/users_list.png)
 
-Technical details
-=================
+# Technical details
 
 -   <https://github.com/fablab-bergamo/rfid-backend>
 
