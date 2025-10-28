@@ -7,6 +7,7 @@ from FabOMatic.database.models import User
 from FabOMatic.conf import FabConfig
 from flask_mail import Mail, Message
 from flask_babel import gettext
+from .authentik_oauth import authentik, is_authentik_enabled, is_password_fallback_allowed, get_user_by_email
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -36,6 +37,11 @@ def load_user(user_id):
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        # Check if password fallback is allowed
+        if not is_password_fallback_allowed():
+            flash(gettext("Password login is disabled. Please use SSO."), "warning")
+            return redirect(url_for("login"))
+
         with DBSession() as session:
             user = session.query(User).filter_by(email=request.form["email"]).first()
             if user and user.check_password(request.form["password"]):
@@ -52,7 +58,9 @@ def login():
                 logging.warning("Failed login attempt for user %s", request.form["email"])
                 flash(gettext("Wrong username or password."), "danger")
                 return redirect(url_for("login"))
-    return render_template("login.html")
+    return render_template(
+        "login.html", authentik_enabled=is_authentik_enabled(), password_fallback_allowed=is_password_fallback_allowed()
+    )
 
 
 @app.route("/logout")
@@ -137,3 +145,61 @@ def reset_token(token):
             flash(gettext("Your password has been updated! You are now able to log in"), "success")
             return redirect(url_for("login"))
     return render_template("reset_token.html", title="Reset Password")
+
+
+@app.route("/auth/login")
+def auth_login():
+    """Redirect to Authentik for authentication."""
+    if not is_authentik_enabled():
+        flash(gettext("SSO is not enabled"), "danger")
+        return redirect(url_for("login"))
+
+    redirect_uri = url_for("auth_callback", _external=True)
+    logging.info("Initiating Authentik SSO login, redirect URI: %s", redirect_uri)
+    return authentik.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth/callback")
+def auth_callback():
+    """Handle OAuth callback from Authentik."""
+    if not is_authentik_enabled():
+        flash(gettext("SSO is not enabled"), "danger")
+        return redirect(url_for("login"))
+
+    try:
+        # Exchange authorization code for access token
+        logging.info("Processing Authentik OAuth callback")
+        token = authentik.authorize_access_token()
+
+        # Get user info from Authentik
+        user_info = token.get("userinfo")
+        if not user_info:
+            user_info = authentik.userinfo(token=token)
+
+        email = user_info.get("email")
+        logging.info("Authentik SSO: Received user info for email: %s", email)
+
+        if not email:
+            logging.error("Authentik SSO: No email in user info")
+            flash(gettext("Authentication failed: no email provided"), "danger")
+            return redirect(url_for("login"))
+
+        # Match user by email
+        user = get_user_by_email(email)
+
+        if not user:
+            flash(
+                gettext("No authorized account found for your email. Please contact an administrator."), "danger"
+            )
+            return redirect(url_for("login"))
+
+        # Log in the user
+        login_user(user)
+        logging.info("User %s logged in via Authentik SSO", user.email)
+        flash(gettext("Successfully logged in via SSO"), "success")
+        return redirect(url_for("about"))
+
+    except Exception as e:
+        logging.error("Authentik SSO error: %s", str(e), exc_info=True)
+        flash(gettext("Authentication failed. Please try again or use password login."), "danger")
+        return redirect(url_for("login"))
