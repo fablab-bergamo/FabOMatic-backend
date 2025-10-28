@@ -4,6 +4,32 @@
 <div class="container-fluid mt-0">
     <h1>{{ _("Delete Machine") }}</h1>
     <p>{{ _("Are you sure you want to delete the machine") }} '{{ machine.machine_name }}'?</p>
+
+    <div class="alert alert-danger" role="alert">
+        <h5 class="alert-heading">{{ _("Warning: This action cannot be undone!") }}</h5>
+        <p>{{ _("The following related records will also be permanently deleted:") }}</p>
+        <ul>
+            {% if deletion_counts.boards > 0 %}
+            <li><strong>{{ deletion_counts.boards }}</strong> {{ ngettext("board", "boards", deletion_counts.boards) }}</li>
+            {% endif %}
+            {% if deletion_counts.maintenances > 0 %}
+            <li><strong>{{ deletion_counts.maintenances }}</strong> {{ ngettext("maintenance schedule", "maintenance schedules", deletion_counts.maintenances) }}</li>
+            {% endif %}
+            {% if deletion_counts.interventions > 0 %}
+            <li><strong>{{ deletion_counts.interventions }}</strong> {{ ngettext("intervention record", "intervention records", deletion_counts.interventions) }}</li>
+            {% endif %}
+            {% if deletion_counts.authorizations > 0 %}
+            <li><strong>{{ deletion_counts.authorizations }}</strong> {{ ngettext("user authorization", "user authorizations", deletion_counts.authorizations) }}</li>
+            {% endif %}
+            {% if deletion_counts.uses > 0 %}
+            <li><strong>{{ deletion_counts.uses }}</strong> {{ ngettext("usage record", "usage records", deletion_counts.uses) }}</li>
+            {% endif %}
+            {% if deletion_counts.unknown_cards > 0 %}
+            <li><strong>{{ deletion_counts.unknown_cards }}</strong> {{ ngettext("unknown card record", "unknown card records", deletion_counts.unknown_cards) }}</li>
+            {% endif %}
+        </ul>
+    </div>
+
     <form method="POST" action="{{ url_for('delete_machine', machine_id=machine.machine_id) }}">
         <input type="submit" value="{{ _("Yes, delete machine") }}" class="btn btn-danger" />
     </form>
