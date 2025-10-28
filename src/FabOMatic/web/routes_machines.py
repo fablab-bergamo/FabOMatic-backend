@@ -170,4 +170,14 @@ def delete_machine(machine_id):
         session.commit()
         return redirect(url_for("view_machines"))
 
-    return render_template("delete_machine.html", machine=machine)
+    # Count related records that will be deleted
+    deletion_counts = {
+        "boards": len(machine.boards),
+        "maintenances": len(machine.maintenances),
+        "interventions": len(machine.interventions),
+        "authorizations": len(machine.authorizations),
+        "uses": len(machine.uses),
+        "unknown_cards": len(machine.cards),
+    }
+
+    return render_template("delete_machine.html", machine=machine, deletion_counts=deletion_counts)
