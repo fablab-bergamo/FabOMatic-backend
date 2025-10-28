@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "FabOMatic"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
     { name="Lorenzo Rossi", email="mail@lorenzoros.si" },
     { name = "Pascal Brunot", email = "pbr-dev@gmail.com" },
@@ -44,8 +44,8 @@ dev = [
     
 
 [project.urls]
-"Homepage" = "https://github.com/fablab-bergamo/fabomatic-backend"
-"Bug Tracker" = "https://github.com/fablab-bergamo/fabomatic-backend/issues"
+"Homepage" = "https://github.com/fablab-bergamo/FabOMatic-backend"
+"Bug Tracker" = "https://github.com/fablab-bergamo/FabOMatic-backend/issues"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

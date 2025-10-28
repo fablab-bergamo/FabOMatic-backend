@@ -184,7 +184,7 @@ class Maintenance(Base):
     instructions_url = Column(String, nullable=True, default="")
 
     machine = relationship("Machine", back_populates="maintenances")
-    interventions = relationship("Intervention", back_populates="maintenance")
+    interventions = relationship("Intervention", back_populates="maintenance", cascade="all, delete-orphan")
 
     def serialize(self):
         """Serialize data and return a Dict."""
@@ -272,13 +272,13 @@ class Machine(Base):
     machine_hours = Column(Float, nullable=False, default=0.0)  # Somewhat redundant with sum of uses duration
     blocked = Column(Boolean, nullable=False, default=False)
     last_seen = Column(Float, nullable=True)
-    maintenances = relationship("Maintenance", back_populates="machine")
-    interventions = relationship("Intervention", back_populates="machine")
-    authorizations = relationship("Authorization", back_populates="machine")
+    maintenances = relationship("Maintenance", back_populates="machine", cascade="all, delete-orphan")
+    interventions = relationship("Intervention", back_populates="machine", cascade="all, delete-orphan")
+    authorizations = relationship("Authorization", back_populates="machine", cascade="all, delete-orphan")
     machine_type = relationship("MachineType", back_populates="machines", lazy=False)
-    uses = relationship("Use", back_populates="machine")
-    cards = relationship("UnknownCard", back_populates="machine")
-    boards = relationship("Board", back_populates="machine")
+    uses = relationship("Use", back_populates="machine", cascade="all, delete-orphan")
+    cards = relationship("UnknownCard", back_populates="machine", cascade="all, delete-orphan")
+    boards = relationship("Board", back_populates="machine", cascade="all, delete-orphan")
 
     __table_args__ = (Index("idx_machines_machine_name_unique", "machine_name", unique=True),)
 

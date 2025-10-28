@@ -806,6 +806,32 @@ class TestDB(unittest.TestCase):
         simple_db = get_simple_db()
         simple_db.closeOrphans()
 
+    def test_delete_machine_with_board(self):
+        """Test that deleting a machine also deletes its associated boards (cascade delete)."""
+        empty_db = get_empty_test_db()
+        with empty_db.getSession() as session:
+            # Create a machine type
+            machine_type = MachineType(type_name="test type")
+            empty_db.getMachineTypeRepository(session).create(machine_type)
+
+            # Create a machine
+            machine = Machine(machine_name="test machine", machine_type_id=machine_type.type_id)
+            machine_repo = empty_db.getMachineRepository(session)
+            machine_repo.create(machine)
+
+            # Add a board to the machine
+            board_repo = empty_db.getBoardsRepository(session)
+            board_repo.registerBoard("192.168.1.100", "1.0.0", "SN12345", 300000, machine)
+
+            # Verify board was created
+            self.assertEqual(len(board_repo.get_all()), 1)
+
+            # Delete the machine
+            machine_repo.delete(machine)
+
+            # Verify board was also deleted (cascade)
+            self.assertEqual(len(board_repo.get_all()), 0, "Board should be deleted when machine is deleted")
+
 
 if __name__ == "__main__":
     configure_logger()
