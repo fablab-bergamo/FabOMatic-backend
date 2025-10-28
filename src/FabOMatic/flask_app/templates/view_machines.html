@@ -108,7 +108,7 @@
                                         {% endif %}
                                         {{ m.description }}
                                         <small class="d-none d-lg-inline text-muted">
-                                            ({{ maint_stats[m.maintenance_id]["elapsed"] }} / {{ m.hours_between }} {{ _("hours") }})
+                                            ({{ maint_stats[m.maintenance_id]["elapsed"] | format_hours }} / {{ m.hours_between | format_hours }})
                                         </small>
                                     </div>
                                 {% endfor %}
