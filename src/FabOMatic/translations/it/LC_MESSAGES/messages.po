@@ -397,6 +397,50 @@ msgstr "Sei sicuro di volere cancellare la macchina"
 msgid "Yes, delete machine"
 msgstr "Sì, cancella macchina"
 
+#: flask_app/templates/delete_machine.html:9
+msgid "Warning: This action cannot be undone!"
+msgstr "Attenzione: Questa azione non può essere annullata!"
+
+#: flask_app/templates/delete_machine.html:10
+msgid "The following related records will also be permanently deleted:"
+msgstr "I seguenti record correlati verranno eliminati permanentemente:"
+
+#: flask_app/templates/delete_machine.html:13
+msgid "board"
+msgid_plural "boards"
+msgstr[0] "scheda"
+msgstr[1] "schede"
+
+#: flask_app/templates/delete_machine.html:16
+msgid "maintenance schedule"
+msgid_plural "maintenance schedules"
+msgstr[0] "programma di manutenzione"
+msgstr[1] "programmi di manutenzione"
+
+#: flask_app/templates/delete_machine.html:19
+msgid "intervention record"
+msgid_plural "intervention records"
+msgstr[0] "record di intervento"
+msgstr[1] "record di interventi"
+
+#: flask_app/templates/delete_machine.html:22
+msgid "user authorization"
+msgid_plural "user authorizations"
+msgstr[0] "autorizzazione utente"
+msgstr[1] "autorizzazioni utente"
+
+#: flask_app/templates/delete_machine.html:25
+msgid "usage record"
+msgid_plural "usage records"
+msgstr[0] "record di utilizzo"
+msgstr[1] "record di utilizzo"
+
+#: flask_app/templates/delete_machine.html:28
+msgid "unknown card record"
+msgid_plural "unknown card records"
+msgstr[0] "record di carta sconosciuta"
+msgstr[1] "record di carte sconosciute"
+
 #: flask_app/templates/delete_machinetype.html:5
 msgid "Delete Machine Type"
 msgstr "Cancella tipologia"
