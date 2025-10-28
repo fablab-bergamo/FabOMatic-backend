@@ -44,8 +44,8 @@ dev = [
     
 
 [project.urls]
-"Homepage" = "https://github.com/fablab-bergamo/fabomatic-backend"
-"Bug Tracker" = "https://github.com/fablab-bergamo/fabomatic-backend/issues"
+"Homepage" = "https://github.com/fablab-bergamo/FabOMatic-backend"
+"Bug Tracker" = "https://github.com/fablab-bergamo/FabOMatic-backend/issues"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
