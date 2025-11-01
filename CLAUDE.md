@@ -525,9 +525,9 @@ ls tests/databases/
 - Regular database maintenance with `--purge` command
 - Use systemd for production deployment instead of development server
 
-## Current Version: 0.7.2
+## Current Version: 1.0.3
 
-Last updated: December 2024 (Bugfix release)
+Last updated: January 2025 (Bugfix release)
 
 ---
 
