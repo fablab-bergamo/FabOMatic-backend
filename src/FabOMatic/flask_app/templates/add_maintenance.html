@@ -22,7 +22,8 @@
     </div>
     <div class="mb-3">
       <label for="hours_between" class="form-label">{{ _("Number of use hours to trigger") }}:</label>
-      <input type="number" id="hours_between" name="hours_between" class="form-control" required />
+      <input type="number" step="0.1" id="hours_between" name="hours_between" class="form-control" required />
+      <small class="form-text text-muted">{{ _("Enter hours as decimal (e.g., 1.5 for 1h 30min)") }}</small>
     </div>
     <div class="mb-3">
       <label for="instructions_url" class="form-label">{{ _("instructions_url") }}:</label>
