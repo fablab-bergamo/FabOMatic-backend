@@ -40,7 +40,7 @@
             <div>
                 <strong>{{ _("Description") }}: {{ maintenance.description }}</strong><br/>
                 {{ _("Lcd message")}}: {{ maintenance.lcd_message }} <br/>
-                {{ _("Hours Between") }}: {{ maintenance.hours_between }}<br/>
+                {{ _("Hours Between") }}: {{ maintenance.hours_between | format_hours }}<br/>
                 {{ _("Machine") }} {{ maintenance.machine.machine_name }}<br/>
                 {% if maintenance.instructions_url %}
                     {{ _("Instructions URL") }}: <a href="{{ maintenance.instructions_url }}">{{ maintenance.instructions_url }}</a>

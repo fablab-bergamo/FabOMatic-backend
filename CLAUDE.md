@@ -532,4 +532,5 @@ Last updated: December 2024 (Bugfix release)
 ---
 
 *This CLAUDE.md file provides comprehensive guidance for FabOMatic Backend development. Keep it updated as the project evolves.*
-- remember to activate the venv for this python project
+- remember to activate the venv for this python project before to run python commands in the shell
+- run flake8 and tests before to create a PR
