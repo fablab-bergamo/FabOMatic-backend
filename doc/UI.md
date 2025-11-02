@@ -135,13 +135,10 @@ After installation, a default administrator account is automatically created usi
 
 In case an admin forgets the password, click "Forgot password?" to receive an email with a unique reset link valid for 20 minutes.
 
-![Password reset page](media/password_reset.png)
-
 # Menu
 
 This is the view for logged users :
 
-![Navigation menu](media/menu.png)
 
 By clicking on FABLAB you reach the homescreen.
 
@@ -149,7 +146,7 @@ By clicking on FABLAB you reach the homescreen.
 
 The homescreen presents a real-time view of the various machines.
 
-![Machine status dashboard](media/homescreen.png)
+![Machine status dashboard](media/dashboard.png)
 
 Status description :
 
@@ -185,13 +182,11 @@ The Anonymous role is used for anynomized users to limit personal data retention
 
 Adding a new role can be helpful to handle more fine-grained permissions.
 
-![Add new role](media/roles_add.png)
-
 See Roles page for flag description.
 
 ## Edit existing role
 
-![Edit role](media/roles_add.png)
+The add and edit forms use the same interface as shown in the roles list page.
 
 # Users
 
@@ -293,7 +288,6 @@ Use this screen to add permissions. To remove permissions, you have to use the m
 
 First select the machine, then the users or the « Add all users.. » button.
 
-![Add authorizations in bulk](media/authorizations_bulk.png)
 
 # Maintenance
 
@@ -359,7 +353,6 @@ This page shows the latest uses of all machines (up to 500 records).
 
 If a machine is in use, row is highlighted :
 
-![Machine in use highlighted](media/uses_list_highlighted.png)
 
 Manual registration
 
@@ -381,7 +374,7 @@ Description :
 
 ## Add/Edit page
 
-![Add/Edit machine type](media/machine_types_add.png)
+The add and edit forms for machine types use a similar interface to the list view.
 
 # System page
 
