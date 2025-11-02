@@ -7,6 +7,7 @@ This script logs into the application and takes screenshots of all major pages.
 import os
 import sys
 import time
+import subprocess
 from playwright.sync_api import sync_playwright, expect
 
 # Configuration
@@ -14,6 +15,7 @@ BASE_URL = "https://localhost:23336"
 OUTPUT_DIR = "doc/media"
 ADMIN_EMAIL = "initial@test.com"  # From settings.toml: web.default_admin_email
 ADMIN_PASSWORD = "admin"
+TRIM_SCREENSHOTS = True  # Use ImageMagick mogrify -trim to remove whitespace
 
 # Pages to screenshot (route, filename)
 PAGES = [
@@ -49,6 +51,28 @@ def create_output_dir():
         print(f"Created output directory: {OUTPUT_DIR}")
 
 
+def trim_screenshot(screenshot_path):
+    """Trim whitespace from screenshot using ImageMagick mogrify."""
+    if not TRIM_SCREENSHOTS:
+        return
+
+    try:
+        # mogrify -trim removes any edges that are the same color as the corner pixels
+        subprocess.run(
+            ["mogrify", "-trim", screenshot_path],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"  Warning: Failed to trim {screenshot_path}: {e.stderr}")
+    except FileNotFoundError:
+        print(f"  Warning: ImageMagick 'mogrify' not found. Install with: sudo apt install imagemagick")
+        print(f"  Continuing without trimming...")
+        # Disable trimming for subsequent screenshots to avoid repeated warnings
+        globals()['TRIM_SCREENSHOTS'] = False
+
+
 def take_screenshots():
     """Main function to take screenshots of all pages."""
     create_output_dir()
@@ -78,6 +102,7 @@ def take_screenshots():
         # Take screenshot of login page
         login_screenshot = os.path.join(OUTPUT_DIR, "login.png")
         page.screenshot(path=login_screenshot, full_page=True)
+        trim_screenshot(login_screenshot)
         print(f"✓ Saved: {login_screenshot}")
 
         # Login
@@ -94,8 +119,10 @@ def take_screenshots():
             print(f"✗ Login failed. Please check credentials in the script.")
             print(f"Error details: {e}")
             # Take screenshot of current page for debugging
-            page.screenshot(path=os.path.join(OUTPUT_DIR, "login_error.png"), full_page=True)
-            print(f"  Saved error screenshot to {OUTPUT_DIR}/login_error.png")
+            error_screenshot = os.path.join(OUTPUT_DIR, "login_error.png")
+            page.screenshot(path=error_screenshot, full_page=True)
+            trim_screenshot(error_screenshot)
+            print(f"  Saved error screenshot to {error_screenshot}")
             browser.close()
             return False
 
@@ -115,6 +142,7 @@ def take_screenshots():
 
                 screenshot_path = os.path.join(OUTPUT_DIR, f"{filename}.png")
                 page.screenshot(path=screenshot_path, full_page=True)
+                trim_screenshot(screenshot_path)
                 print(f"✓ Saved: {screenshot_path}")
             except Exception as e:
                 print(f"✗ Failed to capture {route}: {e}")
@@ -129,6 +157,7 @@ def take_screenshots():
 
                 screenshot_path = os.path.join(OUTPUT_DIR, f"{filename}.png")
                 page.screenshot(path=screenshot_path, full_page=True)
+                trim_screenshot(screenshot_path)
                 print(f"✓ Saved: {screenshot_path}")
             except Exception as e:
                 print(f"✗ Failed to capture {route}: {e}")
