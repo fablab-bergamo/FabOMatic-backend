@@ -15,7 +15,13 @@ This script automates the process of taking screenshots of all FabOMatic web pag
    playwright install chromium
    ```
 
-3. **FabOMatic application must be running:**
+3. **Install ImageMagick (for automatic screenshot trimming):**
+   ```bash
+   sudo apt install imagemagick
+   ```
+   This is optional but recommended. The script uses `mogrify -trim` to automatically remove excess whitespace from screenshots.
+
+4. **FabOMatic application must be running:**
    ```bash
    # In another terminal window (with venv activated)
    python run.py
@@ -51,7 +57,11 @@ BASE_URL = "https://localhost:23336"  # Change if using different port
 OUTPUT_DIR = "doc/media"              # Output directory for screenshots
 ADMIN_EMAIL = "initial@test.com"      # Admin email from settings.toml
 ADMIN_PASSWORD = "admin"              # Default admin password
+TRIM_SCREENSHOTS = True               # Use ImageMagick mogrify -trim to remove whitespace
 ```
+
+**Screenshot Trimming:**
+When `TRIM_SCREENSHOTS = True` (default), the script automatically uses ImageMagick's `mogrify -trim` command to remove excess whitespace around screenshots. This creates more compact, professional-looking images by trimming edges that match the corner pixel colors. If ImageMagick is not installed, the script will continue without trimming and display a warning.
 
 ## Screenshots Generated
 
@@ -107,6 +117,16 @@ playwright install chromium
 ### SSL Certificate Errors
 The script is configured to ignore HTTPS errors for self-signed certificates. If you encounter issues, check that the application is running with HTTPS enabled.
 
+### ImageMagick Not Found
+```
+Warning: ImageMagick 'mogrify' not found.
+```
+**Solution:** Install ImageMagick:
+```bash
+sudo apt install imagemagick
+```
+Or disable trimming by setting `TRIM_SCREENSHOTS = False` in the script configuration.
+
 ## Output
 
 All screenshots are saved as PNG files in the `doc/media/` directory. They are full-page screenshots that capture the entire page content, not just the visible viewport.
@@ -144,4 +164,5 @@ The script captures screenshots in the default language (Italian). To capture in
 - Screenshots are taken in headless mode (no browser window is shown)
 - Full-page screenshots capture all content, including content below the fold
 - The script waits 1 second after each page load to ensure all content is rendered
+- Screenshots are automatically trimmed using `mogrify -trim` to remove excess whitespace (if ImageMagick is installed)
 - Existing screenshots in `doc/media/` will be overwritten

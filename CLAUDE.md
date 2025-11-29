@@ -525,11 +525,12 @@ ls tests/databases/
 - Regular database maintenance with `--purge` command
 - Use systemd for production deployment instead of development server
 
-## Current Version: 0.7.2
+## Current Version: 1.0.3
 
-Last updated: December 2024 (Bugfix release)
+Last updated: January 2025 (Bugfix release)
 
 ---
 
 *This CLAUDE.md file provides comprehensive guidance for FabOMatic Backend development. Keep it updated as the project evolves.*
-- remember to activate the venv for this python project
+- remember to activate the venv for this python project before to run python commands in the shell
+- run flake8 and tests before to create a PR

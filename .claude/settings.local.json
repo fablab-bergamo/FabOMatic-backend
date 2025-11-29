@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git push:*)",
+      "Bash(git tag:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git fetch:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.goauthentik.io)",
+      "Bash(git checkout:*)",
+      "Bash(source ../../../venv/bin/activate)",
+      "Bash(pybabel compile:*)",
+      "Bash(python -m babel.messages.frontend compile:*)",
+      "Bash(pybabel extract:*)",
+      "Bash(pybabel update:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh issue view:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(pytest:*)",
+      "Bash(gh pr view:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
