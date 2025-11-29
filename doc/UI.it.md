@@ -135,21 +135,15 @@ Dopo l'installazione, viene creato automaticamente un account amministratore pre
 
 Nel caso un amministratore dimentichi la password, cliccare su "Forgot password?" per ricevere un'email con un link di reset unico valido per 20 minuti.
 
-![Pagina di reset password](media/password_reset.png)
-
 # Menu
 
-Questa è la vista per gli utenti autenticati:
-
-![Menu di navigazione](media/menu.png)
-
-Cliccando su FABLAB si raggiunge la schermata principale.
+Il menu di navigazione è visualizzato nella parte superiore di tutte le pagine per gli utenti autenticati. Cliccando su FABLAB si raggiunge la schermata principale.
 
 # Schermata principale
 
 La schermata principale presenta una vista in tempo reale delle varie macchine.
 
-![Dashboard stato macchine](media/homescreen.png)
+![Dashboard stato macchine](media/dashboard.png)
 
 Descrizione degli stati:
 
@@ -185,13 +179,11 @@ Il ruolo Anonymous è usato per utenti anonimizzati per limitare la conservazion
 
 Aggiungere un nuovo ruolo può essere utile per gestire permessi più granulari.
 
-![Aggiungi nuovo ruolo](media/roles_add.png)
-
 Vedere la pagina Ruoli per la descrizione dei flag.
 
 ## Modifica ruolo esistente
 
-![Modifica ruolo](media/roles_add.png)
+I moduli di aggiunta e modifica utilizzano la stessa interfaccia mostrata nella pagina della lista ruoli.
 
 # Utenti
 
@@ -293,7 +285,6 @@ Usa questa schermata per aggiungere permessi. Per rimuovere permessi, devi usare
 
 Prima seleziona la macchina, poi gli utenti o il pulsante « Add all users.. ».
 
-![Aggiungi autorizzazioni in blocco](media/authorizations_bulk.png)
 
 # Manutenzione
 
@@ -357,11 +348,9 @@ Questa pagina mostra gli ultimi utilizzi di tutte le macchine (fino a 500 record
 
 ![Vista cronologia utilizzo](media/uses_list.png)
 
-Se una macchina è in uso, la riga è evidenziata:
+Se una macchina è in uso, la riga è evidenziata nella tabella.
 
-![Macchina in uso evidenziata](media/uses_list_highlighted.png)
-
-Registrazione manuale
+## Registrazione manuale
 
 Questo permette di registrare un utilizzo specifico di una macchina da parte di un utente, ad es. per il tracciamento delle ore macchina.
 
@@ -381,7 +370,7 @@ Descrizione:
 
 ## Pagina Aggiungi/Modifica
 
-![Aggiungi/Modifica tipo di macchina](media/machine_types_add.png)
+I moduli di aggiunta e modifica per i tipi di macchina utilizzano un'interfaccia simile alla vista lista.
 
 # Pagina di sistema
 
