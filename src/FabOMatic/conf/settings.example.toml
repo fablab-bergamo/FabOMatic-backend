@@ -31,3 +31,12 @@ sender = "admin@fablab.org"       # Email address to use as sender for system em
 [weekly_summary]
 enabled = true                    # Enable weekly summary emails
 language = "en"                   # Language for weekly summary emails (en or it)
+
+[authentik]
+enabled = false                                                    # Enable/disable Authentik SSO
+server_url = "https://buco.bglug.it"                              # Authentik server URL
+application_slug = "fabomatic"                                     # Application slug in Authentik
+client_id = "your-client-id"                                       # OAuth2 Client ID from Authentik
+client_secret = "your-client-secret"                               # OAuth2 Client Secret
+scopes = "openid email profile"                                    # Required scopes
+allow_password_fallback = true                                     # Allow traditional login as fallback
