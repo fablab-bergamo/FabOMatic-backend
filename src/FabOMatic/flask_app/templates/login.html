@@ -2,17 +2,44 @@
 
 {% block content %}
 <div class="container">
-    <form method="POST" class="mt-5">
-        <div class="form-group">
-            <label for="email">{{ _("Email") }}:</label>
-            <input type="text" class="form-control" id="email" name="email" required>
+    {% if authentik_enabled and not password_fallback_allowed %}
+        <!-- SSO only mode -->
+        <div class="mt-5 text-center">
+            <h3>{{ _("Login") }}</h3>
+            <p class="text-muted">{{ _("Please use single sign-on to access this application") }}</p>
+            <a href="{{ url_for('auth_login') }}" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-shield-lock"></i> {{ _("Login with SSO") }}
+            </a>
         </div>
-        <div class="form-group">
-            <label for="password">{{ _("Password") }}:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+    {% else %}
+        <!-- Password login (with optional SSO) -->
+        <form method="POST" class="mt-5">
+            <div class="form-group">
+                <label for="email">{{ _("Email") }}:</label>
+                <input type="text" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">{{ _("Password") }}:</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ _("Login") }}</button>
+        </form>
+        <a href="{{ url_for('forgot_password') }}">{{ _("Forgot your password?") }}</a>
+
+        {% if authentik_enabled %}
+        <!-- SSO option available -->
+        <div class="mt-4 text-center">
+            <div class="position-relative my-4">
+                <hr>
+                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
+                    {{ _('or') }}
+                </span>
+            </div>
+            <a href="{{ url_for('auth_login') }}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-shield-lock"></i> {{ _('Login with SSO') }}
+            </a>
         </div>
-        <button type="submit" class="btn btn-primary">{{ _("Login") }}</button>
-    </form>
-    <a href="{{ url_for('forgot_password') }}">{{ _("Forgot your password?") }}</a>
+        {% endif %}
+    {% endif %}
 </div>
 {% endblock %}
