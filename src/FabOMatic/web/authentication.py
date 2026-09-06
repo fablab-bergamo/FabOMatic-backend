@@ -1,7 +1,8 @@
 import logging
+from functools import wraps
 from threading import Thread
-from flask_login import LoginManager, login_user, logout_user, login_required
-from flask import render_template, request, redirect, url_for, flash
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from flask import abort, render_template, request, redirect, url_for, flash
 from .webapplication import DBSession, app
 from FabOMatic.database.models import User
 from FabOMatic.conf import FabConfig
@@ -10,6 +11,22 @@ from flask_babel import gettext
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def backend_admin_required(f):
+    """Require the logged-in user's role to have backend_admin set.
+
+    Must be applied together with (and after) @login_required, since it assumes
+    current_user is already authenticated and only checks the role.
+    """
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not (current_user.is_authenticated and current_user.role and current_user.role.backend_admin):
+            abort(403)
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 app.config["MAIL_SERVER"] = FabConfig.getSetting("email", "server")

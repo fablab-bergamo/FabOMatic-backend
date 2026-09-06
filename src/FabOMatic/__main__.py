@@ -64,7 +64,7 @@ def _startApp(back: Backend) -> None:
     from FabOMatic.web.webapplication import app
 
     app.backend = back
-    app.run(host="0.0.0.0", port=23336, debug=True, use_reloader=False, ssl_context="adhoc")
+    app.run(host="0.0.0.0", port=23336, debug=False, use_reloader=False, ssl_context="adhoc")
 
 
 def startServer(back: Backend) -> None:

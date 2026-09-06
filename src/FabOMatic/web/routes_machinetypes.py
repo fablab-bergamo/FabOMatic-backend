@@ -5,12 +5,14 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from flask_babel import gettext
+from .authentication import backend_admin_required
 from FabOMatic.database.models import MachineType
 from .webapplication import DBSession, app
 
 
 @app.route("/machinetypes")
 @login_required
+@backend_admin_required
 def machinetypes():
     session = DBSession()
     machine_types = session.query(MachineType).all()
@@ -19,6 +21,7 @@ def machinetypes():
 
 @app.route("/machinetypes/add", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def add_machinetype():
     if request.method == "POST":
         session = DBSession()
@@ -58,6 +61,7 @@ def add_machinetype():
 
 @app.route("/machinetypes/edit/<int:type_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def edit_machinetype(type_id):
     session = DBSession()
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
@@ -96,6 +100,7 @@ def edit_machinetype(type_id):
 
 @app.route("/machinetypes/delete/<int:type_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def delete_machinetype(type_id):
     session = DBSession()
     machine_type = session.query(MachineType).filter_by(type_id=type_id).one()
