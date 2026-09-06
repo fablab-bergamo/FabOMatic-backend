@@ -3,6 +3,7 @@ from functools import wraps
 from threading import Thread
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask import abort, render_template, request, redirect, url_for, flash
+from sqlalchemy.orm import joinedload
 from .webapplication import DBSession, app
 from FabOMatic.database.models import User
 from FabOMatic.conf import FabConfig
@@ -47,7 +48,11 @@ SALT = b"fablab-bg"
 @login_manager.user_loader
 def load_user(user_id):
     with DBSession() as session:
-        return session.query(User).get(int(user_id))
+        # Eager-load role: the User is detached once this session closes, and
+        # backend_admin_required (authentication.py) reads current_user.role on
+        # every request, which would otherwise trigger a lazy load and raise
+        # DetachedInstanceError.
+        return session.query(User).options(joinedload(User.role)).get(int(user_id))
 
 
 @app.route("/login", methods=["GET", "POST"])
