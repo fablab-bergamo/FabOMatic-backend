@@ -30,13 +30,14 @@ FabOMatic-backend/
 │   │   └── templates/       # Jinja2 HTML templates
 │   ├── logic/               # Business logic
 │   │   ├── MachineLogic.py
-│   │   └── MsgMapper.py     # MQTT message handling
+│   │   ├── MsgMapper.py     # MQTT message handling
+│   │   └── WeeklySummary.py # Weekly usage summary emails (since v1.0.1)
 │   ├── mqtt/                # MQTT communication
 │   │   ├── MQTTInterface.py
 │   │   └── mqtt_types.py
 │   ├── web/                 # Flask routes and authentication
 │   │   ├── authentication.py
-│   │   ├── routes_*.py      # Route definitions by feature
+│   │   ├── routes_*.py      # Route definitions by feature (incl. routes_system.py: subprocess-based update/reboot)
 │   │   └── webapplication.py
 │   ├── alembic/             # Database migrations
 │   └── translations/        # i18n support (IT, EN)
@@ -152,7 +153,10 @@ flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statist
    - Database connection (SQLite default)
    - MQTT broker settings
    - Web server secret key
-   - SMTP settings (optional)
+   - `[email]` SMTP settings (server/port/TLS/username/password/sender) — used for password reset and weekly summary emails
+   - `[weekly_summary]` — `enabled` flag and `language` (en/it) for the weekly usage summary email feature
+
+**⚠️ `src/FabOMatic/conf/settings.toml` is tracked in git and is NOT a template — it holds real per-deployment secrets (SMTP password, Flask `secret_key`).** Never commit real credentials into it; treat any value currently in that file as compromised (see Known Security Issues below).
 
 ### Running the Application
 
@@ -365,6 +369,21 @@ Feature-specific Flask routes:
 
 ## Deployment Notes
 
+## Known Security Issues (found in audit, 2026-09-06)
+
+See `doc/SECURITY_AUDIT_2026-09-06.md` for full detail. Do not reintroduce these patterns in new code, and flag them again if seen elsewhere:
+
+Fixed on branch `security-hardening/critical-fixes`:
+- ~~Flask runs with `debug=True` in production~~ — now `debug=False` (`src/FabOMatic/__main__.py:67`).
+- ~~Broken access control~~ — added a `backend_admin_required` decorator (`web/authentication.py`) and applied it alongside `@login_required` to every route across `routes_authorizations.py`, `routes_interventions.py`, `routes_machines.py`, `routes_machinetypes.py`, `routes_maintenance.py`, `routes_roles.py`, `routes_system.py`, `routes_users.py`, `routes_uses.py` — including three routes (`interventions_export`, `delete_maintenance`, `delete_role`) that had **no auth check at all**. Accounts with only `authorize_all` can still log in but now get `403` on admin routes.
+- `src/FabOMatic/conf/settings.toml` untracked from git and added to `.gitignore` — **but the historical secret is still in git history and the live credential is still unrotated** (repo-owner action, not fixable from a branch).
+
+Still open (see `doc/SECURITY_AUDIT_2026-09-06.md` for full detail — do not reintroduce these patterns in new code):
+- **Rotate the leaked Gmail app password** and scrub commit `4f1da62` from history (BFG/`git filter-repo`).
+- **No CSRF protection anywhere** (no Flask-WTF, no CSRF tokens in any template). Several state-changing routes are plain `GET` (`/reboot`, `/update_app`, `/restart_app` in `routes_system.py`), which is trivially forgeable via a single `<img src=...>` tag from any page an admin visits while logged in.
+- **MQTT has no real auth**: `MQTTInterface.py` calls `username_pw_set("backend", None)` — no password — and `settings.example.toml`'s `[MQTT] user = ""` implies anonymous broker access is the norm, not just a test fixture.
+- No security headers (no CSP/X-Frame-Options/Talisman), no `SESSION_COOKIE_SECURE`/`SAMESITE` hardening, no rate limiting on `/login`/`/forgot_password`, user enumeration on `/forgot_password`.
+
 ## Git Workflow
 
 ### Committing Changes
@@ -525,9 +544,9 @@ ls tests/databases/
 - Regular database maintenance with `--purge` command
 - Use systemd for production deployment instead of development server
 
-## Current Version: 1.0.3
+## Current Version: 1.0.5
 
-Last updated: January 2025 (Bugfix release)
+Last updated: September 2026 (discovery survey + security audit)
 
 ---
 

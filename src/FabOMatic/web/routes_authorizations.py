@@ -5,12 +5,14 @@
 from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required
 from flask_babel import gettext
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Authorization, Machine, User
 from .webapplication import DBSession, app, excel
 
 
 @app.route("/authorizations", methods=["GET"])
 @login_required
+@backend_admin_required
 def view_authorizations():
     user_filter = request.args.get("user")
     machine_filter = request.args.get("machine")
@@ -35,6 +37,7 @@ def view_authorizations():
 
 @app.route("/authorizations/add", methods=["GET"])
 @login_required
+@backend_admin_required
 def add_authorization():
     with DBSession() as session:
         users = session.query(User).filter_by(deleted=False).all()
@@ -44,6 +47,7 @@ def add_authorization():
 
 @app.route("/authorizations/create", methods=["POST"])
 @login_required
+@backend_admin_required
 def create_authorization():
     with DBSession() as session:
         authorization_data = request.form
@@ -61,6 +65,7 @@ def create_authorization():
 
 @app.route("/authorizations/edit/<int:authorization_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def edit_authorization(authorization_id):
     with DBSession() as session:
         authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
@@ -76,6 +81,7 @@ def edit_authorization(authorization_id):
 
 @app.route("/authorizations/update", methods=["POST"])
 @login_required
+@backend_admin_required
 def update_authorization():
     with DBSession() as session:
         authorization_data = request.form
@@ -96,6 +102,7 @@ def update_authorization():
 
 @app.route("/authorizations/delete/<int:authorization_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def delete_authorization(authorization_id):
     with DBSession() as session:
         authorization = session.query(Authorization).filter_by(authorization_id=authorization_id).one()
@@ -112,6 +119,7 @@ def delete_authorization(authorization_id):
 
 @app.route("/authorizations/bulkadd", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def bulkadd_authorizations():
     with DBSession() as session:
         machines = session.query(Machine).all()
@@ -137,6 +145,7 @@ def bulkadd_authorizations():
 
 @app.route("/authorizations/export", methods=["GET"])
 @login_required
+@backend_admin_required
 def authorizations_export():
     session = DBSession()
     return excel.make_response_from_tables(session, [Authorization, User, Machine], "xlsx", file_name="authorizations")

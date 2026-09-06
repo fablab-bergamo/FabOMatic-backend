@@ -15,11 +15,21 @@ class TestConfigPaths:
         """Test that config search paths are returned in correct order."""
         paths = FabConfig.getConfigSearchPaths()
 
-        assert len(paths) == 4, "Should return 4 search paths"
-        assert paths[0].endswith("/.config/FabOMatic/settings.toml"), "First should be user config"
-        assert paths[1] == "/etc/FabOMatic/settings.toml", "Second should be system config"
-        assert paths[2].endswith("/FabOMatic/settings.toml"), "Third should be home directory"
-        assert "conf/settings.toml" in paths[3], "Fourth should be package directory"
+        user_config_suffix = os.path.join(".config", "FabOMatic", "settings.toml")
+        home_config_suffix = os.path.join("FabOMatic", "settings.toml")
+        package_config_suffix = os.path.join("conf", "settings.toml")
+
+        if os.name == "nt":
+            assert len(paths) == 3, "Should return 3 search paths on Windows (no /etc)"
+            assert paths[0].endswith(user_config_suffix), "First should be user config"
+            assert paths[1].endswith(home_config_suffix), "Second should be home directory"
+            assert paths[2].endswith(package_config_suffix), "Third should be package directory"
+        else:
+            assert len(paths) == 4, "Should return 4 search paths"
+            assert paths[0].endswith(user_config_suffix), "First should be user config"
+            assert paths[1] == "/etc/FabOMatic/settings.toml", "Second should be system config"
+            assert paths[2].endswith(home_config_suffix), "Third should be home directory"
+            assert package_config_suffix in paths[3], "Fourth should be package directory"
 
     def test_get_writable_config_path(self):
         """Test that writable config path is determined correctly."""
@@ -27,7 +37,9 @@ class TestConfigPaths:
 
         assert writable_path is not None, "Should return a writable path"
         # Should prefer user config directory
-        assert ".config/FabOMatic" in writable_path or "conf/settings.toml" in writable_path
+        user_config_suffix = os.path.join(".config", "FabOMatic")
+        package_config_suffix = os.path.join("conf", "settings.toml")
+        assert user_config_suffix in writable_path or package_config_suffix in writable_path
 
 
 class TestConfigValidation:
