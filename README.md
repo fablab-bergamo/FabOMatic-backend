@@ -310,3 +310,5 @@ python -m FabOMatic --weekly-summary
 | 0.7.4 | October 2024 | Added new settings page in Systems, fixed email hanging issue |
 | 1.0.0 | October 2025 | **Major release**: Complete UI modernization with modern design, search/filter functionality, improved navigation, responsive design, and enhanced user experience |
 | 1.0.1 | October 2025 | Added weekly summary email feature with automated activity reports, pending maintenance alerts, and unrecognized cards tracking. Fixed HTML link rendering bug in emails. |
+| 1.0.6 | September 2026 | Security hardening: removed leaked credential, disabled debug mode in production, fixed broken access control by requiring backend_admin role on every admin route. |
+| 1.0.7 | September 2026 | Fixed DetachedInstanceError crashing every admin route, caused by the 1.0.6 access-control check reading a role on a detached user object. |

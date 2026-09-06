@@ -310,3 +310,5 @@ python -m FabOMatic --weekly-summary
 | 0.7.4 | Ottobre 2024 | Aggiunta nuova pagina impostazioni in Sistemi, risolto problema di blocco email |
 | 1.0.0 | Ottobre 2025 | **Rilascio maggiore**: Modernizzazione completa dell'interfaccia utente con design moderno, funzionalità di ricerca/filtro, navigazione migliorata, design responsive ed esperienza utente migliorata |
 | 1.0.1 | Ottobre 2025 | Aggiunta funzionalità email di riepilogo settimanale con report automatici delle attività, avvisi di manutenzione in sospeso e tracciamento tessere non riconosciute. Risolto bug di rendering dei link HTML nelle email. |
+| 1.0.6 | Settembre 2026 | Rafforzamento della sicurezza: rimossa credenziale trapelata, disabilitata la modalità debug in produzione, corretto il controllo degli accessi richiedendo il ruolo backend_admin su ogni pagina di amministrazione. |
+| 1.0.7 | Settembre 2026 | Risolto un DetachedInstanceError che bloccava ogni pagina di amministrazione, causato dal controllo degli accessi della 1.0.6 che leggeva un ruolo su un oggetto utente scollegato dalla sessione. |
