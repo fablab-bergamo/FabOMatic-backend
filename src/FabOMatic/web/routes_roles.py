@@ -5,6 +5,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from flask_babel import gettext
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Role
 from FabOMatic.database.repositories import RoleRepository
 from .webapplication import DBSession, app
@@ -12,6 +13,7 @@ from .webapplication import DBSession, app
 
 @app.route("/roles")
 @login_required
+@backend_admin_required
 def roles():
     session = DBSession()
     roles_list = session.query(Role).all()
@@ -20,6 +22,7 @@ def roles():
 
 @app.route("/roles/add", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def add_role():
     if request.method == "POST":
         session = DBSession()
@@ -43,6 +46,7 @@ def add_role():
 
 @app.route("/roles/edit/<int:role_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def edit_role(role_id):
     session = DBSession()
     role = session.query(Role).filter_by(role_id=role_id).one()
@@ -69,6 +73,8 @@ def edit_role(role_id):
 
 
 @app.route("/roles/delete/<int:role_id>", methods=["GET", "POST"])
+@login_required
+@backend_admin_required
 def delete_role(role_id):
     session = DBSession()
     role_repo = RoleRepository(session)

@@ -8,12 +8,13 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from flask_babel import gettext
 from FabOMatic.database.models import User, Role, UnknownCard
-from FabOMatic.web.authentication import send_reset_email
+from FabOMatic.web.authentication import backend_admin_required, send_reset_email
 from .webapplication import DBSession, app, excel
 
 
 @app.route("/users", methods=["GET"])
 @login_required
+@backend_admin_required
 def view_users():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
@@ -23,6 +24,7 @@ def view_users():
 
 @app.route("/users/add", methods=["GET"])
 @login_required
+@backend_admin_required
 def add_user():
     session = DBSession()
     roles = session.query(Role).order_by(Role.role_id).all()
@@ -32,6 +34,7 @@ def add_user():
 
 @app.route("/users/reset/<int:user_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def reset_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
@@ -50,6 +53,7 @@ def reset_user(user_id):
 
 @app.route("/users/create", methods=["POST"])
 @login_required
+@backend_admin_required
 def create_user():
     session = DBSession()
     user_data = request.form
@@ -105,6 +109,7 @@ def create_user():
 
 @app.route("/users/edit/<int:user_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def edit_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
@@ -117,6 +122,7 @@ def edit_user(user_id):
 
 @app.route("/users/update", methods=["POST"])
 @login_required
+@backend_admin_required
 def update_user():
     session = DBSession()
     user_data = request.form
@@ -165,6 +171,7 @@ def update_user():
 
 @app.route("/users/delete/<int:user_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def delete_user(user_id):
     session = DBSession()
     user = session.query(User).filter_by(user_id=user_id).one()
@@ -182,6 +189,7 @@ def delete_user(user_id):
 
 @app.route("/users/export", methods=["GET"])
 @login_required
+@backend_admin_required
 def users_export():
     session = DBSession()
     return excel.make_response_from_tables(session, [User, Role], "xlsx", file_name="users")

@@ -8,12 +8,14 @@ from time import time
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 from flask_babel import gettext
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Intervention, Machine, Maintenance, User
 from .webapplication import DBSession, app, excel
 
 
 @app.route("/interventions")
 @login_required
+@backend_admin_required
 def view_interventions():
     session = DBSession()
     users = session.query(User).filter_by(deleted=False).order_by(User.user_id).all()
@@ -44,6 +46,7 @@ def view_interventions():
 
 @app.route("/interventions/add", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def add_intervention():
     session = DBSession()
     machines = session.query(Machine).order_by(Machine.machine_id).all()
@@ -70,6 +73,7 @@ def add_intervention():
 
 @app.route("/interventions/edit/<int:intervention_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def edit_intervention(intervention_id):
     session = DBSession()
     intervention = session.query(Intervention).get(intervention_id)
@@ -104,6 +108,7 @@ def edit_intervention(intervention_id):
 
 @app.route("/interventions/delete/<int:intervention_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def delete_intervention(intervention_id):
     session = DBSession()
     intervention = session.query(Intervention).get(intervention_id)
@@ -121,6 +126,8 @@ def delete_intervention(intervention_id):
 
 
 @app.route("/interventions/export", methods=["GET"])
+@login_required
+@backend_admin_required
 def interventions_export():
     session = DBSession()
     return excel.make_response_from_tables(session, [Intervention, User, Machine], "xlsx", file_name="interventions")

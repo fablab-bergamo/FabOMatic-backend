@@ -8,6 +8,7 @@ from flask_babel import gettext
 from importlib.metadata import version
 
 from FabOMatic.conf import FabConfig
+from .authentication import backend_admin_required
 from FabOMatic.database.repositories import BoardsRepository
 from .webapplication import DBSession, app
 import os
@@ -20,6 +21,7 @@ import requests
 
 @app.route("/system")
 @login_required
+@backend_admin_required
 def system():
     db_file = FabConfig.getDatabaseUrl().replace("sqlite:///", "")
     db_size = os.path.getsize(db_file)
@@ -57,6 +59,7 @@ def system():
 
 @app.route("/download_db")
 @login_required
+@backend_admin_required
 def download_db():
     # Returns of copy of the SQLite database to the user
     db_file = FabConfig.getDatabaseUrl().replace("sqlite:///", "")
@@ -65,6 +68,7 @@ def download_db():
 
 @app.route("/download_logs")
 @login_required
+@backend_admin_required
 def download_logs():
     log_dir = os.path.expanduser("~/log")
     log_file = os.path.join(log_dir, "log.txt")
@@ -73,6 +77,7 @@ def download_logs():
 
 @app.route("/upload_db", methods=["POST"])
 @login_required
+@backend_admin_required
 def upload_db():
     if "db_file" not in request.files:
         return redirect(request.url)
@@ -96,6 +101,7 @@ def upload_db():
 
 @app.route("/update_app")
 @login_required
+@backend_admin_required
 def update_app():
     upgrade_output = subprocess.run(
         ["pip", "install", "FabOMatic", "--upgrade"],
@@ -120,6 +126,7 @@ def update_app():
 
 @app.route("/reboot")
 @login_required
+@backend_admin_required
 def reboot():
     if platform.system() != "Windows":
         reboot_output = subprocess.run(["sudo", "reboot"], check=True, text=True, capture_output=True)
@@ -132,6 +139,7 @@ def reboot():
 
 @app.route("/restart_app")
 @login_required
+@backend_admin_required
 def restart_app():
     # Restart the application using Systemd
     if platform.system() != "Windows":
@@ -147,6 +155,7 @@ def restart_app():
 
 @app.route("/settings")
 @login_required
+@backend_admin_required
 def view_settings():
     """Display the system configuration editor."""
     settings = FabConfig.loadSettings()
@@ -158,6 +167,7 @@ def view_settings():
 
 @app.route("/settings/save", methods=["POST"])
 @login_required
+@backend_admin_required
 def save_settings():
     """Save updated configuration settings."""
     try:

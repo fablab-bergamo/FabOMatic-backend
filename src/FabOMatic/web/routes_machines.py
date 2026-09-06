@@ -6,6 +6,7 @@ from flask import flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from flask_babel import gettext
 from FabOMatic.__main__ import Backend
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Machine, MachineType, User
 from FabOMatic.database.repositories import MachineRepository
 from .webapplication import DBSession, app
@@ -13,6 +14,7 @@ from .webapplication import DBSession, app
 
 @app.route("/machines", methods=["GET"])
 @login_required
+@backend_admin_required
 def view_machines():
     session = DBSession()
     machine_repo = MachineRepository(session)
@@ -30,6 +32,7 @@ def view_machines():
 
 @app.route("/machines/add", methods=["GET"])
 @login_required
+@backend_admin_required
 def add_machine():
     session = DBSession()
     machine_types = session.query(MachineType).order_by(MachineType.type_id).all()
@@ -38,6 +41,7 @@ def add_machine():
 
 @app.route("/machines/create", methods=["POST"])
 @login_required
+@backend_admin_required
 def create_machine():
     session = DBSession()
     machine_data = request.form
@@ -64,6 +68,7 @@ def create_machine():
 
 @app.route("/machines/edit/<int:machine_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def edit_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
@@ -76,6 +81,7 @@ def edit_machine(machine_id):
 
 @app.route("/machines/start/<int:machine_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def start_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
@@ -104,6 +110,7 @@ def start_machine(machine_id):
 
 @app.route("/machines/stop/<int:machine_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def stop_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
@@ -132,6 +139,7 @@ def stop_machine(machine_id):
 
 @app.route("/machines/update", methods=["POST"])
 @login_required
+@backend_admin_required
 def update_machine():
     session = DBSession()
     machine_data = request.form
@@ -159,6 +167,7 @@ def update_machine():
 
 @app.route("/machines/delete/<int:machine_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def delete_machine(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()

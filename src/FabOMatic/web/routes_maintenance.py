@@ -10,12 +10,14 @@ from flask_login import login_required
 from flask_babel import gettext
 from werkzeug.utils import secure_filename
 
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Machine, Maintenance
 from .webapplication import DBSession, allowed_file, app, UPLOAD_FOLDER
 
 
 @app.route("/maintenances")
 @login_required
+@backend_admin_required
 def maintenances():
     machine_filter = request.args.get("machine")
     description_filter = request.args.get("description")
@@ -36,6 +38,7 @@ def maintenances():
 
 @app.route("/maintenances/add", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def add_maintenance():
     session = DBSession()
     logging.debug("Processing add_maintenance %s", request)
@@ -72,6 +75,7 @@ def add_maintenance():
 
 @app.route("/maintenances/edit/<int:maintenance_id>", methods=["GET", "POST"])
 @login_required
+@backend_admin_required
 def edit_maintenance(maintenance_id):
     session = DBSession()
     maintenance = session.query(Maintenance).filter_by(maintenance_id=maintenance_id).one()
@@ -106,6 +110,8 @@ def edit_maintenance(maintenance_id):
 
 
 @app.route("/maintenances/delete/<int:maintenance_id>", methods=["GET", "POST"])
+@login_required
+@backend_admin_required
 def delete_maintenance(maintenance_id):
     session = DBSession()
     maintenance = session.query(Maintenance).filter_by(maintenance_id=maintenance_id).one()

@@ -7,6 +7,7 @@ from datetime import datetime
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from flask_babel import gettext
+from .authentication import backend_admin_required
 from FabOMatic.database.models import Machine, Use, User
 from FabOMatic.database.repositories import MachineRepository, UserRepository
 from .webapplication import DBSession, app, excel
@@ -14,6 +15,7 @@ from .webapplication import DBSession, app, excel
 
 @app.route("/machines/history/<int:machine_id>", methods=["GET"])
 @login_required
+@backend_admin_required
 def view_machine_use_history(machine_id):
     session = DBSession()
     uses = session.query(Use).filter_by(machine_id=machine_id).order_by(Use.start_timestamp.desc()).limit(500).all()
@@ -26,6 +28,7 @@ def view_machine_use_history(machine_id):
 
 @app.route("/delete_use/<int:use_id>", methods=["POST", "GET"])
 @login_required
+@backend_admin_required
 def delete_use(use_id):
     session = DBSession()
     use = session.query(Use).filter_by(use_id=use_id).one()
@@ -55,6 +58,7 @@ def delete_use(use_id):
 
 @app.route("/view_uses", methods=["GET"])
 @login_required
+@backend_admin_required
 def view_uses():
     session = DBSession()
     user_id = request.args.get("user_id")
@@ -98,6 +102,7 @@ def view_uses():
 
 @app.route("/add_use", methods=["GET"])
 @login_required
+@backend_admin_required
 def add_use():
     with DBSession() as session:
         users = session.query(User).filter_by(deleted=False).order_by(User.name).all()
@@ -107,6 +112,7 @@ def add_use():
 
 @app.route("/add_use", methods=["POST"])
 @login_required
+@backend_admin_required
 def add_use_post():
     with DBSession() as session:
         use_data = request.form
@@ -160,6 +166,7 @@ def add_use_post():
 
 @app.route("/uses/export", methods=["GET"])
 @login_required
+@backend_admin_required
 def uses_export():
     session = DBSession()
     return excel.make_response_from_tables(session, [Use, Machine, User], "xlsx", file_name="uses")
@@ -167,6 +174,7 @@ def uses_export():
 
 @app.route("/machines/history/<int:machine_id>/export", methods=["GET"])
 @login_required
+@backend_admin_required
 def machine_use_export(machine_id):
     session = DBSession()
     machine = session.query(Machine).filter_by(machine_id=machine_id).one()
